@@ -1,0 +1,20 @@
+{
+  "name": "chemveric-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright + TypeScript automation for Chemveric (UI + API + E2E).",
+  "scripts": {
+    "prepare": "playwright install --with-deps",
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "test:e2e": "playwright test tests/integration",
+    "lint": "eslint . --ext .ts || echo 'eslint optional'",
+    "format": "prettier -w . || echo 'prettier optional'"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "typescript": "^5.6.3",
+    "dotenv": "^16.4.5"
+  }
+}

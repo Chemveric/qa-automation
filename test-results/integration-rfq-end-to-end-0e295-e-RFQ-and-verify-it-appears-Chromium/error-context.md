@@ -1,0 +1,60 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img "Logo" [ref=e8]
+        - button "Collapse" [ref=e9] [cursor=pointer]:
+          - img [ref=e11]
+          - generic [ref=e14]: Collapse
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - text: Marketplace
+            - list [ref=e18]:
+              - listitem [ref=e19]:
+                - link "About Us" [ref=e20] [cursor=pointer]:
+                  - /url: /about
+                  - img [ref=e22]
+                  - generic [ref=e25]: About Us
+              - listitem [ref=e26]:
+                - link "Products" [ref=e27] [cursor=pointer]:
+                  - /url: /products
+                  - img [ref=e29]
+                  - generic [ref=e32]: Products
+              - listitem [ref=e33]:
+                - link "Services" [ref=e34] [cursor=pointer]:
+                  - /url: /services
+                  - img [ref=e36]
+                  - generic [ref=e39]: Services
+          - generic [ref=e40]:
+            - text: Shopping
+            - list [ref=e41]:
+              - listitem [ref=e42]:
+                - link "Favored" [ref=e43] [cursor=pointer]:
+                  - /url: /favored
+                  - img [ref=e45]
+                  - generic [ref=e48]: Favored
+              - listitem [ref=e49]:
+                - link "My Cart" [ref=e50] [cursor=pointer]:
+                  - /url: /cart
+                  - img [ref=e52]
+                  - generic [ref=e55]: My Cart
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - separator [ref=e58]
+            - list [ref=e59]:
+              - listitem [ref=e60]:
+                - link "Contact Us" [ref=e61] [cursor=pointer]:
+                  - /url: /contact
+                  - img [ref=e63]
+                  - generic [ref=e66]: Contact Us
+          - separator [ref=e67]
+          - generic [ref=e68]:
+            - button "Request sign up" [ref=e69] [cursor=pointer]
+            - button "Log in" [ref=e70] [cursor=pointer]
+    - main [ref=e71]
+```
