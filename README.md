@@ -1,37 +1,25 @@
-# Chemveric Automation (Playwright + TypeScript)
+# Chemveric Automation v2 (Chromium + Allure)
 
-UI + API + basic E2E flows for https://chemveric.dev.gdev.group
+Production-grade Playwright framework with Auth0 UI login, Admin invitation flow (ADA-US-001), BasePage/BaseAPI, Allure, and CI.
 
-## Quick Start
-
+## Quick start
 ```bash
-npm ci
+npm install
 npm run prepare
-cp .env.example .env  # and edit credentials
-npm test              # run all tests
+cp .env.example .env   # fill with real values
+npm run test:ui        # UI ADA-US-001
+npm run test:api       # API smoke
+npm run test:e2e       # E2E invitation flow
 ```
 
-### Run specific suites
-- `npm run test:ui`
-- `npm run test:api`
-- `npm run test:e2e`
-
-## Project layout
-- `src/config` — env + test data
-- `src/pages` — Page Objects
-- `src/api` — lightweight API clients
-- `tests/ui` — UI tests
-- `tests/api` — API tests
-- `tests/integration` — E2E flows
-
-## Git: Create repo and push
+## Allure report
 ```bash
-git init
-git add .
-git commit -m "chemveric: initial test framework (ui+api+e2e)"
-gh repo create chemveric-automation --private --source=. --remote=origin --push  # or create manually
-# fallback without GitHub CLI:
-# 1) create empty repo on github.com
-# 2) git remote add origin <repo-url>
-# 3) git push -u origin main
+npm run allure:generate
+npm run allure:open
 ```
+
+## Environment (.env)
+CHEMVERIC_UI_URL, CHEMVERIC_API_URL, CHEMVERIC_ADMIN_EMAIL, CHEMVERIC_ADMIN_PASSWORD, INVITE_BUYER_EMAIL, INVITE_VENDOR_EMAIL
+
+## CI (GitHub Actions)
+Add repository secrets with the same names as .env. Workflow uploads Playwright & Allure reports as artifacts.

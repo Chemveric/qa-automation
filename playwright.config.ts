@@ -2,22 +2,26 @@ import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const BASE_URL = process.env.CHEMVERIC_BASE_URL || 'https://chemveric.dev.gdev.group';
+const UI_URL = process.env.CHEMVERIC_UI_URL || 'https://admin-chemveric.dev.gdev.group';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 60 * 1000,
-  expect: { timeout: 10 * 1000 },
-  reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
+  timeout: 70_000,
+  expect: { timeout: 10_000 },
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['allure-playwright']
+  ],
   use: {
-    baseURL: BASE_URL,
-    trace: 'on-first-retry',
+    baseURL: UI_URL,
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+    viewport: { width: 1400, height: 900 }
   },
   projects: [
-    { name: 'Chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'Firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'WebKit', use: { ...devices['Desktop Safari'] } }
-  ]
+    { name: 'Chromium', use: { ...devices['Desktop Chrome'] } }
+  ],
+  outputDir: 'test-results'
 });

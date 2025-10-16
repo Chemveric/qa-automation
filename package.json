@@ -1,20 +1,22 @@
 {
   "name": "chemveric-automation",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Playwright + TypeScript automation for Chemveric (UI + API + E2E).",
+  "description": "Chemveric Automation Framework v2 (Chromium, Allure, BasePage/API, Auth0 UI login)",
   "scripts": {
-    "prepare": "playwright install --with-deps",
+    "prepare": "playwright install chromium --with-deps",
     "test": "playwright test",
     "test:ui": "playwright test tests/ui",
     "test:api": "playwright test tests/api",
-    "test:e2e": "playwright test tests/integration",
-    "lint": "eslint . --ext .ts || echo 'eslint optional'",
-    "format": "prettier -w . || echo 'prettier optional'"
+    "test:e2e": "playwright test tests/e2e",
+    "allure:generate": "allure generate ./allure-results --clean -o ./allure-report || true",
+    "allure:open": "allure open ./allure-report || allure serve ./allure-results"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.2",
+    "allure-playwright": "^2.15.1",
+    "dotenv": "^16.4.5",
     "typescript": "^5.6.3",
-    "dotenv": "^16.4.5"
+    "ts-node": "^10.9.2"
   }
 }
