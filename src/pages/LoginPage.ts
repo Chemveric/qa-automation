@@ -23,7 +23,7 @@ export class LoginPage extends BasePage {
     await this.page.waitForTimeout(3000);
 
     // Wait for email input field to be visible
-    await expect(this.page.getByPlaceholder('Email address')).toBeVisible({ timeout: 20000 });
+    await expect(this.page.locator('#username-label')).toBeVisible({ timeout: 20000 });
   }
 
   /**
@@ -34,18 +34,19 @@ export class LoginPage extends BasePage {
     log.step(`Login as ${email}`);
 
     // Fill the email field (by placeholder or label as fallback)
-    const emailField = this.page.getByPlaceholder('Email address').or(this.page.getByLabel(/email/i));
+    const emailField = this.page.locator('input[name="username"][id="username"][autocomplete="email"]');
     await emailField.fill(email);
 
     // Fill the password field (by placeholder or label as fallback)
-    const passField = this.page.getByPlaceholder('Password').or(this.page.getByLabel(/password/i));
+    const passField = this.page.locator('input[name="password"][id="password"][type="password"]');
     await passField.fill(password);
 
     // Small delay before clicking (helps avoid stale element issues)
     await this.page.waitForTimeout(1000);
 
     // Click the Continue button to submit
-    await this.page.getByRole('button', { name: /^Continue$/ }).click();
+    const continueButton = this.page.locator('button[type="submit"]');
+    await continueButton.click();
 
     // Wait for redirect back to Admin UI
     await this.page.waitForURL(/admin-chemveric\.dev\.gdev\.group/, { timeout: 60000 });

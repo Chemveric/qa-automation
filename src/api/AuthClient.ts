@@ -10,6 +10,6 @@ export class AuthClient extends BaseAPIClient {
    */
   async health() {
     // Simple GET to /health (expected 200)
-    return this.get('/health');
+    return this.get('/v1/health');
   }
 }

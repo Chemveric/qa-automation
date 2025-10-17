@@ -3,7 +3,7 @@ dotenv.config();
 
 export const ENV = {
   uiURL: process.env.CHEMVERIC_UI_URL || 'https://admin-chemveric.dev.gdev.group',
-  apiURL: process.env.CHEMVERIC_API_URL || 'https://api-chemveric.dev.gdev.group/v1',
+  apiURL: process.env.CHEMVERIC_API_URL || 'https://api-chemveric.dev.gdev.group/v1/docs',
   admin: {
     email: process.env.CHEMVERIC_ADMIN_EMAIL || 'admin@admin.com',
     password: process.env.CHEMVERIC_ADMIN_PASSWORD || ''
