@@ -5,7 +5,10 @@ export abstract class BasePage {
   constructor(protected page: Page, protected path?: string) {}
 
   async goto(relative?: string) {
-    const url = relative || this.path || '/';
+    const base = process.env.BASE_URL || 'https://dev.facilitron.com/admin';
+    const url = relative?.startsWith('http')
+        ? relative
+        : `${base}${relative || this.path || '/'}`;
     log.step(`Navigate to: ${url}`);
     await this.page.goto(url);
   }
