@@ -5,7 +5,7 @@ export abstract class BasePage {
   constructor(protected page: Page, protected path?: string) {}
 
   async goto(relative?: string) {
-    const base = process.env.BASE_URL || 'https://dev.facilitron.com/admin';
+    const base = process.env.CHEMVERIC_UI_URL || 'https://admin-chemveric.dev.gdev.group';
     const url = relative?.startsWith('http')
         ? relative
         : `${base}${relative || this.path || '/'}`;
