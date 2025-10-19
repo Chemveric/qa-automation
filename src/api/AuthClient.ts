@@ -1,4 +1,4 @@
-import { BaseAPIClient } from '../core/BaseAPIClient';
+import { BaseAPIClient } from "../core/BaseAPIClient";
 
 /**
  * Basic API client for health check and authentication endpoints.
@@ -10,6 +10,20 @@ export class AuthClient extends BaseAPIClient {
    */
   async health() {
     // Simple GET to /health (expected 200)
-    return this.get('/v1/health');
+    return this.get("/v1/health");
+  }
+
+  async getAdminSignupInvites() {
+    const query = {
+      sort: ["sendDate", "DESC"],
+      range: [0, 10],
+      filter: { status: "INVITED"},
+    };
+
+    const params = Object.fromEntries(
+      Object.entries(query).map(([k, v]) => [k, JSON.stringify(v)])
+    );
+
+    return this.get("/v1/signup-invites", params);
   }
 }
