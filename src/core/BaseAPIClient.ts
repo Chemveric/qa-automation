@@ -31,10 +31,7 @@ export class BaseAPIClient {
     } catch {
       responseBody = await res.text();
     }
-    expect(
-      res.ok(),
-      `GET ${path} -> ${res.status()} ${await res.text()}`
-    ).toBeTruthy();
+
     return {
       status: res.status(),
       body: responseBody,
@@ -45,10 +42,16 @@ export class BaseAPIClient {
   async post(path: string, data?: any) {
     log.step(`API POST ${path}`);
     const res = await this.api.post(path, { data });
-    expect(
-      res.ok(),
-      `POST ${path} -> ${res.status()} ${await res.text()}`
-    ).toBeTruthy();
-    return res;
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
   }
 }

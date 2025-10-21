@@ -3,9 +3,10 @@ import fs from "fs";
 import path from "path";
 import { ENV } from "../config/env";
 import { LoginPage } from "../pages/LoginPage";
+import { log } from '../core/logger';
 
 export async function loginAndSaveCookie() {
-  console.log("Starting UI login script");
+  log.step("Starting UI login script");
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -22,7 +23,7 @@ export async function loginAndSaveCookie() {
   const savePath = path.join(__dirname, "../config/env.json");
 
   fs.writeFileSync(savePath, JSON.stringify({ adminCookie }, null, 2));
-  console.log(`Saved cookie to ${savePath}`);
+  log.step(`Saved cookie to ${savePath}`);
 
   await browser.close();
 }
