@@ -13,6 +13,12 @@ export class AuthClient extends BaseAPIClient {
     return this.get("/v1/health");
   }
 
+  /**
+   * @async
+   * @function getAdminSignupInvites
+   * @returns {Promise<Object>} The API response containing the list of signup invites.
+   */
+
   async getAdminSignupInvites() {
     const query = {
       sort: ["sendDate", "DESC"],
@@ -24,6 +30,6 @@ export class AuthClient extends BaseAPIClient {
       Object.entries(query).map(([k, v]) => [k, JSON.stringify(v)])
     );
 
-    return this.get("/v1/signup-invites", params);
+    return await this.get("/v1/signup-invites", params);
   }
 }
