@@ -30,6 +30,13 @@ export class InvitationBuilder {
     return this;
   }
 
+  withoutField(field: string) {
+    const copy = { ...this.invitation };
+    delete copy[field];
+    this.invitation = copy;
+    return this;
+  }
+
   build() {
     return { ...this.invitation };
   }

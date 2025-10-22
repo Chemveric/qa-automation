@@ -21,6 +21,10 @@ export const InvitationFactory = {
     return new InvitationBuilder().withLastName(lastName).build();
   },
 
+  missing(field: string) {
+    return new InvitationBuilder().withoutField(field).build();
+  },
+
   invalid(field: string, value: any) {
     const builder = new InvitationBuilder();
     switch (field) {

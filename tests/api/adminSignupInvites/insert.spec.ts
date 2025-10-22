@@ -4,7 +4,10 @@ import { AdminSignupInvitesApiClient } from "../../../src/api/AdminSignupInvites
 import { faker } from "@faker-js/faker";
 import { InvitationFactory } from "../../../src/utils/invitationsFactory";
 import { invalidEmails } from "../../../src/utils/invalidData/invalidEmails";
-import { invalidInvitations } from "../../../src/utils/invalidData/invalidInvitations";
+import { invalidInvitations, requiredFields } from "../../../src/utils/invalidData/invalidInvitations";
+import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
+
+const validator = new ResponseValidationHelper();
 
 test.describe("API smoke: POST new invite.", () => {
   let api: AdminSignupInvitesApiClient;
@@ -46,56 +49,34 @@ test.describe("API smoke: POST new invite.", () => {
     ).toBe(newInvitation.email);
   });
 
-  test(`POST same user invitation two times, expect 422 ??? Unprocessable Content`, async () => {
+  test(`POST same user invitation two times, expect 400 Conflict`, async () => {
     const newInvitation = InvitationFactory.valid();
     const res = await api.postSignupInvite(newInvitation);
     const res2 = await api.postSignupInvite(newInvitation);
- 
-    expect(
-      res2.status,
-      `Expected status code is 400, but got ${res.status}`
-    ).toBe(400);
     newInvites.push(res.body.id);
-    const expectedErrorMessage = "Invite already sent to this email";
-    expect(
-      res.body.message,
-      `Expected error message is ${expectedErrorMessage}, but got ${res.body.message}`
-    ).toBe(expectedErrorMessage);
+    validator.expectStatusCodeAndMessage(
+      res2,
+      400,
+      "Invite already sent to this email"
+    );
   });
 
   for (const badEmail of invalidEmails) {
-    test(`POST invitation with invalid email: ${badEmail}, expected status code is 400`, async () => {
+    test(`POST invitation with invalid email: ${badEmail}, expected status code is 422`, async () => {
       const invitationBody = InvitationFactory.invitationWithEmail(
         badEmail as any
       );
       const res = await api.postSignupInvite(invitationBody);
-      const expectedErrorMessage = "Email format is wrong";
-      expect(
-        res.status,
-        `Expected status code is 400, but got ${res.status}`
-      ).toBe(400);
-      expect(
-        res.body.errors.email,
-        `Expected error message is ${expectedErrorMessage}, but got ${res.body.errors.email}`
-      ).toBe(expectedErrorMessage);
+      validator.expectStatusCodeAndMessage(res, 422, "email must be an email");
     });
   }
 
   for (const [field, invalidValues] of Object.entries(invalidInvitations)) {
     for (const { value, expectedError } of invalidValues) {
-      test(`POST invitation with invalid or empty value: ${field} = "${value}", expected status code is 400`, async () => {
+      test(`POST invitation with invalid or empty value: ${field} = "${value}", expected status code is 422`, async () => {
         const invitation = InvitationFactory.invalid(field, value);
         const res = await api.postSignupInvite(invitation);
-        expect(res.status).toBe(400);
-        const errorMsg =
-          res.body.error ||
-          res.body.message ||
-          res.body.errors?.[field] ||
-          JSON.stringify(res.body);
-        expect(
-          errorMsg,
-          `Expected "${expectedError}" but got "${errorMsg}"`
-        ).toContain(expectedError);
+        validator.expectStatusCodeAndMessage(res, 422, expectedError, field);
       });
     }
   }
@@ -105,10 +86,7 @@ test.describe("API smoke: POST new invite.", () => {
     await unauthApi.init();
     const newInvitation = InvitationFactory.valid();
     const resNoAuth = await unauthApi.postSignupInvite(newInvitation);
-    expect(
-      resNoAuth.status,
-      `Expected status code 401, but got ${resNoAuth.status}`
-    ).toBe(401);
+    validator.expectStatusCodeAndMessage(resNoAuth, 401, "Unauthorized");
   });
 
   test(`POST with invalid cookie, expected 401 Unauthorized`, async () => {
@@ -117,14 +95,18 @@ test.describe("API smoke: POST new invite.", () => {
     await unauthApi.init({}, fakeCookie);
     const newInvitation = InvitationFactory.valid();
     const resNoAuth = await unauthApi.postSignupInvite(newInvitation);
-    expect(
-      resNoAuth.status,
-      `Expected status code 401, but got ${resNoAuth.status}`
-    ).toBe(401);
-    const expectedErrorMessage = "Admin access required";
-    expect(
-      resNoAuth.body.message,
-      `Expected error message is: ${expectedErrorMessage}, but got: ${resNoAuth.body.message}`
-    ).toBe(expectedErrorMessage);
+    validator.expectStatusCodeAndMessage(resNoAuth, 401, "Unauthorized");
   });
+
+
+  for (const { field, message } of requiredFields) {
+    test(`No required field: ${field}`, async () => {
+      const bodyWithoutField = InvitationFactory.missing(field);
+      const res = await api.postSignupInvite(bodyWithoutField);
+      console.log("RESPONSE: ", res);
+      validator.expectMultipleFieldErrors(res, 422, {
+        [field]: message,
+      });
+    });
+  }
 });

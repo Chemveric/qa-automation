@@ -2,7 +2,7 @@ export const invalidInvitations = {
   companyName: [
     {
       value: "",
-      expectedError: "companyName must be longer than or equal to 1 characters",
+      expectedError: "companyName must be longer than or equal to 2 characters",
     },
     {
       value: "x".repeat(101),
@@ -30,3 +30,17 @@ export const invalidInvitations = {
     },
   ],
 };
+
+
+  export const requiredFields = [
+    { field: "email", message: "email must be an email" },
+    {
+      field: "companyName",
+      message: "companyName should not be null or undefined",
+    },
+    {
+      field: "firstName",
+      message: "firstName should not be null or undefined",
+    },
+    { field: "lastName", message: "lastName should not be null or undefined" },
+  ];

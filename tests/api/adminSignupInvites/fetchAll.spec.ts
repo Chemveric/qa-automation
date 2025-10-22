@@ -4,6 +4,9 @@ import { AdminSignupInvitesApiClient } from "../../../src/api/AdminSignupInvites
 import { validateSchema } from "../../../src/utils/validateSchema";
 import { faker } from "@faker-js/faker";
 import { statusEnum, StatusEnum } from "../../../src/config/enums";
+import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
+
+const validator = new ResponseValidationHelper();
 
 test.describe("API smoke: get invites with different statuses and validate shema.", () => {
   for (const status of statusEnum) {
@@ -62,50 +65,43 @@ test("API smoke: login with incorrect cookie, expected response status is 401 Un
   const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
   await api.init({}, fakeCookie);
   const res = await api.getAdminSignupInvites();
-  expect(res.status, `Expected status code is 401, but got: ${res.status}`).toBe(401);
+  validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
 });
 
-test("API smoke: get invites with invalid status param, expected response status is 400 Bad Request.", async () => {
+test("API smoke: get invites with invalid status param, expected response status is 422", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
   const res = await api.getAdminSignupInvites({
-    filter: { status: "invited" },
+    filter: { status: "Sorted" },
   });
-  const expectedErrorMessage = "Invalid status filter";
-  expect(res.status).toBe(400);
-  expect(
-    res.body.message,
-    `Expected error message is: ${expectedErrorMessage}, but got: ${res.body.message}`
-  ).toContain(expectedErrorMessage);
+  validator.expectStatusCodeAndMessage(res, 400, "Invalid status filter");
 });
 
-test("API smoke: get invites with invalid sort param, expected response status is 400 Bad Request.", async () => {
+test("API smoke: get invites with invalid sort param, expected response status is 422.", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
   const res = await api.getAdminSignupInvites({
     sort: ["sendDateTime", "DESC"],
   });
-  const expectedErrorMessage = "Value must be a valid JSON array of two strings";
-  expect(res.status).toBe(400);
-  expect(
-    res.body.message,
-    `Expected error message is: ${expectedErrorMessage}, but got: ${res.body.message}`
-  ).toContain(expectedErrorMessage);
+  validator.expectStatusCodeAndMessage(
+    res,
+    422,
+    "Value must be a valid JSON array of two strings"
+  );
 });
 
-test("API smoke: get invites with invalid range param, expected response status is 400 Bad Request.", async () => {
+test("API smoke: get invites with invalid range param, expected response status is 422.", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
   const res = await api.getAdminSignupInvites({
     range: [faker.word.words(1), faker.word.words(1)],
   });
-  const expectedErrorMessage = "Value must be a valid JSON array of two numbers";
-  expect(res.status).toBe(400);
-  expect(
-    res.body.message,
-    `Expected error message is: ${expectedErrorMessage}, but got: ${res.body.message}`
-  ).toContain(expectedErrorMessage);
+  validator.expectStatusCodeAndMessage(
+    res,
+    422,
+    "Value must be a valid JSON array of two numbers"
+  );
 });

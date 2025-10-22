@@ -20,6 +20,6 @@ export class AdminSignupInvitesApiClient extends BaseAPIClient {
   }
 
   async postSignupInvite(body: Record<string, any> = {}) {
-    return this.post("/v1/signup-invites/invite",  body );
+    return this.post("/v1/signup-invites/invite", body);
   }
 }
