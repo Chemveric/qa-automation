@@ -4,7 +4,10 @@ import { AdminSignupInvitesApiClient } from "../../../src/api/AdminSignupInvites
 import { faker } from "@faker-js/faker";
 import { InvitationFactory } from "../../../src/utils/invitationsFactory";
 import { invalidEmails } from "../../../src/utils/invalidData/invalidEmails";
-import { invalidInvitations, requiredFields } from "../../../src/utils/invalidData/invalidInvitations";
+import {
+  invalidInvitations,
+  requiredFields,
+} from "../../../src/utils/invalidData/invalidInvitations";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 
 const validator = new ResponseValidationHelper();
@@ -98,12 +101,10 @@ test.describe("API smoke: POST new invite.", () => {
     validator.expectStatusCodeAndMessage(resNoAuth, 401, "Unauthorized");
   });
 
-
   for (const { field, message } of requiredFields) {
     test(`No required field: ${field}`, async () => {
       const bodyWithoutField = InvitationFactory.missing(field);
       const res = await api.postSignupInvite(bodyWithoutField);
-      console.log("RESPONSE: ", res);
       validator.expectMultipleFieldErrors(res, 422, {
         [field]: message,
       });
