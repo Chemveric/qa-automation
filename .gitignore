@@ -10,3 +10,7 @@ yarn-error.log*
 
 .vscode/*
 /config/env.json
+/allure-results
+/playwright-report
+/test-results
+
