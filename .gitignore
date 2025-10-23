@@ -13,4 +13,5 @@ yarn-error.log*
 /playwright-report
 /allure-results
 storageState.json
-src/config/env.json
+/src/config/env.json
+

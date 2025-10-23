@@ -9,15 +9,17 @@ import {
   requiredFields,
 } from "../../../src/utils/invalidData/invalidInvitations";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
+import { log } from "../../../src/core/logger";
 
 const validator = new ResponseValidationHelper();
 
 test.describe("API smoke: POST new invite.", () => {
   let api: AdminSignupInvitesApiClient;
-  let newInvites = [];
+  let newInvites: string[] = [];
+  let adminCookie: string;
 
   test.beforeAll(async () => {
-    const adminCookie = getAdminCookie();
+    adminCookie = getAdminCookie();
     api = new AdminSignupInvitesApiClient();
     await api.init({}, adminCookie);
   });
@@ -52,7 +54,7 @@ test.describe("API smoke: POST new invite.", () => {
     ).toBe(newInvitation.email);
   });
 
-  test(`POST same user invitation two times, expect 400 Conflict`, async () => {
+  test(`POST same user invitation two times, expect 400`, async () => {
     const newInvitation = InvitationFactory.valid();
     const res = await api.postSignupInvite(newInvitation);
     const res2 = await api.postSignupInvite(newInvitation);
@@ -110,4 +112,12 @@ test.describe("API smoke: POST new invite.", () => {
       });
     });
   }
+
+  test.afterAll(async () => {
+    for (const invite of newInvites) {
+      await api.init({ "Content-Type": false }, adminCookie);
+      await api.deleteSignupInvite(invite);
+      log.step(`Deleted test invitation with id: ${invite}`);
+    }
+  });
 });

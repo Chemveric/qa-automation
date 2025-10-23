@@ -96,4 +96,27 @@ export class BaseAPIClient {
       ok: res.ok(),
     };
   }
+
+  async delete(path: string, data?: any) {
+    log.step(`API DLETE ${path}`);
+
+    const options: Record<string, any> = {};
+    if (data) {
+      options.data = data;
+    }
+    const res = await this.api.delete(path, options);
+
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
+  }
 }
