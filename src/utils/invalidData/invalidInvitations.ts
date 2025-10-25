@@ -44,3 +44,5 @@ export const invalidInvitations = {
     },
     { field: "lastName", message: "lastName should not be null or undefined" },
   ];
+
+  export const invalidIds = ["", 12345, "hello world!", "!@#%$%^%^&*"];
