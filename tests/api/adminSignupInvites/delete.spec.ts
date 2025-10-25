@@ -8,9 +8,8 @@ import { faker } from "@faker-js/faker";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API smoke: DELETE", () => {
+test.describe("API smoke: DELETE Signup Invite", () => {
   let api: AdminSignupInvitesApiClient;
-  let newInvites = [];
   let invitationId: string;
   let adminCookie: string;
   test.beforeAll(async () => {
@@ -20,10 +19,9 @@ test.describe("API smoke: DELETE", () => {
     const newInvitation = InvitationFactory.valid();
     const res = await api.postSignupInvite(newInvitation);
     invitationId = res.body.id;
-    newInvites.push(invitationId);
   });
 
-  test("DELETE invitation with valid ID and check it is removed from the invitations list.", async () => {
+  test("should return success when DELETE invitation with valid ID", async () => {
     await api.init({ "Content-Type": false }, adminCookie);
     const res = await api.deleteSignupInvite(invitationId);
     console.log("RESPONSE: ", res);
@@ -39,14 +37,14 @@ test.describe("API smoke: DELETE", () => {
     expect(invited[0].id).not.toBe(invitationId);
   });
 
-  test("DELETE invitation with fake ID", async () => {
+  test("should return 404 when DELETE invitation with fake ID", async () => {
     await api.init({ "Content-Type": false }, adminCookie);
     const id = faker.string.uuid();
     const res = await api.deleteSignupInvite(id);
     validator.expectStatusCodeAndMessage(res, 404, "Invite not found");
   });
 
-  test(`DELETE invitation with invalid cookie, expected 401 Unauthorized`, async () => {
+  test(`should return 401  when DELETE invitation with invalid cookie`, async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
     const unauthApi = new AdminSignupInvitesApiClient();
     await unauthApi.init({ "Content-Type": false }, fakeCookie);
@@ -56,10 +54,14 @@ test.describe("API smoke: DELETE", () => {
   });
 
   for (const id of invalidIds) {
-    test(`DELETE invitation with invalid id type: ${id}`, async () => {
+    test(`should return 400 when DELETE invitation with invalid id type: ${id}`, async () => {
       await api.init({ "Content-Type": false }, adminCookie);
       const res = await api.deleteSignupInvite(id);
-      validator.expectStatusCodeAndMessage(res, 400, "Validation failed (uuid is expected)");
+      validator.expectStatusCodeAndMessage(
+        res,
+        400,
+        "Validation failed (uuid is expected)"
+      );
     });
   }
 });

@@ -1,16 +1,16 @@
 import { test, expect } from "@playwright/test";
 import { getAdminCookie } from "../../../src/utils/getEnv";
 import { AdminSignupInvitesApiClient } from "../../../src/api/AdminSignupInvitesApiClient";
-import { validateSchema } from "../../../src/utils/validateSchema";
+import { validateSignupInviteSchema } from "../../../src/utils/validateSignupInviteSchema";
 import { faker } from "@faker-js/faker";
-import { statusEnum, StatusEnum } from "../../../src/config/enums";
+import { signupInviteStatusEnum } from "../../../src/config/enums";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API smoke: get invites with different statuses and validate shema.", () => {
-  for (const status of statusEnum) {
-    test(`should get users with status: ${status}`, async () => {
+test.describe("API smoke: Admin Signup Invites Get ALL.", () => {
+  for (const status of signupInviteStatusEnum) {
+    test(`should return expected schema when send valid request with status: ${status}`, async () => {
       const adminCookie = getAdminCookie();
       const api = new AdminSignupInvitesApiClient();
       await api.init({}, adminCookie);
@@ -24,7 +24,7 @@ test.describe("API smoke: get invites with different statuses and validate shema
       for (const user of invited) {
         expect(() => {
           try {
-            validateSchema(user);
+            validateSignupInviteSchema(user);
           } catch (e) {
             throw new Error(
               `Schema validation is failed for user ${user}: ${
@@ -38,7 +38,7 @@ test.describe("API smoke: get invites with different statuses and validate shema
   }
 });
 
-test("API smoke: get all invites and validate shema.", async () => {
+test("should return expected schema when send valid request with no params", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
@@ -48,7 +48,7 @@ test("API smoke: get all invites and validate shema.", async () => {
   for (const user of invited) {
     expect(() => {
       try {
-        validateSchema(user);
+        validateSignupInviteSchema(user);
       } catch (e) {
         throw new Error(
           `Schema validation is failed for user ${user}: ${
@@ -60,7 +60,7 @@ test("API smoke: get all invites and validate shema.", async () => {
   }
 });
 
-test("API smoke: login with incorrect cookie, expected response status is 401 Unauthorized.", async () => {
+test("should return 401 Unauthorized when login with fake cookie", async () => {
   const api = new AdminSignupInvitesApiClient();
   const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
   await api.init({}, fakeCookie);
@@ -68,7 +68,7 @@ test("API smoke: login with incorrect cookie, expected response status is 401 Un
   validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
 });
 
-test("API smoke: get invites with invalid status param, expected response status is 422", async () => {
+test("should return 400 when send invalid status value in params", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
@@ -78,7 +78,7 @@ test("API smoke: get invites with invalid status param, expected response status
   validator.expectStatusCodeAndMessage(res, 400, "Invalid status filter");
 });
 
-test("API smoke: get invites with invalid sort param, expected response status is 422.", async () => {
+test("should return 422 when send invalid sort param", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
@@ -92,7 +92,7 @@ test("API smoke: get invites with invalid sort param, expected response status i
   );
 });
 
-test("API smoke: get invites with invalid range param, expected response status is 422.", async () => {
+test("should return 422 when send invalid range param", async () => {
   const adminCookie = getAdminCookie();
   const api = new AdminSignupInvitesApiClient();
   await api.init({}, adminCookie);
