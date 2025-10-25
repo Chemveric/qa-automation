@@ -9,9 +9,9 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
-/test-results
-/playwright-report
-/allure-results
+
 storageState.json
 /src/config/env.json
-
+/allure-results
+/playwright-report
+/test-results
