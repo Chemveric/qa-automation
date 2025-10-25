@@ -1,4 +1,4 @@
-import { userSchema } from "../schema/userSсhema";
+import { userSchema } from "../schema/userSchema";
 
 export function validateSchema(data: any, schema = userSchema) {
   for (const key in schema) {
