@@ -1,7 +1,8 @@
 import { loginAndSaveCookie } from '../setup/uiLogin';
+import { log } from '../core/logger';
 
 export default async function globalSetup() {
-  console.log('Running global setup: UI login');
+  log.step('Running global setup: UI login');
   await loginAndSaveCookie();
-  console.log("finish login in global setup!");
+  log.step("Finished login in global setup!");
 }
