@@ -54,14 +54,14 @@ test.describe("API smoke: POST Admin Signup Invite", () => {
     ).toBe(newInvitation.email);
   });
 
-  test(`should return 400 when send request with the same data second time`, async () => {
+  test(`should return "409 Conflict" when send request with the same data second time`, async () => {
     const newInvitation = InvitationFactory.valid();
     const res = await api.postSignupInvite(newInvitation);
     const res2 = await api.postSignupInvite(newInvitation);
     newInvites.push(res.body.id);
     validator.expectStatusCodeAndMessage(
       res2,
-      400,
+      409,
       "Invite already sent to this email"
     );
   });

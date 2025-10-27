@@ -29,7 +29,7 @@ export class AdminSignupRequestsApiClient extends BaseAPIClient {
   }
 
   async getAdminSignupRequestById(id: string | number) {
-    return this.post(`/v1/signup-requests/${id}`);
+    return this.get(`/v1/signup-requests/${id}`);
   }
 
   async patchSignupInvite(id: string | number, body: Record<string, any> = {}) {
