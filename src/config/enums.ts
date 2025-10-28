@@ -1,5 +1,7 @@
 
-export const statusEnum = ["APPLIED", "INVITED", "DELETED", "ALL"] as const;
+export const signupInviteStatusEnum = ["APPLIED", "INVITED", "DELETED", "ALL"] as const;
+export const signupRequestStatusEnum = ["APPROVED", "PENDING", "REJECTED", "ALL"] as const;
 
 
-export type StatusEnum = (typeof statusEnum)[number];
+export type SingupInvitesStatusEnum= (typeof signupInviteStatusEnum)[number];
+export type SignupRequestStatusEnum = (typeof signupRequestStatusEnum)[number];

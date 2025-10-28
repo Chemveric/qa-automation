@@ -1,4 +1,4 @@
-export const userSchema = {
+export const userSignupInviteSchema = {
   id: 'uuid',
   status: ['INVITED', 'APPLIED', 'DELETED', 'ALL'], 
   companyName: 'string',

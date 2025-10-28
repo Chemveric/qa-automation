@@ -1,6 +1,6 @@
-import { userSchema } from "../schema/userSchema";
+import { userSignupInviteSchema } from "../schema/userSignupInviteSchema";
 
-export function validateSchema(data: any, schema = userSchema) {
+export function validateSignupInviteSchema(data: any, schema = userSignupInviteSchema) {
   for (const key in schema) {
     const typedKey = key as keyof typeof schema;
     const type = schema[typedKey]; 

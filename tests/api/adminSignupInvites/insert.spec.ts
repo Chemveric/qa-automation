@@ -13,7 +13,7 @@ import { log } from "../../../src/core/logger";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API smoke: POST new invite.", () => {
+test.describe("API smoke: POST Admin Signup Invite", () => {
   let api: AdminSignupInvitesApiClient;
   let newInvites: string[] = [];
   let adminCookie: string;
@@ -24,7 +24,7 @@ test.describe("API smoke: POST new invite.", () => {
     await api.init({}, adminCookie);
   });
 
-  test(`POST new user invitation, expect success`, async () => {
+  test(`should return success when send body with valid data`, async () => {
     const newInvitation = InvitationFactory.valid();
     const res = await api.postSignupInvite(newInvitation);
     expect(
@@ -54,7 +54,7 @@ test.describe("API smoke: POST new invite.", () => {
     ).toBe(newInvitation.email);
   });
 
-  test(`POST same user invitation two times, expect 400`, async () => {
+  test(`should return 400 when send request with the same data second time`, async () => {
     const newInvitation = InvitationFactory.valid();
     const res = await api.postSignupInvite(newInvitation);
     const res2 = await api.postSignupInvite(newInvitation);
@@ -67,7 +67,7 @@ test.describe("API smoke: POST new invite.", () => {
   });
 
   for (const badEmail of invalidEmails) {
-    test(`POST invitation with invalid email: ${badEmail}, expected status code is 422`, async () => {
+    test(`should return 422 when POST invitation with invalid email: ${badEmail}`, async () => {
       const invitationBody = InvitationFactory.invitationWithEmail(
         badEmail as any
       );
@@ -78,7 +78,7 @@ test.describe("API smoke: POST new invite.", () => {
 
   for (const [field, invalidValues] of Object.entries(invalidInvitations)) {
     for (const { value, expectedError } of invalidValues) {
-      test(`POST invitation with invalid or empty value: ${field} = "${value}", expected status code is 422`, async () => {
+      test(`should return 422 when POST invitation with invalid or empty value: ${field} = "${value}"`, async () => {
         const invitation = InvitationFactory.invalid(field, value);
         const res = await api.postSignupInvite(invitation);
         validator.expectStatusCodeAndMessage(res, 422, expectedError, field);
@@ -86,7 +86,7 @@ test.describe("API smoke: POST new invite.", () => {
     }
   }
 
-  test(`POST without token, expected 401 Unauthorized`, async () => {
+  test(`should return "401 Unauthorized" when POST without token`, async () => {
     const unauthApi = new AdminSignupInvitesApiClient();
     await unauthApi.init();
     const newInvitation = InvitationFactory.valid();
@@ -94,7 +94,7 @@ test.describe("API smoke: POST new invite.", () => {
     validator.expectStatusCodeAndMessage(resNoAuth, 401, "Unauthorized");
   });
 
-  test(`POST with invalid cookie, expected 401 Unauthorized`, async () => {
+  test(`should return "401 Unauthorized" when POST with invalid cookie`, async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
     const unauthApi = new AdminSignupInvitesApiClient();
     await unauthApi.init({}, fakeCookie);
@@ -104,7 +104,7 @@ test.describe("API smoke: POST new invite.", () => {
   });
 
   for (const { field, message } of requiredFields) {
-    test(`No required field: ${field}`, async () => {
+    test(`should return 422 when POST with no required field: ${field}`, async () => {
       const bodyWithoutField = InvitationFactory.missing(field);
       const res = await api.postSignupInvite(bodyWithoutField);
       validator.expectMultipleFieldErrors(res, 422, {
