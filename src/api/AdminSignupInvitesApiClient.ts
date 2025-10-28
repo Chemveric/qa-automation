@@ -22,4 +22,12 @@ export class AdminSignupInvitesApiClient extends BaseAPIClient {
   async postSignupInvite(body: Record<string, any> = {}) {
     return this.post("/v1/signup-invites/invite", body);
   }
-}
+
+  async patchSignupInvite(id: string | number){
+    return this.patch(`/v1/signup-invites/${id}/resend`);
+  }
+
+    async deleteSignupInvite(id: string | number){
+    return this.delete(`/v1/signup-invites/${id}`);
+  }
+} 
