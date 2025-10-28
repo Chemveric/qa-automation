@@ -40,7 +40,7 @@ test.describe("API smoke: Admin Signup Requests GET by ID.", () => {
     ).toBe(200);
   });
 
-  test("should return 404 when send request with invalid Id", async () => {
+  test("should return 404 when send request with fake Id", async () => {
     await api.init({ "Content-Type": false }, adminCookie);
     const fakeId = faker.string.uuid();
     const res = await api.getAdminSignupRequestById(fakeId);
@@ -51,13 +51,13 @@ test.describe("API smoke: Admin Signup Requests GET by ID.", () => {
     );
   });
 
-  test("should return 404 when send request with no Id", async () => {
+  test("should return 400 when send request with no Id", async () => {
     await api.init({ "Content-Type": false }, adminCookie);
     const res = await api.getAdminSignupRequestById("");
     validator.expectStatusCodeAndMessage(
       res,
-      404,
-      "Value must be a valid JSON array of two strings"
+      400,
+      "Validation failed (uuid is expected)"
     );
   });
 

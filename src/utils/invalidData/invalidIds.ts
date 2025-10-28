@@ -1,0 +1,1 @@
+export const invalidIds = ["", 12345, "hello world!", "!@#%$%^%^&*"];
