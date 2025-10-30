@@ -12,13 +12,11 @@ const validator = new ResponseValidationHelper();
 
 test.describe("API smoke: GET supported-countries by ID", () => {
   let api: DictionaryApiClient;
-  let adminCookie: string;
   let id: string;
 
   test.beforeAll(async () => {
-    adminCookie = getAdminCookie();
     api = new DictionaryApiClient();
-    await api.init({ "Content-Type": false }, adminCookie);
+    await api.init({ "Content-Type": false });
     const res = await api.getDictionarySupportedRegions();
     const body = await res.body;
     const regions = await validateResponse(
@@ -48,17 +46,16 @@ test.describe("API smoke: GET supported-countries by ID", () => {
     }
   });
 
-  test("should return 400 when send invalid status value in params", async () => {
+  test("should return 404 when send fake ID in params", async () => {
     const fakeId = faker.string.uuid();
     const res = await api.getDictionarySupportedCountries({
       regionId: fakeId,
     });
-    console.log(res.body, res.status);
-    validator.expectStatusCodeAndMessage(res, 400, "Invalid regionId");
+    validator.expectStatusCodeAndMessage(res, 404, "Country or region not found");
   });
 
   for (const id of invalidIds) {
-    test(`should return 422 when send invalid id: ${id}`, async () => {
+    test(`should return 422 when send invalid id type: ${id}`, async () => {
       const res = await api.getDictionarySupportedCountries({
         regionId: id,
       });
