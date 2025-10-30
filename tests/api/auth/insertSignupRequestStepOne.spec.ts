@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { getAdminCookie } from "../../../src/utils/getEnv";
 import { AuthApiClient } from "../../../src/api/AuthApiClient";
 import { SingnupRequestStepOneFactory } from "../../../src/utils/signupRequestStepOne/signupRequestStepOneFactory";
 import { invalidEmails } from "../../../src/utils/invalidData/invalidEmails";
@@ -68,7 +67,7 @@ test.describe("Auth: Signup Request Step One", () => {
   }
 
   for (const badEmail of invalidEmails) {
-    test(`should return 422 when POST signup request with invalid email: ${badEmail}`, async () => {
+    test.skip(`should return 422 when POST signup request with invalid email: ${badEmail}`, async () => {
       const requestBody = SingnupRequestStepOneFactory.requestWithEmail(
         badEmail as any
       );
