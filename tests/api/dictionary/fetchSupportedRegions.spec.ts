@@ -23,5 +23,22 @@ test.describe("API smoke: Dictionary GET Supported Regions", () => {
       expect(typeof region.code).toBe("string");
     }
   });
-});
 
+  test(`should return expected schema when send valid request without admin cookie`, async () => {
+    const api = new DictionaryApiClient();
+    await api.init({ "Content-Type": false });
+    const res = await api.getDictionarySupportedRegions();
+    const body = await res.body;
+    const regions = await validateResponse(
+      { status: res.status, body },
+      DictionarySupportedRegionsSchema,
+      200
+    );
+    expect(Array.isArray(regions)).toBe(true);
+    for (const region of regions) {
+      expect(region).toHaveProperty("id");
+      expect(typeof region.name).toBe("string");
+      expect(typeof region.code).toBe("string");
+    }
+  });
+});
