@@ -4,10 +4,10 @@ export class InvitationBuilder {
   private invitation: Record<string, any>;
   constructor() {
     this.invitation = {
-      email: faker.internet.email(),
-      companyName: faker.company.name(),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
+      email: `AQA-${faker.internet.email()}`,
+      companyName: `AQA-${faker.company.name()}`,
+      firstName: `AQA-${faker.person.firstName()}`,
+      lastName: `AQA-${faker.person.lastName()}`,
     };
   }
   withEmail(email: string | null | undefined) {

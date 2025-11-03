@@ -6,7 +6,9 @@ export class BaseAPIClient {
   protected api!: APIRequestContext;
 
   async init(headers: Record<string, string | false> = {}, cookie?: string) {
-    const extraHeaders: Record<string, string> = {};
+    const extraHeaders: Record<string, string> = {
+      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2"
+    };
 
     if (headers["Content-Type"] !== false) {
       extraHeaders["Content-Type"] =

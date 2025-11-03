@@ -7,7 +7,7 @@ export class SingnupRequestStepOneBuilder {
       role: "BUYER",
       firstName: `AQA-${faker.person.firstName()}`,
       lastName: `AQA-${faker.person.lastName()}`,
-      companyTitle: faker.company.name(),
+      companyTitle: `AQA-${faker.company.name()}`,
       email: `nadiia.patrusheva+Test${faker.number.int(100)}@globaldev.tech`,
       termsAccepted: true,
     };

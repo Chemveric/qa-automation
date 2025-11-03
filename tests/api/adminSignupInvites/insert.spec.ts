@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { getAdminCookie } from "../../../src/utils/getEnv";
 import { AdminSignupInvitesApiClient } from "../../../src/api/AdminSignupInvitesApiClient";
 import { faker } from "@faker-js/faker";
-import { InvitationFactory } from "../../../src/utils/invitationsFactory";
+import { InvitationFactory } from "../../../src/utils/adminInvitations/invitationsFactory";
 import { invalidEmails } from "../../../src/utils/invalidData/invalidEmails";
 import {
   invalidInvitations,

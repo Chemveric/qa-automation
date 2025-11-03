@@ -10,7 +10,7 @@ export class AuthApiClient extends BaseAPIClient {
     return this.get("/v1/auth/signup/request/prefill", params);
   }
 
-  async getSignupRequestRejectPrefill(token: string | number) {
+  async getSignupRequestRejectedPrefill(token: string | number) {
     const params = { token: String(token) };
     return this.get("/v1/auth/signup/request/rejected/prefill", params);
   }

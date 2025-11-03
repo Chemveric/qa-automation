@@ -47,7 +47,7 @@ test.describe("API smoke: Admin Signup Requests GET by ID.", () => {
     validator.expectStatusCodeAndMessage(
       res,
       404,
-      "Value must be a valid JSON array of two strings"
+      "Sign up request does not exist"
     );
   });
 
