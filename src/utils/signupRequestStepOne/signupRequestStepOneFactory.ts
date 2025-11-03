@@ -1,12 +1,12 @@
-import { SingnupRequestStepOneBuilder } from "./signupRequestStepOneBuilder";
+import { SignupRequestStepOneBuilder } from "./signupRequestStepOneBuilder";
 
 export const SingnupRequestStepOneFactory = {
   validBuyer() {
-    return new SingnupRequestStepOneBuilder().build();
+    return new SignupRequestStepOneBuilder().build();
   },
 
   validVendor(role: string, vendorModes: string[] | string) {
-    return new SingnupRequestStepOneBuilder()
+    return new SignupRequestStepOneBuilder()
       .withRole(role)
       .withVendorModes(vendorModes)
       .build();
@@ -16,7 +16,7 @@ export const SingnupRequestStepOneFactory = {
     role: string,
     vendorModes: string[] | string
   ) {
-    return new SingnupRequestStepOneBuilder()
+    return new SignupRequestStepOneBuilder()
       .withSecondaryRole(role)
       .withVendorModes(vendorModes)
       .build();
@@ -27,7 +27,7 @@ export const SingnupRequestStepOneFactory = {
     secondaryRole: string,
     vendorModes: string[] | string
   ) {
-    return new SingnupRequestStepOneBuilder()
+    return new SignupRequestStepOneBuilder()
       .withRole(role)
       .withSecondaryRole(secondaryRole)
       .withVendorModes(vendorModes)
@@ -35,15 +35,15 @@ export const SingnupRequestStepOneFactory = {
   },
 
   requestWithEmail(email: string | null | undefined) {
-    return new SingnupRequestStepOneBuilder().withEmail(email).build();
+    return new SignupRequestStepOneBuilder().withEmail(email).build();
   },
 
   missing(field: string) {
-    return new SingnupRequestStepOneBuilder().withoutField(field).build();
+    return new SignupRequestStepOneBuilder().withoutField(field).build();
   },
 
   invalid(field: string, value: any) {
-    const builder = new SingnupRequestStepOneBuilder();
+    const builder = new SignupRequestStepOneBuilder();
     switch (field) {
       case "role":
         return builder.withRole(value).build();

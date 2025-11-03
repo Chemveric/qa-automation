@@ -1,14 +1,14 @@
 import { faker } from "@faker-js/faker";
 
-export class SingnupRequestStepOneBuilder {
+export class SignupRequestStepOneBuilder {
   private requestStepOne: Record<string, any>;
   constructor() {
     this.requestStepOne = {
       role: "BUYER",
       firstName: `AQA-${faker.person.firstName()}`,
       lastName: `AQA-${faker.person.lastName()}`,
-      companyTitle: `AQA-${faker.company.name()}`,
-      email: `nadiia.patrusheva+Test${faker.number.int(100)}@globaldev.tech`,
+      companyTitle: faker.company.name(),
+      email: `nadiia.patrusheva+${faker.string.uuid()}@globaldev.tech`,
       termsAccepted: true,
     };
   }
