@@ -57,4 +57,18 @@ export class JoseJwtWrapper {
   }): Promise<string> {
     return this.sign(payload, this.signUpRejectSettings);
   }
+
+
+async signTestToken(payload: Record<string, any>): Promise<string> {
+  const settings = {
+    ...this.defaultSettings,
+    secret: ENV.jwtDefaultSettings.secret || "test-secret",
+    issuer: "test-issuer",
+    audience: "test-audience",
+    expiresIn: "1h",
+  };
+
+  return this.sign(payload, settings);
+}
+
 }
