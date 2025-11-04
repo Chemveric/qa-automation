@@ -16,6 +16,7 @@ export default defineConfig({
     ['allure-playwright']
   ],
   use: {
+    headless: false,
     baseURL: UI_URL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -27,5 +28,4 @@ export default defineConfig({
   ],
   outputDir: 'test-results'
 });
-
 
