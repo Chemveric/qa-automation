@@ -67,7 +67,7 @@ test.describe("Auth: Signup Request Step One", () => {
   }
 
   for (const badEmail of invalidEmails) {
-    test.skip(`should return 422 when POST signup request with invalid email: ${badEmail}`, async () => {
+    test(`should return 422 when POST signup request with invalid email: ${badEmail}`, async () => {
       const requestBody = SingnupRequestStepOneFactory.requestWithEmail(
         badEmail as any
       );
