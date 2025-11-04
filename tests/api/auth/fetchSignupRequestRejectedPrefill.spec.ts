@@ -2,16 +2,21 @@ import { test, expect } from "@playwright/test";
 import { AuthApiClient } from "../../../src/api/AuthApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { faker } from "@faker-js/faker";
-import { generateTestToken } from "../../../helpers/tokenHelper";
 import { JoseJwtWrapper } from "../../../helpers/jwt/jose-jwt-wrapper.service";
-import { getRejectedRequestData, getRejectedRequestId } from "../../../src/utils/signupRequestPrefill/signupRequestRejectTestData";
+import {
+  getRejectedRequestData,
+  getRejectedRequestId,
+} from "../../../src/utils/signupRequestPrefill/signupRequestRejectTestData";
 
 const validator = new ResponseValidationHelper();
 
 test.describe("Auth: GET Signup Request Prefill", () => {
   let jwtWrapper: JoseJwtWrapper;
-  test(`should return success when send request with valid token`, async () => {
+
+  test.beforeEach(async () => {
     jwtWrapper = new JoseJwtWrapper();
+  });
+  test(`should return success when send request with valid token`, async () => {
     const validToken = await jwtWrapper.signSignUpRejectJwt({
       signUpReject: getRejectedRequestId(),
     });
@@ -34,11 +39,13 @@ test.describe("Auth: GET Signup Request Prefill", () => {
     );
   });
 
-  test(`should return 401 when send request with invalid jwt token`, async () => {
+  test(`should return 401 when send request with fakeToken jwt token`, async () => {
     const api = new AuthApiClient();
-    const token = generateTestToken();
+        const fakeToken = await jwtWrapper.signTestToken({
+      signUpInvitation: faker.string.uuid(),
+    });
     await api.init({ "Content-Type": false });
-    const getResponse = await api.getSignupRequestRejectedPrefill(token);
+    const getResponse = await api.getSignupRequestRejectedPrefill(fakeToken);
     validator.expectStatusCodeAndMessage(
       getResponse,
       401,
