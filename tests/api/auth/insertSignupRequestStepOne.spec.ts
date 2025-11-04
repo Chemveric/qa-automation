@@ -67,7 +67,7 @@ test.describe("Auth: Signup Request Step One", () => {
   }
 
   for (const badEmail of invalidEmails) {
-    test.skip(`should return 422 when POST signup request with invalid email: ${badEmail}`, async () => {
+    test(`should return 422 when POST signup request with invalid email: ${badEmail}`, async () => {
       const requestBody = SingnupRequestStepOneFactory.requestWithEmail(
         badEmail as any
       );
@@ -78,7 +78,7 @@ test.describe("Auth: Signup Request Step One", () => {
 
   for (const [field, invalidValues] of Object.entries(invalidRequestsStepOne)) {
     for (const { value, expectedError } of invalidValues) {
-      test.skip(`should return 422 when POST signup request with invalid or empty value: ${field} = "${value}" error: ${expectedError}`, async () => {
+      test(`should return 422 when POST signup request with invalid or empty value: ${field} = "${value}" error: ${expectedError}`, async () => {
         const requestBody = SingnupRequestStepOneFactory.invalid(field, value);
         const res = await api.postSignupRequestStepOne(requestBody);
         validator.expectStatusCodeAndMessage(res, 422, expectedError, field);
@@ -87,7 +87,7 @@ test.describe("Auth: Signup Request Step One", () => {
   }
 
   for (const { field, message } of requiredFields) {
-    test.skip(`should return 422 when POST with no required field: ${field}`, async () => {
+    test(`should return 422 when POST with no required field: ${field}`, async () => {
       const bodyWithoutField = SingnupRequestStepOneFactory.missing(field);
       const res = await api.postSignupRequestStepOne(bodyWithoutField);
       validator.expectMultipleFieldErrors(res, 422, {
