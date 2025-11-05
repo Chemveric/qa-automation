@@ -1,4 +1,4 @@
-import { test, BrowserContext } from "@playwright/test";
+import { test } from "@playwright/test";
 import { InvitationsPage } from "../../src/pages/InvitationsPage";
 import { ENV } from "../../src/config/env";
 import { Invitations } from "../../src/data/invitationData";
@@ -7,7 +7,6 @@ import { createStorageState } from "../../src/core/createStorageState";
 test.describe("ADA-US-001: Admin sends invitation", () => {
   let adminStoragePath = "storage/admin.json";
   let inv: InvitationsPage;
-  let context!: BrowserContext;
 
   test.beforeAll(async ({ browser }) => {
     await createStorageState(
@@ -23,11 +22,7 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     inv = new InvitationsPage(page);
   });
 
-  test.afterAll(async ({ browser }) => {
-  await context?.close();
-  await browser.close(); 
-});
-  test("should show success toaster after sending Buyer & Vendor invitations", async () => {
+  test("should show success toaster after sending Buyer invitations", async () => {
     await inv.open();
     await inv.openCreateForm();
     await inv.fillAndSend(
@@ -37,6 +32,10 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
       Invitations.buyer.company,
       Invitations.messages.success
     );
+  });
+
+  test("should show success toaster after sending Vendor invitations", async () => {
+    await inv.open();
     await inv.openCreateForm();
     await inv.fillAndSend(
       Invitations.vendor.firstName,
@@ -59,9 +58,13 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     );
   });
 
-  test("should show validation errors when clicking Invitation button without filling data", async ({page}) => {
+  test("should show validation errors when clicking Invitation button without filling data", async () => {
     await inv.open();
     await inv.openCreateForm();
     await inv.sendWithEmptyFields();
+  });
+
+  test.afterAll(async () => {
+    await inv.close();
   });
 });
