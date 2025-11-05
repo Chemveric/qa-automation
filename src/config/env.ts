@@ -10,6 +10,20 @@ export const ENV = {
   admin: {
     email: process.env.CHEMVERIC_ADMIN_EMAIL || "admin@admin.com",
     password: process.env.CHEMVERIC_ADMIN_PASSWORD || "",
+    url: process.env.CHEMVERIC_UI_URL,
+  },
+  buyer: {
+    email: "user@example.com",
+    password: "user123",
+    url: "/user/home",
+  },
+  vendor: {
+    email: "user2@example.com",
+    password: "user123",
+    url: "/user/home",
+  },
+  guest: {
+    url: process.env.CHEMVERIC_UI_GUEST_URL || '/',
   },
   invites: {
     buyerEmail:
