@@ -11,7 +11,7 @@ export const UserSignupRequestSchema = z.object({
   role: z.enum(["BUYER", "VENDOR"]),
   secondaryRole: z.enum(["BUYER", "VENDOR"]).nullable(),
   email: z.email(),
-  origin: z.string(), //z.string(),  z.object(), ask what data type expected???
+  origin: z.string(), 
   firstName: z.string(),
   lastName: z.string(),
   companyTitle: z.string(),
@@ -27,7 +27,6 @@ export const UserSignupRequestSchema = z.object({
   status: z.enum(["APPROVED", "PENDING", "REJECTED", "ALL"]),
   termsAccepted: z.boolean(),
   createdAt: z.coerce.date(),
-  licenseFiles: z.array(LicenseFilesSchema),
 });
 
 export const UsersSignupRequestListSchema = z.object({
