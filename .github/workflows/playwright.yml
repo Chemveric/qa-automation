@@ -20,6 +20,15 @@ jobs:
         with:
           node-version: 20
 
+      - name: Clean previous build
+        run: |
+          echo "Cleaning previous build, node_modules and reports..."
+          rm -rf node_modules
+          rm -rf playwright-report
+          rm -rf allure-report
+          rm -rf allure-results
+          npm cache clean --force
+
       # Step 3: Create .env file from GitHub Secrets
       # (All sensitive values are stored in Settings → Secrets and variables → Actions)
       - name: Create .env from GitHub Secrets
