@@ -47,10 +47,6 @@ export class DriverProvider {
     async dispose() {
         if (!this.context) return;
 
-        if (this.context.tracing) {
-            await this.context.tracing.stop();
-        }
-
         await this.context.close();
         await this.browser?.close();
     }
