@@ -13,9 +13,9 @@ export const ENV = {
   },
   invites: {
     buyerEmail:
-          process.env.INVITE_BUYER_EMAIL || `aqa_buyer_${Date.now()}@example.com`,
+      process.env.INVITE_BUYER_EMAIL || `aqa_buyer_${Date.now()}@example.com`,
     vendorEmail:
-          process.env.INVITE_VENDOR_EMAIL || `aqa_vendor_${Date.now()}@example.com`,
+      process.env.INVITE_VENDOR_EMAIL || `aqa_vendor_${Date.now()}@example.com`,
   },
   jwtDefaultSettings: {
     secret: process.env.DEFAULT_JWT_SECRET,
