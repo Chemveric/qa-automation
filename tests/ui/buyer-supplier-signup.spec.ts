@@ -10,10 +10,18 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     const user = SignupTestData.guestUser;
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectBuyerRoleAndClickNext();
+    await signupPage.verifyPersonalInfoStep();
+
     await signupPage.fillInPersonalInformationAndClickNext(user);
+    await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(user.email);
+    await signupPage.verifyReviewMessage(user.email);
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should successfully complete the signup flow as supplier.", async ({
@@ -23,10 +31,19 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     const user = SignupTestData.guestUser;
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
-    await signupPage.selectSupplierRoleAndClickNext();
-    await signupPage.fillInPersonalInformationAndClickNext(user);
+    await signupPage.verifyBusinessTypeStep();
+
+    await signupPage.selectSupplierRoleAndClickNext(); 
+    await signupPage.verifyPersonalInfoStep();
+
+    await signupPage.fillInPersonalInformationAndClickNext(user); 
+    await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(user.email);
+    await signupPage.verifyReviewMessage(user.email);
+
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should successfully complete the signup flow as buyer with subrole.", async ({
@@ -36,10 +53,18 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     const user = SignupTestData.guestUser;
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectBuyerRoleWithSubroleAndClickNext();
+    await signupPage.verifyPersonalInfoStep();
+
     await signupPage.fillInPersonalInformationAndClickNext(user);
+
+    await signupPage.verifyCompanyDetailsStep();
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(user.email);
+    await signupPage.verifyReviewMessage(user.email);
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should successfully complete the signup flow as supplier with subrole.", async ({
@@ -49,9 +74,17 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     const user = SignupTestData.guestUser;
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectSupplierRoleWithSubroleAndClickNext();
+    await signupPage.verifyPersonalInfoStep();
+
     await signupPage.fillInPersonalInformationAndClickNext(user);
+
+    await signupPage.verifyCompanyDetailsStep();
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(user.email);
+    await signupPage.verifyReviewMessage(user.email);
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 });

@@ -51,7 +51,7 @@ export class SignupPage extends BasePage {
       name: "Supplier",
     });
     this.checkbox = page.getByRole("checkbox");
-    // this.croCdmoServiceProvider = page.getByRole("checkbox");
+
     this.buyerSecondaryBusinessType = page.getByRole("checkbox", {
       name: "Buyer",
     });
@@ -106,55 +106,8 @@ export class SignupPage extends BasePage {
     await expect(this.signUpButton).toBeVisible();
   }
 
-  private async verifyBusinessTypeStep() {
-    await expect(this.businessTypeTitle).toHaveText("Business Type");
-  }
-
-  private async verifyPersonalInfoStep() {
-    await expect(this.personalInfoTitle).toHaveText("Personal Information");
-  }
-
   async clickSignUpButton() {
     await this.signUpButton.click();
-  }
-
-  // ========== Signup Flow ==========
-  async selectBuyerRoleAndClickNext() {
-    // await this.signUpButton.click();
-    await this.verifyBusinessTypeStep();
-    await this.buyerRoleRadio.check();
-    await this.nextButton.click();
-    await this.verifyPersonalInfoStep();
-  }
-
-  async selectSupplierRoleAndClickNext() {
-    // await this.signUpButton.click();
-    await this.verifyBusinessTypeStep();
-    await this.supplierRoleRadio.check();
-    await this.checkbox.nth(0).check();
-    await this.nextButton.click();
-    await this.verifyPersonalInfoStep();
-  }
-
-  async selectBuyerRoleWithSubroleAndClickNext() {
-    // await this.signUpButton.click();
-    await this.verifyBusinessTypeStep();
-    await this.buyerRoleRadio.check();
-    await this.supplierSecondaryBusinessType.check();
-    await this.checkbox.nth(2).check();
-    await this.checkbox.nth(3).check();
-    await this.nextButton.click();
-    await this.verifyPersonalInfoStep();
-  }
-
-  async selectSupplierRoleWithSubroleAndClickNext() {
-    // await this.signUpButton.click();
-    await this.verifyBusinessTypeStep();
-    await this.supplierRoleRadio.check();
-    await this.checkbox.nth(1).check();
-    await this.buyerSecondaryBusinessType.check();
-    await this.nextButton.click();
-    await this.verifyPersonalInfoStep();
   }
 
   async clickBack() {
@@ -165,9 +118,39 @@ export class SignupPage extends BasePage {
     await this.nextButton.click();
   }
 
-  async verifyBuyerRadioIsChecked() {
-    await this.verifyBusinessTypeStep();
-    await expect(this.buyerRoleRadio).toBeChecked();
+  async clickDone() {
+    await this.doneButton.click();
+  }
+
+  // ========== Signup Flow ==========
+  async selectBuyerRoleAndClickNext() {
+    await this.buyerRoleRadio.check();
+    await this.clickNext();
+  }
+
+  async selectSupplierRoleAndClickNext() {
+    await this.supplierRoleRadio.check();
+    await this.checkbox.nth(0).check();
+    await this.clickNext();
+  }
+
+  async selectBuyerRoleWithSubroleAndClickNext() {
+    await this.buyerRoleRadio.check();
+    await this.supplierSecondaryBusinessType.check();
+    await this.checkbox.nth(2).check();
+    await this.checkbox.nth(3).check();
+    await this.clickNext();
+  }
+
+  async selectSupplierRoleWithSubroleAndClickNext() {
+    await this.supplierRoleRadio.check();
+    console.log("Check supplier");
+    await this.checkbox.nth(1).check();
+    console.log("Check supplier version");
+    await this.buyerSecondaryBusinessType.check();
+    console.log("Check second role");
+    await this.clickNext();
+    console.log("Clicked next");
   }
 
   async fillInPersonalInformationAndClickNext(data: {
@@ -181,46 +164,12 @@ export class SignupPage extends BasePage {
     await this.emailInput.fill(data.email);
     await this.roleInput.fill(data.role);
     await this.agreementCheckbox.check();
-    await this.nextButton.click();
-    await expect(this.companyDetailsTitle).toHaveText("Company Details");
+    await this.clickNext();
   }
 
-  async verifyPersonalInfoIsFilled(
-    invitation: Invitation,
-    data: { role: string }
-  ) {
-    const actualFirstName = await this.firstNameInput.inputValue();
-    const actualLastName = await this.lastNameInput.inputValue();
-    const actualEmail = await this.emailInput.inputValue();
-    const actualRole = await this.roleInput.inputValue();
-
-    expect(actualFirstName).toBe(invitation.firstName);
-    expect(actualLastName).toBe(invitation.lastName);
-    expect(actualEmail).toBe(invitation.email);
-    expect(actualRole).toBe(data.role);
-    await expect(this.agreementCheckbox).toBeChecked();
-  }
-
-  async prefilledPersonalInfoFillRoleAndClickNext(
-    invitation: Invitation,
-    data: { role: string }
-  ) {
-    await expect(this.firstNameInput).toHaveValue(/.+/, { timeout: 2000 });
-    await expect(this.lastNameInput).toHaveValue(/.+/, { timeout: 2000 });
-    await expect(this.emailInput).toHaveValue(/.+/, { timeout: 2000 });
-
-    const actualFirstName = await this.firstNameInput.inputValue();
-    const actualLastName = await this.lastNameInput.inputValue();
-    const actualEmail = await this.emailInput.inputValue();
-
-    expect(actualFirstName).toBe(invitation.firstName);
-    expect(actualLastName).toBe(invitation.lastName);
-    expect(actualEmail).toBe(invitation.email);
+  async prefilledPersonalInfoFillRole(data: { role: string }) {
     await this.roleInput.fill(data.role);
-
     await this.agreementCheckbox.check();
-    await this.nextButton.click();
-    await expect(this.companyDetailsTitle).toHaveText("Company Details");
   }
 
   async fillInCompanyInformation(data: {
@@ -241,17 +190,69 @@ export class SignupPage extends BasePage {
     await this.cityInput.fill(data.city);
     await this.streetInput.fill(data.street);
     await this.zipInput.fill(data.zip);
-    await this.nextButton.click();
+    // await this.clickNext();
+  }
+
+  //========== Verify ==========
+  async verifyBusinessTypeStep() {
+    await expect(this.businessTypeTitle).toHaveText("Business Type");
+  }
+
+  async verifyPersonalInfoStep() {
+    await expect(this.personalInfoTitle).toHaveText("Personal Information");
+  }
+
+  async verifyCompanyDetailsStep() {
+    await expect(this.companyDetailsTitle).toHaveText("Company Details");
+  }
+
+  async verifyBuyerRadioIsChecked() {
+    await this.verifyBusinessTypeStep();
+    await expect(this.buyerRoleRadio).toBeChecked();
+  }
+
+  async verifyFullPersonalInfoIsFilled(
+    invitation: Invitation,
+    data: { role: string }
+  ) {
+    const actualFirstName = await this.firstNameInput.inputValue();
+    const actualLastName = await this.lastNameInput.inputValue();
+    const actualEmail = await this.emailInput.inputValue();
+    const actualRole = await this.roleInput.inputValue();
+
+    expect(actualFirstName).toBe(invitation.firstName);
+    expect(actualLastName).toBe(invitation.lastName);
+    expect(actualEmail).toBe(invitation.email);
+    expect(actualRole).toBe(data.role);
+    await expect(this.agreementCheckbox).toBeChecked();
+  }
+
+  async verifyPrefilledPersonalInfo(invitation: Invitation) {
+    await expect(this.firstNameInput).toHaveValue(/.+/, { timeout: 2000 });
+    await expect(this.lastNameInput).toHaveValue(/.+/, { timeout: 2000 });
+    await expect(this.emailInput).toHaveValue(/.+/, { timeout: 2000 });
+
+    const actualFirstName = await this.firstNameInput.inputValue();
+    const actualLastName = await this.lastNameInput.inputValue();
+    const actualEmail = await this.emailInput.inputValue();
+
+    expect(actualFirstName).toBe(invitation.firstName);
+    expect(actualLastName).toBe(invitation.lastName);
+    expect(actualEmail).toBe(invitation.email);
+  }
+
+  async verifyToastMessage() {
     await expect(this.toastMessage).toContainText(/Application Submitted/i);
   }
 
-  async finishSignUp(email: string | null | undefined) {
-    const expectedMessage = `We’ll review your application within 24 hours and email you at ${email}`;
-    const messageText = await this.message.textContent();
-    await expect(messageText).toBe(expectedMessage);
-    await this.doneButton.click();
-    const expectedPendingMessage = "Your sign up is pending review.";
-    const pendingMessage = await this.pendingReviewMessage.textContent();
-    await expect(pendingMessage).toBe(expectedPendingMessage);
+  async verifyReviewMessage(email: string | null | undefined) {
+    const expected = `We’ll review your application within 24 hours and email you at ${email}`;
+    await expect(this.message).toHaveText(expected);
+  }
+
+  async verifyPendingReviewMessage() {
+    await expect(this.pendingReviewMessage).toHaveText(
+      "Your sign up is pending review."
+    );
   }
 }

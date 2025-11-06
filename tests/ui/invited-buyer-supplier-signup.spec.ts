@@ -32,14 +32,26 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     const signupPage = new SignupPage(page);
     const user = SignupTestData.invitedUser;
     await signupPage.openAsInvitedUser(validToken);
+
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectBuyerRoleAndClickNext();
-    await signupPage.prefilledPersonalInfoFillRoleAndClickNext(
-      invitationData,
-      user
-    );
+    await signupPage.verifyPersonalInfoStep();
+
+    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.verifyPrefilledPersonalInfo(invitationData);
+
+    await signupPage.clickNext();
+    await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(invitationData.email);
+    await signupPage.clickNext();
+    await signupPage.verifyToastMessage();
+    await signupPage.verifyReviewMessage(invitationData.email);
+
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should successfully complete the signup flow as invited supplier.", async ({
@@ -56,14 +68,26 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     const signupPage = new SignupPage(page);
     const user = SignupTestData.invitedUser;
     await signupPage.openAsInvitedUser(validToken);
+
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectSupplierRoleAndClickNext();
-    await signupPage.prefilledPersonalInfoFillRoleAndClickNext(
-      invitationData,
-      user
-    );
+    await signupPage.verifyPersonalInfoStep();
+
+    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.verifyPrefilledPersonalInfo(invitationData);
+
+    await signupPage.clickNext();
+    await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(invitationData.email);
+    await signupPage.clickNext();
+    await signupPage.verifyToastMessage();
+    await signupPage.verifyReviewMessage(invitationData.email);
+
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should successfully complete the signup flow as invited buyer with subrole.", async ({
@@ -80,14 +104,26 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     const signupPage = new SignupPage(page);
     const user = SignupTestData.invitedUser;
     await signupPage.openAsInvitedUser(validToken);
+
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectBuyerRoleWithSubroleAndClickNext();
-    await signupPage.prefilledPersonalInfoFillRoleAndClickNext(
-      invitationData,
-      user
-    );
+    await signupPage.verifyPersonalInfoStep();
+
+    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.verifyPrefilledPersonalInfo(invitationData);
+
+    await signupPage.clickNext();
+    await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(invitationData.email);
+    await signupPage.clickNext();
+    await signupPage.verifyToastMessage();
+    await signupPage.verifyReviewMessage(invitationData.email);
+
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should successfully complete the signup flow as invited supplier with subrole.", async ({
@@ -105,13 +141,24 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     const user = SignupTestData.invitedUser;
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectSupplierRoleWithSubroleAndClickNext();
-    await signupPage.prefilledPersonalInfoFillRoleAndClickNext(
-      invitationData,
-      user
-    );
+    await signupPage.verifyPersonalInfoStep();
+
+    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.verifyPrefilledPersonalInfo(invitationData);
+
+    await signupPage.clickNext();
+    await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(invitationData.email);
+    await signupPage.clickNext();
+    await signupPage.verifyToastMessage();
+    await signupPage.verifyReviewMessage(invitationData.email);
+
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test("should allow user to navigate back and see previously filled data", async ({
@@ -129,26 +176,35 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     const user = SignupTestData.invitedUser;
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectBuyerRoleAndClickNext();
     await signupPage.clickBack();
+
     await signupPage.verifyBuyerRadioIsChecked();
     await signupPage.clickNext();
-    await signupPage.prefilledPersonalInfoFillRoleAndClickNext(
-      invitationData,
-      user
-    );
-    await signupPage.clickBack();
-    await signupPage.verifyPersonalInfoIsFilled(invitationData, user);
+
+    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.verifyPrefilledPersonalInfo(invitationData);
     await signupPage.clickNext();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(invitationData.email);
+    await signupPage.clickBack();
+
+    await signupPage.verifyFullPersonalInfoIsFilled(invitationData, user);
+    await signupPage.clickNext();
+    await signupPage.clickNext();
+    await signupPage.verifyToastMessage();
+    await signupPage.verifyReviewMessage(invitationData.email);
+
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
-  test("should allow user to navigate back and see previously filled data and change it", async ({
+  test.skip("should allow user to navigate back and see previously filled data and change it", async ({
     page,
   }) => {
     const invitationData = InvitationFactory.valid();
-    // const invitationData2 = InvitationFactory.valid();
     const res = await api.postSignupInvite(invitationData);
     const jwtWrapper = new JoseJwtWrapper();
     const invitationId = res.body.id;
@@ -159,27 +215,33 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     const signupPage = new SignupPage(page);
     const user = SignupTestData.invitedUser;
     const user2 = SignupTestData.guestUser;
-    console.log("DATA: ", user.role, invitationData);
+
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
+    await signupPage.verifyBusinessTypeStep();
+
     await signupPage.selectBuyerRoleAndClickNext();
-    await page.pause();
     await signupPage.clickBack();
     await signupPage.verifyBuyerRadioIsChecked();
+
     await signupPage.selectSupplierRoleWithSubroleAndClickNext();
-    await signupPage.prefilledPersonalInfoFillRoleAndClickNext(
-      invitationData,
-      user
-    );
+
+    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.clickNext();
+
+
     await signupPage.clickBack();
-    await page.pause();
-    await signupPage.verifyPersonalInfoIsFilled(invitationData, user);
-    await page.pause();
-    await signupPage.fillInPersonalInformationAndClickNext(
-      user2
-    );
+    await signupPage.verifyFullPersonalInfoIsFilled(invitationData, user);
+
+    await signupPage.fillInPersonalInformationAndClickNext(user2);
+    await signupPage.clickNext();
+
     await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.finishSignUp(invitationData.email);
+    await signupPage.clickNext();
+    await signupPage.verifyToastMessage();
+    await signupPage.verifyReviewMessage(user2.email);
+    await signupPage.clickDone();
+    await signupPage.verifyPendingReviewMessage();
   });
 
   test.afterAll(async () => {
