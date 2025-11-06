@@ -2,50 +2,50 @@
   "cookies": [
     {
       "name": "did",
-      "value": "s%3Av0%3Ab3cd1236-786b-4f03-b15d-58b987a226a3%3A0e7c94cfca80f8c65f798d9281e016802a9cb9b7b05c453fb08f8f1c2e9572b3.UQCEsrqhIEsKcrONemQlKqlHr2G1V4pfQ757CecMQjs",
+      "value": "s%3Av0%3A4fa7290b-39da-4619-8a79-6ed1cf55893c%3A0e7c94cfca80f8c65f798d9281e016802a9cb9b7b05c453fb08f8f1c2e9572b3.4RhXTlMIhZv%2FoV27O2ThgONvK5rDN6Zcs%2Bm4bQbyPys",
       "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
       "path": "/",
-      "expires": 1794003969.35734,
+      "expires": 1794004982.295227,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "did_compat",
-      "value": "s%3Av0%3Ab3cd1236-786b-4f03-b15d-58b987a226a3%3A0e7c94cfca80f8c65f798d9281e016802a9cb9b7b05c453fb08f8f1c2e9572b3.UQCEsrqhIEsKcrONemQlKqlHr2G1V4pfQ757CecMQjs",
+      "value": "s%3Av0%3A4fa7290b-39da-4619-8a79-6ed1cf55893c%3A0e7c94cfca80f8c65f798d9281e016802a9cb9b7b05c453fb08f8f1c2e9572b3.4RhXTlMIhZv%2FoV27O2ThgONvK5rDN6Zcs%2Bm4bQbyPys",
       "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
       "path": "/",
-      "expires": 1794003969.357833,
+      "expires": 1794004982.295686,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "auth0",
-      "value": "s%3A484IYp9eAy08twdzQozOWGI9CiJ1aaIk.8RM3Oh9Ygy2Y5EKvvK3OUhKfBzCTUnka0vKFqdg3Nso",
+      "value": "s%3AoS1_idmuysxWlJPfdLgvJVs6oLvqtC5a.9%2BN%2FCmtmgfurI%2FZdmqxfMFwUI%2BKm7UWVJYMJFcdhlb4",
       "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
       "path": "/",
-      "expires": 1762705569.669565,
+      "expires": 1762706582.664134,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "auth0_compat",
-      "value": "s%3A484IYp9eAy08twdzQozOWGI9CiJ1aaIk.8RM3Oh9Ygy2Y5EKvvK3OUhKfBzCTUnka0vKFqdg3Nso",
+      "value": "s%3AoS1_idmuysxWlJPfdLgvJVs6oLvqtC5a.9%2BN%2FCmtmgfurI%2FZdmqxfMFwUI%2BKm7UWVJYMJFcdhlb4",
       "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
       "path": "/",
-      "expires": 1762705569.669763,
+      "expires": 1762706582.664503,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "__Secure-admin-sid",
-      "value": "8f342c47-4d26-490e-bd53-5f7a139c6edb",
+      "value": "7a228740-ddb6-4373-bdac-e91938308596",
       "domain": ".dev.gdev.group",
       "path": "/",
-      "expires": 1762532770.300978,
+      "expires": 1762533783.428172,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"

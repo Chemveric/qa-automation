@@ -39,6 +39,7 @@ jobs:
           echo "CHEMVERIC_ADMIN_PASSWORD=${{ secrets.CHEMVERIC_ADMIN_PASSWORD }}" >> .env
           echo "INVITE_BUYER_EMAIL=${{ secrets.INVITE_BUYER_EMAIL }}" >> .env
           echo "INVITE_VENDOR_EMAIL=${{ secrets.INVITE_VENDOR_EMAIL }}" >> .env
+          echo "HEADLESS=true" >> .env
           cat .env
 
       # Step 4: Install dependencies

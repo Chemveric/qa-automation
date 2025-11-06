@@ -27,6 +27,5 @@ export const ENV = {
     secret: process.env.NOTIFICATION_SIGNUP_REJECT_LINK_JWT_SECRET,
     expiresIn: process.env.NOTIFICATION_SIGNUP_REJECT_LINK_JWT_EXPIRES_IN,
     },
-    headless: process.env.HEADLESS === "true" || true,
-    recordVideo: process.env.RECORD_VIDEO === "true" || false
+  headless: process.env.HEADLESS === "false" || true
 };
