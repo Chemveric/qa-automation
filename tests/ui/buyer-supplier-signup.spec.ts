@@ -1,13 +1,13 @@
 import { test } from "@playwright/test";
 import { SignupPage } from "../../src/pages/SignupPage";
-import { SignupTestData } from "../../src/data/signupTestData";
+import { createSignupTestData } from "../../src/data/signup.factory";
 
 test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
   test("should successfully complete the signup flow as buyer.", async ({
     page,
   }) => {
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.guestUser;
+    const user = createSignupTestData();
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
@@ -19,6 +19,8 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
+    await signupPage.clickNext();
+
     await signupPage.verifyReviewMessage(user.email);
     await signupPage.clickDone();
     await signupPage.verifyPendingReviewMessage();
@@ -28,18 +30,19 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     page,
   }) => {
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.guestUser;
+    const user = createSignupTestData();
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
 
-    await signupPage.selectSupplierRoleAndClickNext(); 
+    await signupPage.selectSupplierRoleAndClickNext();
     await signupPage.verifyPersonalInfoStep();
 
-    await signupPage.fillInPersonalInformationAndClickNext(user); 
+    await signupPage.fillInPersonalInformationAndClickNext(user);
     await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
+    await signupPage.clickNext();
     await signupPage.verifyReviewMessage(user.email);
 
     await signupPage.clickDone();
@@ -50,7 +53,7 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     page,
   }) => {
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.guestUser;
+    const user = createSignupTestData();
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
@@ -59,9 +62,11 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     await signupPage.verifyPersonalInfoStep();
 
     await signupPage.fillInPersonalInformationAndClickNext(user);
-
     await signupPage.verifyCompanyDetailsStep();
+
     await signupPage.fillInCompanyInformation(user.company);
+    await signupPage.clickNext();
+
     await signupPage.verifyReviewMessage(user.email);
     await signupPage.clickDone();
     await signupPage.verifyPendingReviewMessage();
@@ -71,7 +76,7 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
     page,
   }) => {
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.guestUser;
+    const user = createSignupTestData();
     await signupPage.openAsGuest();
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
@@ -83,6 +88,8 @@ test.describe("ABA-US-001 Sign Up as Buyer Company Admin Role", () => {
 
     await signupPage.verifyCompanyDetailsStep();
     await signupPage.fillInCompanyInformation(user.company);
+    await signupPage.clickNext();
+
     await signupPage.verifyReviewMessage(user.email);
     await signupPage.clickDone();
     await signupPage.verifyPendingReviewMessage();

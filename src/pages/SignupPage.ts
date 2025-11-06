@@ -144,13 +144,9 @@ export class SignupPage extends BasePage {
 
   async selectSupplierRoleWithSubroleAndClickNext() {
     await this.supplierRoleRadio.check();
-    console.log("Check supplier");
     await this.checkbox.nth(1).check();
-    console.log("Check supplier version");
     await this.buyerSecondaryBusinessType.check();
-    console.log("Check second role");
     await this.clickNext();
-    console.log("Clicked next");
   }
 
   async fillInPersonalInformationAndClickNext(data: {
@@ -190,7 +186,6 @@ export class SignupPage extends BasePage {
     await this.cityInput.fill(data.city);
     await this.streetInput.fill(data.street);
     await this.zipInput.fill(data.zip);
-    // await this.clickNext();
   }
 
   //========== Verify ==========

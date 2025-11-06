@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 import { SignupPage } from "../../src/pages/SignupPage";
-import { SignupTestData } from "../../src/data/signupTestData";
+import { createSignupTestData } from "../../src/data/signup.factory";
 import { AdminSignupInvitesApiClient } from "../../src/api/AdminSignupInvitesApiClient";
 import { getAdminCookie } from "../../src/utils/getEnv";
 import { InvitationFactory } from "../../src/utils/adminInvitations/invitationsFactory";
@@ -30,7 +30,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.invitedUser;
+    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
 
     await signupPage.clickSignUpButton();
@@ -66,7 +66,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.invitedUser;
+    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
 
     await signupPage.clickSignUpButton();
@@ -102,7 +102,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.invitedUser;
+    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
 
     await signupPage.clickSignUpButton();
@@ -138,7 +138,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.invitedUser;
+    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
@@ -173,12 +173,13 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = SignupTestData.invitedUser;
+    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
 
     await signupPage.selectBuyerRoleAndClickNext();
+    await signupPage.verifyPersonalInfoStep();
     await signupPage.clickBack();
 
     await signupPage.verifyBuyerRadioIsChecked();
@@ -193,53 +194,11 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
 
     await signupPage.verifyFullPersonalInfoIsFilled(invitationData, user);
     await signupPage.clickNext();
+    await signupPage.verifyCompanyDetailsStep();
     await signupPage.clickNext();
     await signupPage.verifyToastMessage();
     await signupPage.verifyReviewMessage(invitationData.email);
 
-    await signupPage.clickDone();
-    await signupPage.verifyPendingReviewMessage();
-  });
-
-  test.skip("should allow user to navigate back and see previously filled data and change it", async ({
-    page,
-  }) => {
-    const invitationData = InvitationFactory.valid();
-    const res = await api.postSignupInvite(invitationData);
-    const jwtWrapper = new JoseJwtWrapper();
-    const invitationId = res.body.id;
-    newInvites.push(invitationId);
-    const validToken = await jwtWrapper.signSignUpInvitationJwt({
-      signUpInvitation: invitationId,
-    });
-    const signupPage = new SignupPage(page);
-    const user = SignupTestData.invitedUser;
-    const user2 = SignupTestData.guestUser;
-
-    await signupPage.openAsInvitedUser(validToken);
-    await signupPage.clickSignUpButton();
-    await signupPage.verifyBusinessTypeStep();
-
-    await signupPage.selectBuyerRoleAndClickNext();
-    await signupPage.clickBack();
-    await signupPage.verifyBuyerRadioIsChecked();
-
-    await signupPage.selectSupplierRoleWithSubroleAndClickNext();
-
-    await signupPage.prefilledPersonalInfoFillRole(user);
-    await signupPage.clickNext();
-
-
-    await signupPage.clickBack();
-    await signupPage.verifyFullPersonalInfoIsFilled(invitationData, user);
-
-    await signupPage.fillInPersonalInformationAndClickNext(user2);
-    await signupPage.clickNext();
-
-    await signupPage.fillInCompanyInformation(user.company);
-    await signupPage.clickNext();
-    await signupPage.verifyToastMessage();
-    await signupPage.verifyReviewMessage(user2.email);
     await signupPage.clickDone();
     await signupPage.verifyPendingReviewMessage();
   });
