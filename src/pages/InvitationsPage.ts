@@ -1,9 +1,10 @@
 import { BasePage } from "../core/BasePage";
 import { Page, expect } from "@playwright/test";
+import { ENV } from '../config/env';
 
 export class InvitationsPage extends BasePage {
   constructor(page: Page) {
-    super(page, "/#/invitations");
+    super(page, "/#/invitations", ENV.uiURL);
   }
 
   async open() {

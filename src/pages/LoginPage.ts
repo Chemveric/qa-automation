@@ -5,7 +5,7 @@ import { log } from '../core/logger';
 
 export class LoginPage extends BasePage {
   constructor(page: Page) {
-    super(page);
+    super(page, "", ENV.uiURL);
   }
 
   /**
