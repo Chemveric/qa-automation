@@ -1,0 +1,65 @@
+{
+  "cookies": [
+    {
+      "name": "did",
+      "value": "s%3Av0%3Ab3cd1236-786b-4f03-b15d-58b987a226a3%3A0e7c94cfca80f8c65f798d9281e016802a9cb9b7b05c453fb08f8f1c2e9572b3.UQCEsrqhIEsKcrONemQlKqlHr2G1V4pfQ757CecMQjs",
+      "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
+      "path": "/",
+      "expires": 1794003969.35734,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "did_compat",
+      "value": "s%3Av0%3Ab3cd1236-786b-4f03-b15d-58b987a226a3%3A0e7c94cfca80f8c65f798d9281e016802a9cb9b7b05c453fb08f8f1c2e9572b3.UQCEsrqhIEsKcrONemQlKqlHr2G1V4pfQ757CecMQjs",
+      "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
+      "path": "/",
+      "expires": 1794003969.357833,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "auth0",
+      "value": "s%3A484IYp9eAy08twdzQozOWGI9CiJ1aaIk.8RM3Oh9Ygy2Y5EKvvK3OUhKfBzCTUnka0vKFqdg3Nso",
+      "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
+      "path": "/",
+      "expires": 1762705569.669565,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "auth0_compat",
+      "value": "s%3A484IYp9eAy08twdzQozOWGI9CiJ1aaIk.8RM3Oh9Ygy2Y5EKvvK3OUhKfBzCTUnka0vKFqdg3Nso",
+      "domain": "dev-x0ubu8leiu0f6qf2.us.auth0.com",
+      "path": "/",
+      "expires": 1762705569.669763,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__Secure-admin-sid",
+      "value": "8f342c47-4d26-490e-bd53-5f7a139c6edb",
+      "domain": ".dev.gdev.group",
+      "path": "/",
+      "expires": 1762532770.300978,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://admin-chemveric.dev.gdev.group",
+      "localStorage": [
+        {
+          "name": "RaStore.version",
+          "value": "1"
+        }
+      ]
+    }
+  ]
+}
