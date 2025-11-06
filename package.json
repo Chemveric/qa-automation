@@ -14,10 +14,17 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.48.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.8.1",
     "allure-playwright": "^2.15.1",
     "dotenv": "^16.4.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "zod": "^4.1.12"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.1.0",
+    "@nestjs/config": "^4.0.2",
+    "jose": "^6.1.0"
   }
 }

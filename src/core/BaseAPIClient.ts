@@ -5,11 +5,21 @@ import { log } from "./logger";
 export class BaseAPIClient {
   protected api!: APIRequestContext;
 
-  async init(headers: Record<string, string> = {}, cookie?: string) {
+  async init(headers: Record<string, string | false> = {}, cookie?: string) {
     const extraHeaders: Record<string, string> = {
-      "Content-Type": "application/json",
-      ...headers,
+      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2"
     };
+
+    if (headers["Content-Type"] !== false) {
+      extraHeaders["Content-Type"] =
+        headers["Content-Type"] || "application/json";
+    }
+
+    for (const [key, value] of Object.entries(headers)) {
+      if (key !== "Content-Type" && value !== false) {
+        extraHeaders[key] = value;
+      }
+    }
 
     if (cookie) {
       extraHeaders["Cookie"] = cookie;
@@ -31,10 +41,7 @@ export class BaseAPIClient {
     } catch {
       responseBody = await res.text();
     }
-    expect(
-      res.ok(),
-      `GET ${path} -> ${res.status()} ${await res.text()}`
-    ).toBeTruthy();
+
     return {
       status: res.status(),
       body: responseBody,
@@ -45,10 +52,73 @@ export class BaseAPIClient {
   async post(path: string, data?: any) {
     log.step(`API POST ${path}`);
     const res = await this.api.post(path, { data });
-    expect(
-      res.ok(),
-      `POST ${path} -> ${res.status()} ${await res.text()}`
-    ).toBeTruthy();
-    return res;
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
+  }
+
+  async put(path: string, data?: any) {
+    log.step(`API PUT ${path}`);
+    const res = await this.api.put(path, { data });
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
+  }
+
+  async patch(path: string, data?: any) {
+    log.step(`API PATCH ${path}`);
+    const res = await this.api.patch(path, { data });
+
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
+  }
+
+  async delete(path: string, data?: any) {
+    log.step(`API DLETE ${path}`);
+
+    const options: Record<string, any> = {};
+    if (data) {
+      options.data = data;
+    }
+    const res = await this.api.delete(path, options);
+
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
   }
 }
