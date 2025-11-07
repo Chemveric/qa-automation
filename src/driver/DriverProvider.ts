@@ -22,7 +22,7 @@ export class DriverProvider {
         }
     }
 
-    private static getCookiesStateFileName(tag: CookiesTag) {
+    public static getCookiesStateFileName(tag: CookiesTag) {
         return path.join(DriverProvider.storageDir, `cookies_state_${tag}.json`);
     }
 

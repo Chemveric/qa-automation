@@ -1,7 +1,4 @@
-﻿import { chromium } from "@playwright/test";
-import fs from "fs";
-import path from "path";
-import { ENV } from "../config/env";
+﻿import { ENV } from "../config/env";
 import { LoginPage } from "../pages/LoginPage";
 import { log } from '../core/logger';
 import { DriverProvider, CookiesTag } from '../driver/DriverProvider';
