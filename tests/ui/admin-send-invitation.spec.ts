@@ -1,4 +1,4 @@
-import { test, expect } from '../../src/base/testFixtures';
+import { test, expect } from '../../src/base/testFixtures.ui';
 import { InvitationsPage } from "../../src/pages/InvitationsPage";
 import { Invitations, Messages } from "../../src/data/invitationData";
 

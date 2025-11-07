@@ -1,6 +1,7 @@
 import { BasePage } from "../core/BasePage";
 import { Page, expect } from "@playwright/test";
 import { IUserData, MessageStatus } from '../data/invitationData';
+import { ENV } from "../config/env";
 
 export class InvitationsPage extends BasePage {
   constructor(page: Page) {
