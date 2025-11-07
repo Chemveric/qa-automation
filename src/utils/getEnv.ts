@@ -1,12 +1,16 @@
 import fs from 'fs';
-import path from 'path';
+import { DriverProvider, CookiesTag } from '../driver/DriverProvider';
 
 export function getAdminCookie(): string {
-  const envPath = path.join(__dirname, '../config/env.json');
+    const storagePath = DriverProvider.getCookiesStateFileName(CookiesTag.Admin);
   try {
-    const raw = fs.readFileSync(envPath, 'utf-8');
-    const parsed = JSON.parse(raw);
-    return parsed.adminCookie || '';
+    const storage = JSON.parse(fs.readFileSync(storagePath, "utf8"));
+    const cookies = storage.cookies;
+    const sessionCookie = storage.cookies.find(
+    (cookie: { name: string; value: string }) => cookie.name === "__Secure-admin-sid");
+    if (!sessionCookie) throw new Error("__Secure-admin-sid cookie not found");
+    const cookieHeader = `__Secure-admin-sid=${sessionCookie.value}`;
+    return cookieHeader;
   } catch (e) {
   const err = e as Error;
   console.warn('No admin cookie found:', err.message);

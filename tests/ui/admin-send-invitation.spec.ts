@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from '../../src/base/testFixtures.ui';
 import { InvitationsPage } from "../../src/pages/InvitationsPage";
 import { ENV } from "../../src/config/env";
 import { Invitations, Messages } from "../../src/data/invitationData";

@@ -4,6 +4,7 @@ import path from 'path';
 dotenv.config();
 
 const UI_URL = process.env.CHEMVERIC_UI_URL || 'https://admin-chemveric.dev.gdev.group';
+const HEADLESS = process.env.HEADLESS === 'true';
 
 export default defineConfig({
   testDir: './tests',
@@ -16,7 +17,7 @@ export default defineConfig({
     ['allure-playwright']
   ],
   use: {
-    headless: true,
+    headless: HEADLESS,
     baseURL: UI_URL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
