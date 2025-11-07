@@ -5,6 +5,10 @@ export class AuthApiClient extends BaseAPIClient {
     return this.post("/v1/auth/signup/request/step-one", body);
   }
 
+  async postSignupRequestStepTwo(body: Record<string, any> = {}) {
+    return this.post("/v1/auth/signup/request/step-two", body);
+  }
+
   async getSignupRequestPrefill(token: string | number) {
     const params = { token: String(token) };
     return this.get("/v1/auth/signup/request/prefill", params);
@@ -15,4 +19,3 @@ export class AuthApiClient extends BaseAPIClient {
     return this.get("/v1/auth/signup/request/rejected/prefill", params);
   }
 }
-   
