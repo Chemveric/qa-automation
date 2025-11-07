@@ -1,13 +1,26 @@
 import { test, expect } from '../../src/base/testFixtures.ui';
 import { InvitationsPage } from "../../src/pages/InvitationsPage";
+import { ENV } from "../../src/config/env";
 import { Invitations, Messages } from "../../src/data/invitationData";
+import { createStorageState } from "../../src/core/createStorageState";
 
 test.describe("ADA-US-001: Admin sends invitation", () => {
-    let inv: InvitationsPage;
+  let adminStoragePath = "storage/admin.json";
+  let inv: InvitationsPage;
 
-    test.beforeEach(async ({ page }) => {
-        inv = new InvitationsPage(page);
+  test.beforeAll(async ({ browser }) => {
+    await createStorageState(
+        browser,
+        ENV.admin.email,
+        ENV.admin.password,
+        adminStoragePath
+    );
+    const context = await browser.newContext({
+        storageState: adminStoragePath,
     });
+    const page = await context.newPage();
+    inv = new InvitationsPage(page);
+  });
 
   test("should show success toaster after sending Buyer invitations", async () => {
     await inv.open();
