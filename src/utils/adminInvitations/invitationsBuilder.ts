@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Invitation } from '../types/invitation.types';
+import { Invitation } from "../types/invitation.types";
 
 export class InvitationBuilder {
   private invitation: Invitation;
@@ -31,19 +31,12 @@ export class InvitationBuilder {
     return this;
   }
 
-  // withoutField(field: keyof Invitation) {
-  //   const copy = { ...this.invitation };
-  //   delete copy[field];
-  //   this.invitation = copy;
-  //   return this;
-  // }
-
   withoutField<T extends keyof Invitation>(field: T): this {
-  const copy = { ...this.invitation };
-  delete copy[field];
-  this.invitation = copy;
-  return this;
-}
+    const copy = { ...this.invitation };
+    delete copy[field];
+    this.invitation = copy;
+    return this;
+  }
 
   build(): Invitation {
     return this.invitation;

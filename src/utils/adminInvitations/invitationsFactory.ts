@@ -1,5 +1,5 @@
 import { InvitationBuilder } from "./invitationsBuilder";
-import { Invitation } from '../types/invitation.types';
+import { Invitation } from "../types/invitation.types";
 
 export const InvitationFactory = {
   valid(): Invitation {
@@ -10,7 +10,9 @@ export const InvitationFactory = {
     return new InvitationBuilder().withEmail(email).build();
   },
 
-  invitationWithCompanyName(companyName: string | null | undefined): Invitation {
+  invitationWithCompanyName(
+    companyName: string | null | undefined
+  ): Invitation {
     return new InvitationBuilder().withCompanyName(companyName).build();
   },
 

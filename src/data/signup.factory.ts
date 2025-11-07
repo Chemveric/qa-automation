@@ -8,7 +8,7 @@ export function createSignupTestData() {
   return {
     firstName,
     lastName,
-    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${uniqueId}@mycompany.tech`,
+    email: `nadiia.patrusheva+${firstName.toLowerCase()}.${lastName.toLowerCase()}.${uniqueId}@globaldev.tech`,
     role: faker.person.jobTitle(),
     company: {
       name: `${faker.company.name()} Guest`,

@@ -4,7 +4,7 @@ import { IUserData, MessageStatus } from '../data/invitationData';
 
 export class InvitationsPage extends BasePage {
   constructor(page: Page) {
-    super(page, "/#/invitations", ENV.uiURL);
+    super(page, "/#/invitations");
   }
 
   async open() {
