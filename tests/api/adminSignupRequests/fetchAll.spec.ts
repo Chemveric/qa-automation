@@ -57,11 +57,11 @@ test.describe("API smoke: Admin Signup Requests GET ALL.", () => {
     validator.expectStatusCodeAndMessage(res, 400, "Invalid status filter");
   });
 
-  test("should return 422 when send invalid status and origin value in params. Bug CHM-426", async () => {
+  test("should return 400 when send invalid status and origin value in params.", async () => {
     const res = await api.getAllAdminSignupRequests({
       filter: { status: "", origin: "" },
     });
-    validator.expectStatusCodeAndMessage(res, 422, "Invalid status filter");
+    validator.expectStatusCodeAndMessage(res, 400, "Invalid status filter");
   });
 
   test("should return 422 when send invalid sort param", async () => {

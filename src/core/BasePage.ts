@@ -5,19 +5,20 @@ export abstract class BasePage {
   protected context: BrowserContext;
   protected page: Page;
   protected path?: string;
+  protected baseUrl: string;
 
-  constructor(page: Page, path?: string) {
+  constructor(page: Page, path?: string, baseUrl?: string) {
     this.page = page;
     this.path = path;
     this.context = page.context();
+    this.baseUrl = baseUrl || process.env.CHEMVERIC_UI_URL || "";
   }
 
-  async goto(relative?: string) {
-    const base =
-      process.env.CHEMVERIC_UI_URL || "https://admin-chemveric.dev.gdev.group";
+   async goto(relative?: string) {
     const url = relative?.startsWith("http")
       ? relative
-      : `${base}${relative || this.path || "/"}`;
+      : `${this.baseUrl}${relative || this.path || "/"}`;
+
     log.step(`Navigate to: ${url}`);
     await this.page.goto(url);
   }

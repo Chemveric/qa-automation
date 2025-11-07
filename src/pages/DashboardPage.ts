@@ -1,9 +1,10 @@
 import { BasePage } from '../core/BasePage';
 import { Page, expect } from '@playwright/test';
+import { ENV } from '../config/env';
 
 export class DashboardPage extends BasePage {
   constructor(page: Page) {
-    super(page, '/#/signup-requests');
+    super(page, '/#/signup-requests', ENV.uiURL);
   }
 
   async assertLoaded() {

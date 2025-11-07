@@ -53,6 +53,10 @@ jobs:
       # Step 6: Run Playwright tests (Chromium only)
       - name: Run Playwright tests (Chromium only)
         run: npx playwright test --project=Chromium
+      
+       # Step : Install Allure CLI  
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev  
 
       # Step 7: Always generate Allure report even if tests failed
       - name: Always generate Allure report

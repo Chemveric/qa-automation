@@ -10,6 +10,7 @@ import {
 } from "../../../src/utils/invalidData/invalidInvitations";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { log } from "../../../src/core/logger";
+import { Invitation } from '../../../src/utils/types/invitation.types';
 
 const validator = new ResponseValidationHelper();
 
@@ -105,7 +106,8 @@ test.describe("API smoke: POST Admin Signup Invite", () => {
 
   for (const { field, message } of requiredFields) {
     test(`should return 422 when POST with no required field: ${field}`, async () => {
-      const bodyWithoutField = InvitationFactory.missing(field);
+      const typedField = field as keyof Invitation;
+      const bodyWithoutField = InvitationFactory.missing(typedField);
       const res = await api.postSignupInvite(bodyWithoutField);
       validator.expectMultipleFieldErrors(res, 422, {
         [field]: message,
