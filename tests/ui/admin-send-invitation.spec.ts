@@ -1,28 +1,15 @@
 import { test, expect } from '../../src/base/testFixtures.ui';
 import { InvitationsPage } from "../../src/pages/InvitationsPage";
-import { ENV } from "../../src/config/env";
 import { Invitations, Messages } from "../../src/data/invitationData";
-import { createStorageState } from "../../src/core/createStorageState";
 
 test.describe("ADA-US-001: Admin sends invitation", () => {
-  let adminStoragePath = "storage/admin.json";
   let inv: InvitationsPage;
 
-  test.beforeAll(async ({ browser }) => {
-    await createStorageState(
-        browser,
-        ENV.admin.email,
-        ENV.admin.password,
-        adminStoragePath
-    );
-    const context = await browser.newContext({
-        storageState: adminStoragePath,
-    });
-    const page = await context.newPage();
+  test.beforeEach(async ({ page }) => {
     inv = new InvitationsPage(page);
   });
 
-  test("should show success toaster after sending Buyer invitations", async () => {
+  test("should show success toaster after sending Buyer invitations", async ({ page }) => {
     await inv.open();
     await inv.openCreateForm();
     const buyerData = Invitations.buyer;
@@ -32,7 +19,7 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     await inv.expectMessage(Messages.success)
   });
 
-  test("should show success toaster after sending Vendor invitations", async () => {
+  test("should show success toaster after sending Vendor invitations", async ({ page }) => {
     await inv.open();
     await inv.openCreateForm();
     const vendorData = Invitations.vendor;
@@ -42,7 +29,7 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     await inv.expectMessage(Messages.success);
   });
 
-  test("should show validation error when send Buyer invitations with the same email", async () => {
+  test("should show validation error when send Buyer invitations with the same email", async ({ page }) => {
     await inv.open();
     await inv.openCreateForm();
     const buyerData = Invitations.buyer;
@@ -52,14 +39,10 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     await inv.expectMessage(Messages.duplicate);
   });
 
-  test("should show validation errors when clicking Invitation button without filling data", async () => {
+  test("should show validation errors when clicking Invitation button without filling data", async ({ page }) => {
     await inv.open();
     await inv.openCreateForm();
     await inv.sendWithEmptyFields();
     await inv.expectValidationErrors();
-  });
-
-  test.afterAll(async () => {
-    await inv.close();
   });
 });
