@@ -1,6 +1,6 @@
 import { SignupRequestStepOneBuilder } from "./signupRequestStepOneBuilder";
 
-export const SingnupRequestStepOneFactory = {
+export const SignupRequestStepOneFactory = {
   validBuyer() {
     return new SignupRequestStepOneBuilder().build();
   },
