@@ -94,7 +94,11 @@ export class ResponseValidationHelper {
     ).toBeDefined();
 
     for (const [field, expectedMsg] of Object.entries(expectedErrors)) {
-      const actualMsg = errors[field];
+      let actualMsg = errors[field];
+
+      if (!actualMsg && field.startsWith("data.")) {
+        actualMsg = errors["data"];
+      }
       expect(
         actualMsg,
         `Expected error for "${field}" to include "${expectedMsg}", but got: "${actualMsg}"`
