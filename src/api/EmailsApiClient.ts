@@ -28,6 +28,6 @@ export class EmailsApiClient extends BaseAPIClient {
   }
 
   async patchEmailChangeRequest(id: string | number) {
-      return this.get(`/v1/admin/email-change-requests/${id}`);
+    return this.get(`/v1/admin/email-change-requests/${id}`);
   }
 }
