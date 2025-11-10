@@ -3,7 +3,7 @@ import { getAdminCookie } from "../../../src/utils/getEnv";
 import { AdminSignupRequestsApiClient } from "../../../src/api/AdminSignupRequestsApiClient";
 import { UsersSignupRequestListSchema } from "../../../src/schema/userSignupRequestSchema";
 import { faker } from "@faker-js/faker";
-import { signupRequestStatusEnum } from "../../../src/config/enums";
+import { approvalStatusEnum } from "../../../src/config/enums";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { z } from "zod";
@@ -19,7 +19,7 @@ test.describe("API smoke: Admin Signup Requests GET ALL.", () => {
     api = new AdminSignupRequestsApiClient();
     await api.init({}, adminCookie);
   });
-  for (const status of signupRequestStatusEnum) {
+  for (const status of approvalStatusEnum) {
     test(`should return expected schema when send valid request with status: ${status}`, async () => {
       const params = {
         sort: ["createdAt", "DESC"],

@@ -4,7 +4,7 @@ export const signupInviteStatusEnum = [
   "DELETED",
   "ALL",
 ] as const;
-export const signupRequestStatusEnum = [
+export const approvalStatusEnum = [
   "APPROVED",
   "PENDING",
   "REJECTED",
@@ -13,5 +13,5 @@ export const signupRequestStatusEnum = [
 export const VendorModes = ["CRO_CDMO", "CATALOG"] as const;
 
 export type SingupInvitesStatusEnum = (typeof signupInviteStatusEnum)[number];
-export type SignupRequestStatusEnum = (typeof signupRequestStatusEnum)[number];
+export type SignupRequestStatusEnum = (typeof approvalStatusEnum)[number];
 export type VendorMode = (typeof VendorModes)[number];
