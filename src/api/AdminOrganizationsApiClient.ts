@@ -26,6 +26,6 @@ export class AdminOrganizationsApiClient extends BaseAPIClient {
     }
 
   async getOrganizationById(id: string | number) {
-      return this.get(`/v1/admin/organizations/${id}`);
+    return this.get(`/v1/admin/organizations/${id}`);
   }
 }

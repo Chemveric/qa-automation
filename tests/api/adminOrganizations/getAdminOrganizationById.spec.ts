@@ -72,34 +72,32 @@ test.describe("API: get organization by Id", () => {
     expect(validated.name).toBe(stepTwoRequestBody.data.companyName);
     expect(validated.title).toBe(stepOneRequestBody.companyTitle);
     expect(validated.street).toBe(stepTwoRequestBody.data.companyStreet);
-  });
-
+  })
 
   test(`should return error when call with wrong id`, async () => {
-      const notExistingId = faker.string.uuid();
-      const res = await api.getOrganizationById(notExistingId);
-      validator.expectStatusCodeAndMessage(
-          res,
-          404,
-          "Organization not found"
-      );
+    const notExistingId = faker.string.uuid();
+    const res = await api.getOrganizationById(notExistingId);
+    validator.expectStatusCodeAndMessage(
+      res,
+      404,
+      "Organization not found"
+    );
   });
 
   test("should return 400 when send request with no Id", async () => {
-      
-      const res = await api.getOrganizationById("");
-      validator.expectStatusCodeAndMessage(
-          res,
-          400,
-          "Validation failed (uuid is expected)"
-      );
+    const res = await api.getOrganizationById("");
+    validator.expectStatusCodeAndMessage(
+      res,
+      400,
+      "Validation failed (uuid is expected)"
+    );
   });
 
   test("should return 401 Unauthorized when login with fake cookie", async () => {
-      const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
-      const someId = faker.string.uuid();
-      await api.init({}, fakeCookie);
-      const res = await api.getOrganizationById(someId);
-      validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
+    const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
+    const someId = faker.string.uuid();
+    await api.init({}, fakeCookie);
+    const res = await api.getOrganizationById(someId);
+    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 });
