@@ -15,7 +15,7 @@ import { faker } from "@faker-js/faker";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API smoke: Admin Signup Requests PATCH Status", () => {
+test.describe("Admin Signup Requests PATCH Status", () => {
   let signUpApi: AdminSignupRequestsApiClient;
   let adminCookie: string;
   let id: string;
