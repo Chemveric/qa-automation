@@ -29,10 +29,10 @@ test.describe("API: Get emails filtered", () => {
       const res = await api.getEmailChangeRequest(params);
       expect(res.status).toBe(200);
       const body = await res.body;
-        const emails = await validateResponse(
-          { status: res.status, body },
-          EmailChangeRequestListSchema
-        );
+      const emails = await validateResponse(
+        { status: res.status, body },
+        EmailChangeRequestListSchema
+      );
       expect(Array.isArray(emails.data)).toBe(true);
 
       for (const email of emails.data) {

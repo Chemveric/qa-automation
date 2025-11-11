@@ -40,7 +40,6 @@ export async function validateResponse<T>(
         invalidValue
       );
     });
-
     throw new Error("Response schema validation failed");
   }
 
