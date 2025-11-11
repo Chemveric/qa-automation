@@ -32,7 +32,10 @@ export class AdminSignupRequestsApiClient extends BaseAPIClient {
     return this.get(`/v1/signup-requests/${id}`);
   }
 
-  async patchSignupInvite(id: string | number, body: Record<string, any> = {}) {
-    return this.patch(`/v1/signup-invites/${id}/status`, body);
+  async patchSignupRequest(
+    id: string | number,
+    body: Record<string, any> = {}
+  ) {
+    return this.patch(`/v1/signup-requests/${id}/status`, body);
   }
 }
