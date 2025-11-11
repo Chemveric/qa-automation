@@ -19,9 +19,8 @@ export class UserLoginPage extends BasePage {
     ]);
     log.step("Start user LOGIN");
     await popup.waitForURL(/auth0\.com\/u\/login/, { timeout: 30000 });
-    await popup.waitForTimeout(3000);
     await expect(popup.locator("h1")).toHaveText("Login");
-    await popup.waitForSelector("input#username");
+    await popup.waitForSelector("input#username", { timeout: 10000 });
     await popup.fill("input#username", email);
     await popup.fill("input#password", password);
     await popup.click('button[type="submit"]');
