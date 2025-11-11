@@ -1,47 +1,68 @@
 import { test, expect } from "@playwright/test";
-import { getAdminCookie } from "../../../src/utils/getEnv";
+import {
+  getAdminCookie,
+  getBuyerCookie,
+  getSupplierCookie,
+} from "../../../src/utils/getEnv";
 import { AdminSignupRequestsApiClient } from "../../../src/api/AdminSignupRequestsApiClient";
 import { UsersSignupRequestListSchema } from "../../../src/schema/userSignupRequestSchema";
+import { SignupRequestStepOneFactory } from "../../../src/utils/signupRequestStepOne/signupRequestStepOneFactory";
+import { SignupRequestStepTwoFactory } from "../../../src/utils/signupRequestStepTwo/signupRequestStepTwoFactory";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
+import { AuthApiClient } from "../../../src/api/AuthApiClient";
 import { faker } from "@faker-js/faker";
 
 const validator = new ResponseValidationHelper();
 
-test.describe.skip("API smoke: Admin Signup Requests PATCH Status", () => {
-  let api: AdminSignupRequestsApiClient;
+test.describe("Admin Signup Requests PATCH Status", () => {
+  let signUpApi: AdminSignupRequestsApiClient;
   let adminCookie: string;
-  let firstId: string;
+  let id: string;
 
-  test.beforeAll(async () => {
+  test.beforeEach(async () => {
+    const authApi = new AuthApiClient();
+    await authApi.init({});
+    const stepOneRequestBody = SignupRequestStepOneFactory.validBuyer();
+    const res = await authApi.postSignupRequestStepOne(stepOneRequestBody);
+    const stepTwoRequestBody = SignupRequestStepTwoFactory.validCompanyData(
+      res.body.jwt
+    );
+    const resStepTwo = await authApi.postSignupRequestStepTwo(
+      stepTwoRequestBody
+    );
+    expect(resStepTwo.status).toBe(201);
+    signUpApi = new AdminSignupRequestsApiClient();
     adminCookie = getAdminCookie();
-    api = new AdminSignupRequestsApiClient();
-    await api.init({}, adminCookie);
-    const params = {
-      sort: ["createdAt", "DESC"],
-      range: [0, 10],
-      filter: { status: "PENDING", origin: "SITE" },
-    };
-    const res = await api.getAllAdminSignupRequests(params);
-    const body = await res.body;
+    await signUpApi.init({}, adminCookie);
+    const signUpRes = await signUpApi.getAllAdminSignupRequests();
+    const body = await signUpRes.body;
+
     const validated = await validateResponse(
-      { status: res.status, body },
+      { status: signUpRes.status, body },
       UsersSignupRequestListSchema
     );
-    firstId = validated.data[0].id;
+    const targetRecord = validated.data.find(
+      (item) => item.email === stepOneRequestBody.email
+    );
+    if (!targetRecord?.id) {
+      throw new Error("Signup request ID not found in beforeEach setup");
+    }
+
+    id = targetRecord?.id;
   });
 
   test(`should return success when send request with valid APPROVED status`, async () => {
     const body = {
       status: "APPROVED",
     };
-    const res = await api.patchSignupInvite(firstId, body);
+    const res = await signUpApi.patchSignupRequest(id, body);
     expect(
       res.status,
       `Expected status code is 200, but got ${res.status}`
     ).toBe(200);
-    await api.init({ "Content-Type": false }, adminCookie);
-    const updatedRes = await api.getAdminSignupRequestById(firstId);
+    await signUpApi.init({ "Content-Type": false }, adminCookie);
+    const updatedRes = await signUpApi.getAdminSignupRequestById(id);
     expect(
       updatedRes.body.status,
       `Expected status is APPROVED, but got ${updatedRes.body.status}`
@@ -53,13 +74,13 @@ test.describe.skip("API smoke: Admin Signup Requests PATCH Status", () => {
       status: "REJECTED",
       rejectReason: "Docs did not meet requirements",
     };
-    const res = await api.patchSignupInvite(firstId, body);
+    const res = await signUpApi.patchSignupRequest(id, body);
     expect(
       res.status,
       `Expected status code is 200, but got ${res.status}`
     ).toBe(200);
-    await api.init({ "Content-Type": false }, adminCookie);
-    const updatedRes = await api.getAdminSignupRequestById(firstId);
+    await signUpApi.init({ "Content-Type": false }, adminCookie);
+    const updatedRes = await signUpApi.getAdminSignupRequestById(id);
     expect(
       updatedRes.body.status,
       `Expected status is REJECTED, but got ${updatedRes.body.status}`
@@ -70,7 +91,7 @@ test.describe.skip("API smoke: Admin Signup Requests PATCH Status", () => {
     const body = {
       status: "status",
     };
-    const res = await api.patchSignupInvite(firstId, body);
+    const res = await signUpApi.patchSignupRequest(id, body);
     validator.expectStatusCodeAndMessage(
       res,
       422,
@@ -81,11 +102,11 @@ test.describe.skip("API smoke: Admin Signup Requests PATCH Status", () => {
   test("should return 401 Unauthorized when login with fake cookie", async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
     const fakeId = faker.string.uuid();
-    await api.init({}, fakeCookie);
+    await signUpApi.init({}, fakeCookie);
     const body = {
       status: "status",
     };
-    const res = await api.patchSignupInvite(fakeId, body);
+    const res = await signUpApi.patchSignupRequest(fakeId, body);
     validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 });

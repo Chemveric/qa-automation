@@ -13,13 +13,13 @@ export const ENV = {
     url: process.env.CHEMVERIC_UI_URL,
   },
   buyer: {
-    email: "user@example.com",
-    password: "user123",
+    email: process.env.CHEMVERIC_BUYER_EMAIL!,
+    password: process.env.CHEMVERIC_BUYER_PASSWORD!,
     url: "/user/home",
   },
   vendor: {
-    email: "user2@example.com",
-    password: "user123",
+    email: process.env.CHEMVERIC_VENDOR_EMAIL!,
+    password: process.env.CHEMVERIC_VENDOR_PASSWORD!,
     url: "/user/home",
   },
   guest: {
