@@ -23,5 +23,9 @@ export class AdminOrganizationsApiClient extends BaseAPIClient {
   const searchParams = new URLSearchParams(params as Record<string, string>);
   const url = `/v1/admin/organizations?${searchParams.toString()}`;
   return this.get(url);
+    }
+
+  async getOrganizationById(id: string | number) {
+      return this.get(`/v1/admin/organizations/${id}`);
   }
 }
