@@ -38,9 +38,7 @@ export class SignupPage extends BasePage {
     super(page, "", ENV.guest.url);
 
     this.signUpButton = page.getByRole("button", { name: "Sign Up" });
-    this.businessTypeTitle = page.locator(
-      "p.MuiTypography-root.MuiTypography-body1.mui-6hzl5p"
-    );
+    this.businessTypeTitle = page.getByText(/Business Type/i).nth(1);
     this.buyerRoleRadio = page.getByRole("radio", {
       name: "Buyer Purchase products and",
     });
@@ -57,9 +55,7 @@ export class SignupPage extends BasePage {
     });
     this.nextButton = page.getByRole("button", { name: "Next" });
     this.backButton = page.getByRole("button", { name: "Back" });
-    this.personalInfoTitle = page.locator(
-      "p.MuiTypography-root.MuiTypography-body1.mui-1hi184w"
-    );
+    this.personalInfoTitle = page.getByText("Personal Information").nth(1);
 
     // Personal info step
     this.firstNameInput = page.getByRole("textbox", { name: "First Name" });
@@ -69,9 +65,7 @@ export class SignupPage extends BasePage {
     this.agreementCheckbox = page.getByRole("checkbox");
 
     // Company info step
-    this.companyDetailsTitle = page.locator(
-      "p.MuiTypography-root.MuiTypography-body1.mui-1hi184w"
-    );
+    this.companyDetailsTitle = page.getByText("Company Details").nth(0);
     this.companyNameInput = page.getByRole("textbox", { name: "Company Name" });
     this.regionSelect = page.getByRole("combobox", { name: "Region" });
     this.selectedRegion = page.getByRole("option", { name: "Europe" });
@@ -84,12 +78,8 @@ export class SignupPage extends BasePage {
     this.doneButton = page.getByRole("button", { name: "Done" });
 
     this.toastMessage = page.locator("div.MuiBox-root.mui-j0ozid");
-    this.message = page.locator(
-      "p.MuiTypography-root.MuiTypography-body1.mui-a6m8z"
-    );
-    this.pendingReviewMessage = page.locator(
-      "p.MuiTypography-root.MuiTypography-body1.mui-su4xad"
-    );
+    this.message = page.getByText(/We’ll review your application within/i);
+    this.pendingReviewMessage = page.getByText(/pending/i);
   }
 
   // ========== Navigation ==========
@@ -190,15 +180,15 @@ export class SignupPage extends BasePage {
 
   //========== Verify ==========
   async verifyBusinessTypeStep() {
-    await expect(this.businessTypeTitle).toHaveText("Business Type");
+    await expect(this.businessTypeTitle).toBeVisible();
   }
 
   async verifyPersonalInfoStep() {
-    await expect(this.personalInfoTitle).toHaveText("Personal Information");
+    await expect(this.personalInfoTitle).toBeVisible();
   }
 
   async verifyCompanyDetailsStep() {
-    await expect(this.companyDetailsTitle).toHaveText("Company Details");
+    await expect(this.companyDetailsTitle).toBeVisible();
   }
 
   async verifyBuyerRadioIsChecked() {
