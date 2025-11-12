@@ -27,5 +27,10 @@ export class AdminOrganizationsApiClient extends BaseAPIClient {
 
   async getOrganizationById(id: string | number) {
     return this.get(`/v1/admin/organizations/${id}`);
+    }
+
+  async patchOrganizationById(id: string | number, body: Record<string, any>) {
+    return this.patch(`/v1/admin/organizations/${id}`, body);
   }
+
 }
