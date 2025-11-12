@@ -14,18 +14,22 @@ export class AdminOrganizationsApiClient extends BaseAPIClient {
     const params = query
       ? Object.fromEntries(
           Object.entries(query).map(([key, value]) => [
-              key,
-              JSON.stringify(value),
+            key,
+            JSON.stringify(value),
           ])
-      )
+        )
       : {};
 
-  const searchParams = new URLSearchParams(params as Record<string, string>);
-  const url = `/v1/admin/organizations?${searchParams.toString()}`;
-  return this.get(url);
-    }
+    const searchParams = new URLSearchParams(params as Record<string, string>);
+    const url = `/v1/admin/organizations?${searchParams.toString()}`;
+    return this.get(url);
+  }
 
   async getOrganizationById(id: string | number) {
     return this.get(`/v1/admin/organizations/${id}`);
+  }
+
+  async patchOrganizationById(id: string | number, body: Record<string, any>) {
+    return this.patch(`/v1/admin/organizations/${id}`, body);
   }
 }
