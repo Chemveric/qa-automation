@@ -24,7 +24,6 @@ test.describe("API smoke: DELETE Signup Invite", () => {
   test("should return success when DELETE invitation with valid ID", async () => {
     await api.init({ "Content-Type": false }, adminCookie);
     const res = await api.deleteSignupInvite(invitationId);
-    console.log("RESPONSE: ", res);
     expect(res.status).toBe(200);
     expect(res.ok).toBeTruthy();
 

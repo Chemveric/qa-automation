@@ -36,7 +36,6 @@ test.describe("API: POST Upload Sessions.", () => {
     const sessionBody = FileUploadValidData.profileImage(organizationId);
     const res = await api.postUploadsSessions(sessionBody);
     const body = res.body;
-    console.log("RES: ", res);
     expect(
       res.status,
       `Expected status code is 200, but got ${res.status}`
