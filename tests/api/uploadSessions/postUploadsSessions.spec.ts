@@ -7,12 +7,12 @@ import {
 import { UploadSessionsApiClient } from "../../../src/api/UploadSessionsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
-import { FileUploadValidData } from "../../../src/utils/uploadSessions/FileUploadValidData";
+import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import { FileUploadInvalidFactory } from "../../../src/utils/uploadSessions/fileUploadInvalidFactory";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: GET user.", () => {
+test.describe("API: POST Upload Sessions.", () => {
   let api: UploadSessionsApiClient;
   let userApi: UserApiClient;
   let supplierCookie: string;
@@ -36,6 +36,7 @@ test.describe("API: GET user.", () => {
     const sessionBody = FileUploadValidData.profileImage(organizationId);
     const res = await api.postUploadsSessions(sessionBody);
     const body = res.body;
+    console.log("RES: ", res);
     expect(
       res.status,
       `Expected status code is 200, but got ${res.status}`
