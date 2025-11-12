@@ -20,5 +20,4 @@ export const FileUploadValidData = {
     checksum:
       "2e10524672de6b7ea411f1fe59372a94b51ba0113058d3cd93d368a47b1e5cad",
   }),
-
 };
