@@ -6,7 +6,7 @@ import { faker } from "@faker-js/faker";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: POST user roles.", () => {
+test.describe("API: PATCH user roles.", () => {
   let api: UserApiClient;
   let supplierCookie: string;
   let adminCookie: string;
