@@ -39,7 +39,7 @@ export class AdminOrganizationsApiClient extends BaseAPIClient {
 
   async getAdminOrganizationsRoles(id: string | number) {
     const url = `v1/admin/organizations/${id}/roles`;
-    console.log("👉 Full request URL:", url);
+    console.log("👉 Full organizations role URL:", url);
     return this.get(`v1/admin/organizations/${id}/roles`);
   }
 }
