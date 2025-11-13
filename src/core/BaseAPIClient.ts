@@ -35,7 +35,7 @@ export class BaseAPIClient {
   async get(path: string, params?: any) {
     log.step(`API GET ${path}`);
     const result = await this.api.get(path, { params });
-    log.step(`Full request URL:  ${result.url()}`);
+    log.error(`Full request URL:  ${result.url()}`);
     const res = await this.api.get(path, { params });
     let responseBody: any;
     try {
