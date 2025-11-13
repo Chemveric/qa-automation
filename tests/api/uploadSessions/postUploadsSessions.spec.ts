@@ -7,8 +7,8 @@ import {
 import { UploadSessionsApiClient } from "../../../src/api/UploadSessionsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
-import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import { FileUploadInvalidFactory } from "../../../src/utils/uploadSessions/fileUploadInvalidFactory";
+import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 
 const validator = new ResponseValidationHelper();
 
@@ -40,13 +40,12 @@ test.describe("API: POST Upload Sessions.", () => {
       res.status,
       `Expected status code is 200, but got ${res.status}`
     ).toBe(201);
-    expect(body.state).toBe('INITIATED');
+    expect(body.state).toBe("INITIATED");
     expect(body.purpose).toBe(sessionBody.purpose);
     expect(body.filename).toBe(sessionBody.filename);
     expect(body.mime).toBe(sessionBody.mime);
     expect(body.size).toBe(sessionBody.size);
     expect(body.checksum).toBe(sessionBody.checksum);
-
   });
 
   test(`should return 404 when send session with invalid organizationId`, async () => {
