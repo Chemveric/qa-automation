@@ -27,6 +27,6 @@ export class UserLoginPage extends BasePage {
     log.step("Clicked submit");
     await popup.waitForEvent("close", { timeout: 15000 });
     await this.page.waitForLoadState("networkidle");
-    await expect(this.page.getByText(/dashboard|welcome/i).first()).toBeVisible();
+    await expect(this.page.getByText(/dashboard|welcome/i).first()).toBeVisible(); 
   }
 }

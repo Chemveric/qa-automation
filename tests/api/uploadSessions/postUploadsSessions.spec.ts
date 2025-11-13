@@ -7,12 +7,13 @@ import {
 import { UploadSessionsApiClient } from "../../../src/api/UploadSessionsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
+import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import { FileUploadInvalidFactory } from "../../../src/utils/uploadSessions/fileUploadInvalidFactory";
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: GET user.", () => {
+test.describe("API: POST Upload Sessions.", () => {
   let api: UploadSessionsApiClient;
   let userApi: UserApiClient;
   let supplierCookie: string;

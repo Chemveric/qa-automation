@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { getAdminCookie, getSupplierCookie } from "../../../src/utils/getEnv";
+import {
+  getAdminCookie,
+  getBuyerCookie,
+  getSupplierCookie,
+} from "../../../src/utils/getEnv";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { faker } from "@faker-js/faker";
@@ -9,10 +13,12 @@ const validator = new ResponseValidationHelper();
 test.describe("API: PATCH user roles.", () => {
   let api: UserApiClient;
   let supplierCookie: string;
+  let buyerCookie: string;
   let adminCookie: string;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
+    buyerCookie = getBuyerCookie();
     adminCookie = getAdminCookie();
     api = new UserApiClient();
   });
@@ -22,6 +28,23 @@ test.describe("API: PATCH user roles.", () => {
   */
   test(`should return 400 when send request with invalid profileImageId and supplier token`, async () => {
     await api.init({ "Content-Type": false }, supplierCookie);
+    const patchBody = {
+      firstName: `aqa-${faker.person.firstName()}`,
+      lastName: `aqa-${faker.person.lastName()}`,
+      profileImageId: faker.string.uuid(),
+    };
+
+    const resPatch = await api.patchUser(patchBody);
+
+    validator.expectStatusCodeAndMessage(
+      resPatch,
+      400,
+      "The provided file key is invalid or the file does not exist."
+    );
+  });
+
+  test(`should return 400 when send request with invalid profileImageId and buyer token`, async () => {
+    await api.init({ "Content-Type": false }, buyerCookie);
     const patchBody = {
       firstName: `aqa-${faker.person.firstName()}`,
       lastName: `aqa-${faker.person.lastName()}`,
