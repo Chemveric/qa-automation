@@ -7,8 +7,8 @@ import {
 import { UploadSessionsApiClient } from "../../../src/api/UploadSessionsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
-import { FileUploadValidData } from "../../../src/utils/uploadSessions/FileUploadValidData";
 import { FileUploadInvalidFactory } from "../../../src/utils/uploadSessions/fileUploadInvalidFactory";
+import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 
 const validator = new ResponseValidationHelper();
 
