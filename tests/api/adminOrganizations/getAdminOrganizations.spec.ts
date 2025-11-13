@@ -26,7 +26,9 @@ test.describe("API: get all organizations", () => {
     stepTwoRequestBody = SignupRequestStepTwoFactory.validCompanyData(
       res.body.jwt
     );
-    const resStepTwo = await authApi.postSignupRequestStepTwo(stepTwoRequestBody);
+    const resStepTwo = await authApi.postSignupRequestStepTwo(
+      stepTwoRequestBody
+    );
     expect(resStepTwo.status).toBe(201);
     let adminCookie = getAdminCookie();
     const signUpApi = new AdminSignupRequestsApiClient();
@@ -37,14 +39,17 @@ test.describe("API: get all organizations", () => {
       { status: signUpRes.status, body },
       UsersSignupRequestListSchema
     );
-    const targetRecord = validated.data.find(item => item.email === stepOneRequestBody.email);
+    const targetRecord = validated.data.find(
+      (item) => item.email === stepOneRequestBody.email
+    );
     const orgId = targetRecord?.id;
-    const approveRes = await signUpApi.patchSignupRequest(orgId!, { status: "APPROVED" });
+    const approveRes = await signUpApi.patchSignupRequest(orgId!, {
+      status: "APPROVED",
+    });
     expect(approveRes.status).toBe(200);
     api = new AdminOrganizationsApiClient();
     await api.init({}, adminCookie);
   });
-
 
   test(`should return organization filterd by company name`, async () => {
     const params = {
@@ -70,7 +75,9 @@ test.describe("API: get all organizations", () => {
       expect(item).toHaveProperty("email");
       expect(item).toHaveProperty("regionId");
     }
-    expect(validated.data.some(item => item.email === stepOneRequestBody.email)).toBe(true);
+    expect(
+      validated.data.some((item) => item.email === stepOneRequestBody.email)
+    ).toBe(true);
   });
 
   test("should return expected schema when send valid request with no params", async () => {
@@ -154,5 +161,4 @@ test.describe("API: get all organizations", () => {
       "Filter must be a JSON object with allowed fields: name, id"
     );
   });
-
 });

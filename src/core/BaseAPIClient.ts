@@ -7,7 +7,7 @@ export class BaseAPIClient {
 
   async init(headers: Record<string, string | false> = {}, cookie?: string) {
     const extraHeaders: Record<string, string> = {
-      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2"
+      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2",
     };
 
     if (headers["Content-Type"] !== false) {
@@ -34,6 +34,8 @@ export class BaseAPIClient {
 
   async get(path: string, params?: any) {
     log.step(`API GET ${path}`);
+    const result = await this.api.get(path, { params });
+    console.log("Full request URL:", res.url());
     const res = await this.api.get(path, { params });
     let responseBody: any;
     try {
