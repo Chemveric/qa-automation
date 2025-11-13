@@ -3,7 +3,7 @@ import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHel
 import { AdminOrganizationsApiClient } from "../../../src/api/AdminOrganizationsApiClient";
 import { getAdminCookie } from "../../../src/utils/getEnv";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
-import { RolesetSchema } from "../../../src/schema/roleSetSchema";
+import { RolesetSchema } from "../../../src/schema/rolesetSchema";
 import { faker } from "@faker-js/faker";
 
 const validator = new ResponseValidationHelper();
