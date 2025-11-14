@@ -13,6 +13,12 @@ export interface UploadData {
   checksum: string;
 }
 
+export interface UploadFileParams {
+  presignedUrl: string;
+  presignedHeaders: Record<string, string>;
+  fileBuffer: Buffer;
+}
+
 export class UploadSessionsApiClient extends BaseAPIClient {
   async postUploadsSessions(body: Record<string, any> = {}) {
     return this.post("/v1/uploads/sessions", body);
@@ -54,5 +60,36 @@ export class UploadSessionsApiClient extends BaseAPIClient {
       `/v1/uploads/sessions/${sessionId}`,
       multipartData
     );
+  }
+
+  async postUploadSessionsComplete(
+    id: string | number | undefined,
+    body: Record<string, any> = {}
+  ) {
+    return this.post(`/v1/uploads/sessions/${id}/complete`, body);
+  }
+
+  async postUploadSessionsFinalize(body: Record<string, any> = {}) {
+    return this.post("/v1/uploads/sessions/finalize", body);
+  }
+
+  async uploadFile(
+    presignedUrl: string,
+    presignedHeaders: Record<string, string>,
+    fileBuffer: Buffer
+  ) {
+    const res = await this.api.fetch(presignedUrl, {
+      method: "PUT",
+      headers: presignedHeaders,
+      data: fileBuffer,
+    });
+
+    const text = await res.text();
+
+    return {
+      status: res.status(),
+      ok: res.ok(),
+      body: text,
+    };
   }
 }
