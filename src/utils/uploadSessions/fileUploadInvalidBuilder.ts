@@ -7,10 +7,10 @@ export class FileUploadInvalidBuilder {
     this.request = {
       organizationId: faker.string.uuid(),
       purpose: "PROFILE_IMAGE",
-      filename: faker.system.fileName(),
+      filename: "red_head.jpg",
       mime: "image/jpeg",
-      size: faker.number.int({ min: 100_000, max: 3_000_000 }),
-      checksum: faker.string.alphanumeric(16),
+      size: 2222370,
+      checksum: "2e10524672de6b7ea411f1fe59372a94b51ba0113058d3cd93d368a47b1e5cad",
     };
   }
 
