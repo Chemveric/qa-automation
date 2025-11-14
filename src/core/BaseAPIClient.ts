@@ -1,13 +1,14 @@
 import { request, APIRequestContext, expect } from "@playwright/test";
 import { ENV } from "../config/env";
 import { log } from "./logger";
+import fs from "fs";
 
 export class BaseAPIClient {
   protected api!: APIRequestContext;
 
   async init(headers: Record<string, string | false> = {}, cookie?: string) {
     const extraHeaders: Record<string, string> = {
-      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2"
+      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2",
     };
 
     if (headers["Content-Type"] !== false) {
@@ -107,6 +108,33 @@ export class BaseAPIClient {
       options.data = data;
     }
     const res = await this.api.delete(path, options);
+
+    let responseBody: any;
+    try {
+      responseBody = await res.json();
+    } catch {
+      responseBody = await res.text();
+    }
+
+    return {
+      status: res.status(),
+      body: responseBody,
+      ok: res.ok(),
+    };
+  }
+
+  async postMultipart(
+    path: string,
+    multipartData: Record<
+      string,
+      | string
+      | number
+      | boolean
+      | fs.ReadStream
+      | { name: string; mimeType: string; buffer: Buffer }
+    >
+  ) {
+    const res = await this.api.post(path, { multipart: multipartData });
 
     let responseBody: any;
     try {
