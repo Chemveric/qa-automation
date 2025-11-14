@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+export const userStatus = z.enum([
+  "ACTIVE",
+  "SERVICES_AND_CATALOG_ONBOARDING",
+  "SERVICES_ONBOARDING",
+  "CATALOG_ONBOARDING",
+  "BLOCKED",
+]);
+
+export const userRole = z.enum(["BUYER", "VENDOR"]);
+
+export const userSubrole = z.array(z.enum(["VENDOR_ADMIN", "BUYER_ADMIN"]));
+
 export const Organization = z.object({
   id: z.uuid(),
   name: z.string(),
@@ -14,8 +26,8 @@ export const useriIdentities = z.array(
 
 export const userRoles = z.array(
   z.object({
-    role: z.enum(["BUYER", "VENDOR"]),
-    subroles: z.array(z.enum(["VENDOR_ADMIN", "BUYER_ADMIN"])),
+    role: userRole,
+    subroles: userSubrole,
   })
 );
 
@@ -24,10 +36,10 @@ export const UserSchema = z.object({
   email: z.email(),
   name: z.string(),
   organization: Organization,
-  activeRole: z.enum(["BUYER", "VENDOR"]),
+  activeRole: userRole,
   roles: userRoles,
   identities: useriIdentities,
-  status: z.enum(["ACTIVE", "SERVICES_ONBOARDING", "BLOCKED"]),
+  status: userStatus,
   permissions: z.array(z.string()),
 });
 
