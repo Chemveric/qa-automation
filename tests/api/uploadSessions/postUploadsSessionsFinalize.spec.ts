@@ -4,7 +4,10 @@ import {
   getSupplierCookie,
   getBuyerCookie,
 } from "../../../src/utils/getEnv";
-import { UploadSessionsApiClient } from "../../../src/api/UploadSessionsApiClient";
+import {
+  UploadSessionsApiClient,
+  UploadData,
+} from "../../../src/api/UploadSessionsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
@@ -24,6 +27,7 @@ test.describe("API: POST Complete Upload Session.", () => {
   let filePath: string;
   let sessionId: string;
   let checksum: string;
+  let filePathImage: string;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
@@ -33,6 +37,8 @@ test.describe("API: POST Complete Upload Session.", () => {
       process.cwd(),
       "src/data/files/Basic-Non-Disclosure-Agreement.pdf"
     );
+
+    filePathImage = path.join(process.cwd(), "src/data/files/red_head2.png");
 
     // get user data
     userApi = new UserApiClient();
@@ -75,7 +81,7 @@ test.describe("API: POST Complete Upload Session.", () => {
       supplierOrganizationId
     );
     const sessionStatus = resSessionStatus.body.state;
-    console.log("sessionStatus: ", sessionStatus);
+    console.log("Supplier session status: ", sessionStatus);
   });
 
   test(`should finalize upload session via presigned link`, async () => {
@@ -88,13 +94,101 @@ test.describe("API: POST Complete Upload Session.", () => {
     expect(resFinalize.body).toHaveProperty("fileIds");
   });
 
-  test.skip(`should finalize upload session via presigned link when send request with buyer cookie`, async () => {
-    await api.init({}, buyerCookie);
+  test(`should finalize upload session via backend`, async () => {
+    // upload file via backend
+
+    const uploadApi = new UploadSessionsApiClient();
+    await uploadApi.init({ "Content-Type": false }, supplierCookie);
+    const uploadData: UploadData = FileUploadValidData.nda(
+      supplierOrganizationId
+    );
+    const backendUploadRes = await uploadApi.postUploadsSessionsRelay(
+      "relay",
+      filePath,
+      uploadData
+    );
+
+    // get status by id
+    const res = await uploadApi.getUploadsSessions(
+      backendUploadRes.body.id,
+      supplierOrganizationId
+    );
+    const body = res.body;
+
+    // finalise session if status is clean
+    if (body.state === "CLEAN") {
+      await uploadApi.init({}, supplierCookie);
+
+      const finalizeBody = {
+        sessionIds: [backendUploadRes.body.id],
+        organizationId: supplierOrganizationId,
+      };
+      const resSessionComplete = await uploadApi.postUploadSessionsFinalize(
+        finalizeBody
+      );
+      expect(resSessionComplete.status).toBe(201);
+    } else {
+      console.log(
+        `Expected payload file state to be "CLEAN" but got ${body.state}`
+      );
+    }
+  });
+
+  test(`should finalize upload session via presigned link when send request with buyer cookie`, async () => {
+    // get buyer data
+    const buyerApi = new UserApiClient();
+    await buyerApi.init({ "Content-Type": false }, buyerCookie);
+    const resBuyer = await userApi.getUser();
+    const buyerOrganizationId = resBuyer.body.organization.id;
+
+    // get presigned url to upload file
+    const sessionsApi = new UploadSessionsApiClient();
+    await sessionsApi.init({}, buyerCookie);
+    const sessionBodyImage =
+      FileUploadValidData.profileImage(buyerOrganizationId);
+
+    const checksum = sessionBodyImage.checksum;
+    const resSession = await sessionsApi.postUploadsSessions(sessionBodyImage);
+    const sessionId = resSession.body.id;
+
+    // upload file via presigned url
+    const uploadRes = await sessionsApi.uploadFile(
+      resSession.body.presignedUrl,
+      resSession.body.headers,
+      fs.readFileSync(filePathImage)
+    );
+    expect([200, 201, 204]).toContain(uploadRes.status);
+
+    // complete session
+    await sessionsApi.init({}, buyerCookie);
+    const sessionCompleteBody = {
+      organizationId: supplierOrganizationId,
+      checksum: checksum,
+    };
+    const resSessionComplete = await sessionsApi.postUploadSessionsComplete(
+      sessionId,
+      sessionCompleteBody
+    );
+    expect(resSessionComplete.status).toBe(201);
+
+    // get session status
+    await sessionsApi.init({ "Content-Type": false }, buyerCookie);
+    const resSessionStatus = await sessionsApi.getUploadsSessions(
+      sessionId,
+      supplierOrganizationId
+    );
+    const sessionStatus = resSessionStatus.body.state;
+    console.log("Buyer session status: ", sessionStatus);
+
+    // finalize session
+    await sessionsApi.init({}, buyerCookie);
     const finalizeBody = {
       sessionIds: [sessionId],
       organizationId: supplierOrganizationId,
     };
-    const resFinalize = await api.postUploadSessionsFinalize(finalizeBody);
+    const resFinalize = await sessionsApi.postUploadSessionsFinalize(
+      finalizeBody
+    );
     expect(resFinalize.status).toBe(201);
   });
 

@@ -4,10 +4,7 @@ import {
   getSupplierCookie,
   getBuyerCookie,
 } from "../../../src/utils/getEnv";
-import {
-  UploadSessionsApiClient,
-  UploadData,
-} from "../../../src/api/UploadSessionsApiClient";
+import { UploadSessionsApiClient } from "../../../src/api/UploadSessionsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
@@ -84,54 +81,21 @@ test.describe("API: POST Complete Upload Session.", () => {
     expect(resSessionComplete.body).toHaveProperty("expiresAt");
   });
 
-  test.skip(`should complete upload session via backend`, async () => {
-    // upload file via backend
-    await api.init({ "Content-Type": false }, supplierCookie);
-    const uploadData: UploadData = FileUploadValidData.nda(
-      supplierOrganizationId
-    );
-
-    await api.postUploadsSessionsRelay("relay", filePath, uploadData);
-    // get status by id
-    const res = await api.getUploadsSessions(sessionId, supplierOrganizationId);
-    const body = res.body;
-
-    // complete if status is clean
-    if (body.state === "CLEAN") {
-      await api.init({}, supplierCookie);
-      const sessionCompleteBody = {
-        organizationId: supplierOrganizationId,
-        checksum: checksum,
-      };
-      const resSessionComplete = await api.postUploadSessionsComplete(
-        sessionId,
-        sessionCompleteBody
-      );
-      expect(resSessionComplete.status).toBe(201);
-    } else {
-      console.log(
-        `Expected payload file state to be "CLEAN" but got ${body.state}`
-      );
-    }
-  });
-
   test(`should get 400 when send fake session id`, async () => {
     await api.init({}, supplierCookie);
     const sessionCompleteBody = {
       organizationId: supplierOrganizationId,
       checksum: checksum,
     };
-    console.log("sessionCompleteBody: ", sessionCompleteBody);
-    const fakeSessionId = faker.string.ulid();
+    const fakeSessionId = faker.string.uuid();
     const resSessionComplete = await api.postUploadSessionsComplete(
       fakeSessionId,
       sessionCompleteBody
     );
-    console.log("Complete session RES: ", resSessionComplete);
     validator.expectStatusCodeAndMessage(
       resSessionComplete,
       400,
-      "Uploaded file not found or verification failed"
+      "Upload session not found"
     );
   });
 
@@ -141,13 +105,11 @@ test.describe("API: POST Complete Upload Session.", () => {
       organizationId: faker.string.ulid(),
       checksum: checksum,
     };
-    console.log("sessionCompleteBody: ", sessionCompleteBody);
 
     const resSessionComplete = await api.postUploadSessionsComplete(
       sessionId,
       sessionCompleteBody
     );
-    console.log("Complete session RES: ", resSessionComplete);
     validator.expectStatusCodeAndMessage(
       resSessionComplete,
       422,
@@ -162,13 +124,11 @@ test.describe("API: POST Complete Upload Session.", () => {
       organizationId: supplierOrganizationId,
       checksum: faker.string.hexadecimal({ length: 64 }),
     };
-    console.log("sessionCompleteBody: ", sessionCompleteBody);
 
     const resSessionComplete = await api.postUploadSessionsComplete(
       sessionId,
       sessionCompleteBody
     );
-    console.log("Complete session RES: ", resSessionComplete);
     validator.expectStatusCodeAndMessage(
       resSessionComplete,
       400,
