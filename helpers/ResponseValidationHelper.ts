@@ -31,24 +31,25 @@ export class ResponseValidationHelper {
 
     if (field) {
       expect(body?.errors, `Expected errors object in response`).toBeDefined();
+      const fieldError = body.errors[field];
+      expect(fieldError, `Expected field "${field}" in errors`).toBeDefined();
+      const normalized = Array.isArray(fieldError)
+        ? fieldError.join(" ")
+        : String(fieldError);
       expect(
-        body.errors[field],
-        `Expected field "${field}" in errors`
-      ).toBeDefined();
-      expect(
-        body.errors[field],
+        normalized,
         `Expected error message is: ${expectedErrorMessage}, but got: ${body.errors[field]}`
       ).toContain(expectedErrorMessage);
-    } else {
-      const errorMsg =
-        body?.message ||
-        body?.error ||
-        (body?.errors ? JSON.stringify(body.errors) : JSON.stringify(body));
-      expect(
-        errorMsg,
-        `Expected error message is: ${expectedErrorMessage}, but got: ${errorMsg}`
-      ).toContain(expectedErrorMessage);
+      return;
     }
+    const errorMsg =
+      body?.message ||
+      body?.error ||
+      (body?.errors ? JSON.stringify(body.errors) : JSON.stringify(body));
+    expect(
+      errorMsg,
+      `Expected error message is: ${expectedErrorMessage}, but got: ${errorMsg}`
+    ).toContain(expectedErrorMessage);
   }
 
   /**
