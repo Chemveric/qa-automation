@@ -47,7 +47,7 @@ export function getBuyerCookie(): string {
     return cookieHeader;
   } catch (e) {
   const err = e as Error;
-  console.warn('No vendor cookie found:', err.message);
+  console.warn('No buyer cookie found:', err.message);
   return '';
   }
 }

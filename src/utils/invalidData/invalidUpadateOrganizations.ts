@@ -1,4 +1,4 @@
-export const organizationTestData = [
+export const adminOrganizationTestData = [
   {
     name: "Invalid postal code (number instead of string)",
     getData: (orgId: string, regionId: string, countryId: string) => ({
