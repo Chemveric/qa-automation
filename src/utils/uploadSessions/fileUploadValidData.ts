@@ -14,11 +14,11 @@ export const FileUploadValidData = {
   profileImage: (orgId: string) => ({
     organizationId: orgId,
     purpose: "PROFILE_IMAGE",
-    filename: "red_head",
-    mime: "image/jpeg",
-    size: 2222370,
+    filename: "red_head2.png",
+    mime: "image/png",
+    size: 397049,
     checksum:
-      "2e10524672de6b7ea411f1fe59372a94b51ba0113058d3cd93d368a47b1e5cad",
+      "6e7970f881c4e77dba19765f177d8da5b62c845e6b8fd5cf68239e23272add5b",
   }),
 
   nda: (orgId: string) => ({

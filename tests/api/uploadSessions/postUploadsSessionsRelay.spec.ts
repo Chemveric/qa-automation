@@ -13,7 +13,6 @@ import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHel
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import { FileUploadInvalidFactory } from "../../../src/utils/uploadSessions/fileUploadInvalidFactory";
 import path from "path";
-import { faker } from "@faker-js/faker";
 
 const validator = new ResponseValidationHelper();
 
@@ -25,6 +24,7 @@ test.describe("API: POST Upload Sessions Relay.", () => {
   let adminCookie: string;
   let supplierOrganizationId: string;
   let filePath: string;
+  let pngFilePath: string;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
@@ -34,6 +34,7 @@ test.describe("API: POST Upload Sessions Relay.", () => {
       process.cwd(),
       "src/data/files/Basic-Non-Disclosure-Agreement.pdf"
     );
+    pngFilePath = path.join(process.cwd(), "src/data/files/red_head2.png");
     userApi = new UserApiClient();
     await userApi.init({ "Content-Type": false }, supplierCookie);
     const resUser = await userApi.getUser();
@@ -78,59 +79,54 @@ test.describe("API: POST Upload Sessions Relay.", () => {
   });
 
   test(`should return 422 when send fake organization id`, async () => {
-    const jpgFilePath = path.join(process.cwd(), "src/data/files/red_head.jpg");
     const uploadData = FileUploadInvalidFactory.invalidOrganizationId();
     const res = await api.postUploadsSessionsRelay(
       "relay",
-      jpgFilePath,
+      pngFilePath,
       uploadData
     );
     validator.expectStatusCodeAndMessage(res, 422, "ERR002", "organizationId");
   });
 
   test(`should return 422 when no organization id was sent`, async () => {
-    const jpgFilePath = path.join(process.cwd(), "src/data/files/red_head.jpg");
     const uploadData = FileUploadInvalidFactory.missingOrganizationId();
     const res = await api.postUploadsSessionsRelay(
       "relay",
-      jpgFilePath,
+      pngFilePath,
       uploadData
     );
     validator.expectStatusCodeAndMessage(res, 422, "ERR002", "organizationId");
   });
 
   test(`should return 422 when send request with invalid purpose`, async () => {
-    const jpgFilePath = path.join(process.cwd(), "src/data/files/red_head.jpg");
     const uploadData = FileUploadInvalidFactory.invalidPurpose();
     const res = await api.postUploadsSessionsRelay(
       "relay",
-      jpgFilePath,
+      pngFilePath,
       uploadData
     );
     validator.expectStatusCodeAndMessage(res, 422, "ERR002. ERR002", "purpose");
   });
 
   test(`should return 422 when send request with invalid mime`, async () => {
-    const jpgFilePath = path.join(process.cwd(), "src/data/files/red_head.jpg");
     const uploadData = FileUploadInvalidFactory.invalidMime(
       supplierOrganizationId
     );
     const res = await api.postUploadsSessionsRelay(
       "relay",
-      jpgFilePath,
+      pngFilePath,
       uploadData
     );
     validator.expectStatusCodeAndMessage(res, 422, "FILE003. FILE003", "mime");
   });
 
   test(`should return 422 when send request with invalid size`, async () => {
-    const jpgFilePath = path.join(process.cwd(), "src/data/files/red_head.jpg");
     const uploadData = FileUploadInvalidFactory.invalidSize(
       supplierOrganizationId
     );
     const res = await api.postUploadsSessionsRelay(
       "relay",
-      jpgFilePath,
+      pngFilePath,
       uploadData
     );
     validator.expectStatusCodeAndMessage(
@@ -142,11 +138,10 @@ test.describe("API: POST Upload Sessions Relay.", () => {
   });
 
   test(`should return 422 when send request with invalid checksum`, async () => {
-    const jpgFilePath = path.join(process.cwd(), "src/data/files/red_head.jpg");
     const uploadData = FileUploadInvalidFactory.invalidChecksum();
     const res = await api.postUploadsSessionsRelay(
       "relay",
-      jpgFilePath,
+      pngFilePath,
       uploadData
     );
     validator.expectStatusCodeAndMessage(
