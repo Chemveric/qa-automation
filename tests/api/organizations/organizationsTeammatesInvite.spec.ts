@@ -62,9 +62,15 @@ test.describe("API: invite team member to organization", () => {
   });
 
   inviteVendorTestCases.forEach((testCase) => {
-    test(`should invite ${testCase.firstName} ${testCase.lastName} as ${testCase.roles[0].subRoles[0]}`, async () => {
+    test(`${testCase.name}`, async () => {
       await api.init({}, supplierCookie);
-      const res = await api.inviteOrganizationTeammates(testCase);
+      const { firstName, lastName, email, roles } = testCase;
+      const res = await api.inviteOrganizationTeammates({
+        firstName,
+        lastName,
+        email,
+        roles,
+      });
       expect(res.status, `Expected status code 200 but got ${res.status}`).toBe(
         200
       );

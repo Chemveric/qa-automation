@@ -79,7 +79,8 @@ export const inviteVendorTestCases = [
         roleset: "VENDOR",
         subRoles: ["VENDOR_QUALITY", "VENDOR_TECH_LEAD", "VENDOR_SALES"],
       },
-    ],
+        ],
+    name: "Invite vendor with all subroles",
   },
   {
     firstName: "VENDOR",
@@ -90,7 +91,8 @@ export const inviteVendorTestCases = [
         roleset: "VENDOR",
         subRoles: ["VENDOR_TECH_LEAD"],
       },
-    ],
+      ],
+      name: "Invite vendor with tech lead subrole",
   },
   {
     firstName: "Buyer",
@@ -106,7 +108,8 @@ export const inviteVendorTestCases = [
           "BUYER_CUSTOMER_SERVICE",
         ],
       },
-    ],
+      ],
+      name: "Invite buyer to vendor organization with all subroles",
   },
 ];
 
