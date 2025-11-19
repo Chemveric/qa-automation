@@ -15,7 +15,7 @@ import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHel
 import { faker } from "@faker-js/faker";
 import { DictionaryApiClient } from "../../../src/api/DictionaryApiClient";
 import { DictionarySupportedCountriesSchema } from "../../../src/schema/dictionarySupportedCountriesSchema";
-import { organizationTestData } from "../../../src/utils/invalidData/invalidUpadateOrganizations";
+import { adminOrganizationTestData } from "../../../src/utils/invalidData/invalidUpadateOrganizations";
 
 const validator = new ResponseValidationHelper();
 
@@ -226,7 +226,7 @@ test.describe("API: edit organization by Id", () => {
     ).toBe(500);
   });
 
-  for (const testCase of organizationTestData) {
+  for (const testCase of adminOrganizationTestData) {
     test(testCase.name, async () => {
       const randomCountry =
         countries[Math.floor(Math.random() * countries.length)];

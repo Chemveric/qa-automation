@@ -2,7 +2,7 @@ name: Playwright Tests (Chromium + Allure)
 
 on:
   push:
-    branches: [ main, develop, ]
+    branches: [ main, develop,]
   pull_request:
 
 jobs:
