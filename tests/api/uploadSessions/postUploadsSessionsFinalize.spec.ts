@@ -17,7 +17,7 @@ import fs from "fs";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: POST Complete Upload Session.", () => {
+test.describe("API: POST Finalize Upload Session.", () => {
   let api: UploadSessionsApiClient;
   let userApi: UserApiClient;
   let supplierCookie: string;

@@ -30,4 +30,14 @@ export const FileUploadValidData = {
     checksum:
       "203788e953b24dddab8f335632ab258ce98d436349be26acedd929a511e34e4e",
   }),
+
+    rfq: (orgId: string) => ({
+    organizationId: orgId,
+    purpose: "RFQ",
+    filename: "src/data/files/RFQ.pdf",
+    mime: "application/pdf",
+    size: 73056,
+    checksum:
+      "579f1d2cdcd6844454bc968dceddde97e6c7493d41a0b12d60ecbe771d87a5b2",
+  }),
 };
