@@ -11,13 +11,13 @@ export const Invitations = {
   buyer: {
     firstName: `AutoTest ${faker.person.firstName()}`,
     lastName: `Buyer ${faker.person.lastName()}`,
-    email: faker.internet.email(),
+    email: `nadiia.patrusheva+${faker.string.uuid()}@globaldev.tech`,
     company: faker.company.name(),
   },
   vendor: {
     firstName: `AutoTest ${faker.person.firstName()}`,
     lastName: `Vendor ${faker.person.lastName()}`,
-    email: faker.internet.email(),
+    email: `nadiia.patrusheva+${faker.string.uuid()}@globaldev.tech`,
     company: faker.company.name(),
   },
   messages: {
