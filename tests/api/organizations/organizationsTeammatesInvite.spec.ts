@@ -30,7 +30,6 @@ test.describe("API: invite team member to organization", () => {
       expect(res.status, `Expected status code 200 but got ${res.status}`).toBe(
         200
       );
-
       const teammatesRes = await api.getOrganizationTeammates({
         page: 1,
         limit: 600,
@@ -51,6 +50,9 @@ test.describe("API: invite team member to organization", () => {
       expect(createdTeammate?.roles[0].subRoles).toEqual(
         expect.arrayContaining(testCase.roles[0].subRoles)
       );
+      await api.deleteOrganizationTeammember({
+        teammateId: createdTeammate!.id,
+      });
     });
   });
 
@@ -88,6 +90,9 @@ test.describe("API: invite team member to organization", () => {
       expect(createdTeammate?.roles[0].subRoles).toEqual(
         expect.arrayContaining(testCase.roles[0].subRoles)
       );
+      await api.deleteOrganizationTeammember({
+        teammateId: createdTeammate!.id,
+      });
     });
   });
 

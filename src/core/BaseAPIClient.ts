@@ -28,6 +28,7 @@ export class BaseAPIClient {
     this.api = await request.newContext({
       baseURL: ENV.apiURL,
       extraHTTPHeaders: extraHeaders,
+      userAgent: "Chemveric Automation",
     });
 
     return this.api;
