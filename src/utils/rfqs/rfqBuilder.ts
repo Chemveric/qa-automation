@@ -1,21 +1,36 @@
-import { Attachment, RfqNonConf, RfqRequestBase } from "../types/rfqs.types";
+import {
+  Attachment,
+  RfqNonConf,
+  RfqRequestBase,
+  PatchRfqRequest,
+} from "../types/rfqs.types";
 
 export class RfqBuilder {
-  private data: RfqRequestBase;
-  constructor(type: "BULK" | "CUSTOM" | "OPEN") {
-    this.data = {
-      type,
-      dueDate: "",
-    };
+  private data: PatchRfqRequest = {};
+  constructor(type?: "BULK" | "CUSTOM" | "OPEN") {
+    if (type) {
+      this.data.type = type;
 
-    if (type !== "BULK") {
-      this.data.nonconf = {
-        quantity: "",
-        purityMinPct: 0,
-        deliveryTime: "",
-        attachments: [],
-      };
+      if (type !== "BULK") {
+        this.data.nonconf = {
+          quantity: "",
+          purityMinPct: 0,
+          deliveryTime: "",
+          attachments: [],
+        };
+      }
     }
+  }
+
+  private ensureNonconf() {
+    if (!this.data.nonconf) {
+      this.data.nonconf = {} as any;
+    }
+  }
+
+  setType(type: "BULK" | "CUSTOM" | "OPEN") {
+    this.data.type = type;
+    return this;
   }
 
   setDueDate(date: string) {
@@ -23,29 +38,30 @@ export class RfqBuilder {
     return this;
   }
 
-  setQuantity(quantuty: string) {
-    if (!this.data.nonconf) throw new Error("Quantity not allowed for type B");
-    this.data.nonconf.quantity = quantuty;
+   setQuantity(q: string) {
+    this.ensureNonconf();
+    this.data.nonconf!.quantity = q;
     return this;
   }
 
-  setPurity(pct: number) {
-    if (!this.data.nonconf) throw new Error("Purity not allowed for type B");
-    this.data.nonconf.purityMinPct = pct;
+  setPurity(p: number) {
+    this.ensureNonconf();
+    this.data.nonconf!.purityMinPct = p;
     return this;
   }
 
-  setDeliveryTime(time: string) {
-    if (!this.data.nonconf)
-      throw new Error("deliveryTime not allowed for type B");
-    this.data.nonconf.deliveryTime = time;
+  setDeliveryTime(t: string) {
+    this.ensureNonconf();
+    this.data.nonconf!.deliveryTime = t;
     return this;
   }
 
-  addAttachment(att: Attachment) {
-    if (!this.data.nonconf)
-      throw new Error("Attachments not allowed for type B");
-    this.data.nonconf.attachments?.push(att);
+  addAttachment(a: Attachment) {
+    this.ensureNonconf();
+    if (!this.data.nonconf!.attachments) {
+      this.data.nonconf!.attachments = [];
+    }
+    this.data.nonconf!.attachments.push(a);
     return this;
   }
 
@@ -67,13 +83,13 @@ export class RfqBuilder {
   /**
    * 💥 Override nested nonconf fields
    */
-  overrideNonconf(patch: any) {
-    if (!this.data.nonconf) this.data.nonconf = {} as any;
+  overrideNonconf(patch: Partial<RfqNonConf>) {
+    this.ensureNonconf();
     this.data.nonconf = { ...this.data.nonconf, ...patch };
     return this;
   }
 
   build() {
-    return JSON.parse(JSON.stringify(this.data));
+    return structuredClone(this.data);
   }
 }

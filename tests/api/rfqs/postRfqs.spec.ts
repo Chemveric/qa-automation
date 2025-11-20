@@ -66,7 +66,7 @@ test.describe("API: POST RFQs", () => {
       organizationId
     );
 
-    // finalise session
+    // finalise upload session
     await uploadApi.init({}, buyerCookie);
     const finalizeBody = {
       sessionIds: [backendUploadRes.body.id],

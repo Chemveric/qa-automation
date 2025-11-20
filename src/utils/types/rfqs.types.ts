@@ -5,9 +5,9 @@ export interface RfqRequestBase {
 }
 
 export interface RfqNonConf {
-  quantity: string;
-  purityMinPct: number;
-  deliveryTime: string;
+  quantity?: string;
+  purityMinPct?: number | string;
+  deliveryTime?: string;
   attachments?: Attachment[];
 }
 export interface Attachment {
@@ -15,3 +15,5 @@ export interface Attachment {
   filename: string;
   purpose: string;
 }
+
+export type PatchRfqRequest = Partial<RfqRequestBase>;
