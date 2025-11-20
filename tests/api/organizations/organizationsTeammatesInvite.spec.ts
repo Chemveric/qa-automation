@@ -124,37 +124,4 @@ test.describe("API: invite team member to organization", () => {
       validator.expectStatusCodeAndMessage(res, 400, testCase.expectedError);
     });
   });
-
-  test.afterAll(async () => {
-    await api.init({}, buyerCookie);
-    const teammatesRes = await api.getOrganizationTeammates({
-      page: 1,
-      limit: 20,
-    });
-    const body = await teammatesRes.body;
-
-    const validated = await validateResponse(
-      { status: teammatesRes.status, body },
-      organizationTeammatesSchema
-    );
-    const buyersIds = validated.items.map((item) => item.id);
-    for (const id of buyersIds) {
-      await api.deleteOrganizationTeammember({ teammateId: id });
-    }
-    await api.init({}, supplierCookie);
-    const supplierRes = await api.getOrganizationTeammates({
-      page: 1,
-      limit: 20,
-    });
-    const supplierBody = await supplierRes.body;
-
-    const validatedSupplier = await validateResponse(
-      { status: supplierRes.status, body: supplierBody },
-      organizationTeammatesSchema
-    );
-    const suppliersIds = validatedSupplier.items.map((item) => item.id);
-    for (const id of suppliersIds) {
-      await api.deleteOrganizationTeammember({ teammateId: id });
-    }
-  });
 });
