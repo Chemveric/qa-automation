@@ -13,7 +13,7 @@ const teammateSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   roles: z.array(roleSchema),
-  inviteStatus: z.enum(["INVITED", "ACCEPTED", "REVOKED"]),
+  inviteStatus: z.enum(["INVITED", "ACCEPTED", "REVOKED", "EXPIRED"]),
   sendDate: z.coerce.date(),
 });
 
