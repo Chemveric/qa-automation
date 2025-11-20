@@ -1,9 +1,8 @@
 import { BaseAPIClient } from "../core/BaseAPIClient";
 
 type OrganizationsQuery = {
-  sort?: string[];
-  range?: (number | string)[];
-  filter?: Record<string, string>;
+  page?: number;
+  limit?: number;
 };
 
 export class OrganizationsApiClient extends BaseAPIClient {
@@ -17,5 +16,28 @@ export class OrganizationsApiClient extends BaseAPIClient {
 
   async editOrganizationDetail(body: Record<string, any>) {
     return this.post(`/v1/organizations/detail/edit`, body);
+  }
+
+  async inviteOrganizationTeammates(body: Record<string, any>) {
+    return this.post(`/v1/organizations/teammates/invite`, body);
+  }
+
+  async getOrganizationTeammates(query?: OrganizationsQuery) {
+    const params = query
+      ? Object.fromEntries(
+          Object.entries(query).map(([key, value]) => [
+            key,
+            JSON.stringify(value),
+          ])
+        )
+      : {};
+
+    const searchParams = new URLSearchParams(params as Record<string, string>);
+    const url = `/v1/organizations/teammates?${searchParams.toString()}`;
+    return this.get(url);
+  }
+
+  async deleteOrganizationTeammember(body: Record<string, any>) {
+    return this.delete(`/v1/organizations/teammates/delete`, body);
   }
 }

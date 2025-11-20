@@ -28,6 +28,7 @@ export class BaseAPIClient {
     this.api = await request.newContext({
       baseURL: ENV.apiURL,
       extraHTTPHeaders: extraHeaders,
+      userAgent: "Chemveric Automation",
     });
 
     return this.api;
@@ -35,9 +36,8 @@ export class BaseAPIClient {
 
   async get(path: string, params?: any) {
     log.step(`API GET ${path}`);
-    const result = await this.api.get(path, { params });
-    log.error(`Full request URL:  ${result.url()}`);
     const res = await this.api.get(path, { params });
+    log.error(`Full request URL:  ${res.url()}`);
     let responseBody: any;
     try {
       responseBody = await res.json();
@@ -103,7 +103,7 @@ export class BaseAPIClient {
   }
 
   async delete(path: string, data?: any) {
-    log.step(`API DLETE ${path}`);
+    log.step(`API DELETE ${path}`);
 
     const options: Record<string, any> = {};
     if (data) {
