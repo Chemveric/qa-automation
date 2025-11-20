@@ -40,4 +40,8 @@ export class OrganizationsApiClient extends BaseAPIClient {
   async deleteOrganizationTeammember(body: Record<string, any>) {
     return this.delete(`/v1/organizations/teammates/delete`, body);
   }
+
+  async organizationsTeammateReinvite(body: Record<string, any>) {
+    return this.post(`/v1/organizations/teammates/reinvite`, body);
+  }
 }
