@@ -1,8 +1,6 @@
 import { BaseAPIClient } from "../core/BaseAPIClient";
 import fs from "fs";
 import path from "path";
-import { log } from "../core/logger";
-import mime from "mime-types";
 
 export interface UploadData {
   organizationId: string;
