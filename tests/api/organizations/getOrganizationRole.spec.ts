@@ -8,7 +8,7 @@ import { RolesSchema } from "../../../src/schema/rolesSchema";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: get organization roleset", () => {
+test.describe("API: get organization roles", () => {
   let buyerCookie: string;
   let supplierCookie: string;
   const api = new OrganizationsApiClient();
@@ -19,7 +19,7 @@ test.describe("API: get organization roleset", () => {
     await api.init({}, buyerCookie);
   });
 
-  test(`get buyer organization roleset`, async () => {
+  test(`get buyer organization role`, async () => {
     const api = new OrganizationsApiClient();
     await api.init({}, buyerCookie);
     const res = await api.getOrganizationRoles();
@@ -45,7 +45,7 @@ test.describe("API: get organization roleset", () => {
     expect(validated.subroles.VENDOR).toBeNull();
   });
 
-  test(`get supplier organization roleset`, async () => {
+  test(`get supplier organization role`, async () => {
     await api.init({}, supplierCookie);
     const res = await api.getOrganizationRoles();
     expect(

@@ -52,4 +52,8 @@ export class OrganizationsApiClient extends BaseAPIClient {
   async getOrganizationRoleset() {
     return this.get(`/v1/organizations/roleset`);
   }
+
+  async getOrganizationNda() {
+    return this.get(`/v1/organizations/nda`);
+  }
 }
