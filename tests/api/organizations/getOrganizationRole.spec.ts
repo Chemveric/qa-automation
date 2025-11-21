@@ -74,7 +74,7 @@ test.describe("API: get organization roles", () => {
     ]);
   });
 
-  test("should return 401 Unauthorized when login with admin cookie", async () => {
+  test("should return 401 Unauthorized when get roles with wrong cookie", async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
     const api = new OrganizationsApiClient();
     await api.init({}, fakeCookie);
