@@ -36,7 +36,7 @@ export const RfqFactory = {
         quantity: "1kg",
         purityMinPct: "hello!",
         deliveryTime: "4-6 weeks",
-      }) 
+      })
       .build();
   },
 
@@ -47,12 +47,12 @@ export const RfqFactory = {
   },
 
   emptyDate() {
-    return new RfqBuilder("BULK").build();
+    return new RfqBuilder("BULK").setDueDate("").build();
   },
 
   invalidDueDate() {
     return new RfqBuilder("OPEN")
-      .setDueDate("546-677-22") 
+      .setDueDate("546-677-22")
       .setQuantity("1kg")
       .setPurity(95)
       .setDeliveryTime("2 weeks")
@@ -71,4 +71,21 @@ export const RfqFactory = {
       })
       .build();
   },
+
+  changeType(type: "BULK" | "CUSTOM" | "OPEN") {
+    return new RfqBuilder().setType(type).build();
+  },
+
+  changeNonconf(){
+    return new RfqBuilder().override({
+      nonconf: {
+        quantity: "200 kg",
+        purityMinPct: 99,
+      } as any,
+    }).build();
+  },
+
+  changeDueDate(){
+    return new RfqBuilder().setDueDateInMonths(3).build();
+  }
 };
