@@ -57,6 +57,7 @@ test.describe("API: get organization roleset", () => {
 
   test("should return 401 Unauthorized when login with admin cookie", async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
+    const api = new OrganizationsApiClient();
     await api.init({}, fakeCookie);
     const res = await api.getOrganizationRoleset();
     validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");

@@ -1,4 +1,4 @@
-import { request, APIRequestContext, expect } from "@playwright/test";
+﻿import { request, APIRequestContext } from "@playwright/test";
 import { ENV } from "../config/env";
 import { log } from "./logger";
 import fs from "fs";
@@ -7,148 +7,85 @@ export class BaseAPIClient {
   protected api!: APIRequestContext;
 
   async init(headers: Record<string, string | false> = {}, cookie?: string) {
-    const extraHeaders: Record<string, string> = {
-      "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2",
-    };
+    const filteredHeaders: Record<string, string> = Object.fromEntries(
+      Object.entries(headers).filter(([_, v]) => v !== false)
+    ) as Record<string, string>;
 
-    if (headers["Content-Type"] !== false) {
-      extraHeaders["Content-Type"] =
-        headers["Content-Type"] || "application/json";
-    }
+    const contentType =
+      "Content-Type" in filteredHeaders
+        ? filteredHeaders["Content-Type"]
+        : "application/json";
 
-    for (const [key, value] of Object.entries(headers)) {
-      if (key !== "Content-Type" && value !== false) {
-        extraHeaders[key] = value;
-      }
-    }
-
-    if (cookie) {
-      extraHeaders["Cookie"] = cookie;
-    }
     this.api = await request.newContext({
       baseURL: ENV.apiURL,
-      extraHTTPHeaders: extraHeaders,
+      extraHTTPHeaders: {
+        "X-Rate-Limit-Bypass": "GcMpQjt4k7p1tx2e3UU2",
+        "Content-Type": contentType,
+        ...(cookie ? { Cookie: cookie } : {}),
+        ...filteredHeaders,
+      },
       userAgent: "Chemveric Automation",
     });
 
     return this.api;
   }
 
-  async get(path: string, params?: any) {
-    log.step(`API GET ${path}`);
-    const res = await this.api.get(path, { params });
-    log.error(`Full request URL:  ${res.url()}`);
-    let responseBody: any;
-    try {
-      responseBody = await res.json();
-    } catch {
-      responseBody = await res.text();
-    }
-
-    return {
-      status: res.status(),
-      body: responseBody,
-      ok: res.ok(),
-    };
-  }
-
-  async post(path: string, data?: any) {
-    log.step(`API POST ${path}`);
-    const res = await this.api.post(path, { data });
-    let responseBody: any;
-    try {
-      responseBody = await res.json();
-    } catch {
-      responseBody = await res.text();
-    }
-    return {
-      status: res.status(),
-      body: responseBody,
-      ok: res.ok(),
-    };
-  }
-
-  async put(path: string, data?: any) {
-    log.step(`API PUT ${path}`);
-    const res = await this.api.put(path, { data });
-    let responseBody: any;
-    try {
-      responseBody = await res.json();
-    } catch {
-      responseBody = await res.text();
-    }
-    return {
-      status: res.status(),
-      body: responseBody,
-      ok: res.ok(),
-    };
-  }
-
-  async patch(path: string, data?: any) {
-    log.step(`API PATCH ${path}`);
-    const res = await this.api.patch(path, { data });
-
-    let responseBody: any;
-    try {
-      responseBody = await res.json();
-    } catch {
-      responseBody = await res.text();
-    }
-
-    return {
-      status: res.status(),
-      body: responseBody,
-      ok: res.ok(),
-    };
-  }
-
-  async delete(path: string, data?: any) {
-    log.step(`API DELETE ${path}`);
-
-    const options: Record<string, any> = {};
-    if (data) {
-      options.data = data;
-    }
-    const res = await this.api.delete(path, options);
-
-    let responseBody: any;
-    try {
-      responseBody = await res.json();
-    } catch {
-      responseBody = await res.text();
-    }
-
-    return {
-      status: res.status(),
-      body: responseBody,
-      ok: res.ok(),
-    };
-  }
-
-  async postMultipart(
+  private async request(
+    method: "get" | "post" | "put" | "patch" | "delete",
     path: string,
-    multipartData: Record<
-      string,
-      | string
-      | number
-      | boolean
-      | fs.ReadStream
-      | { name: string; mimeType: string; buffer: Buffer }
-    >
+    options: any = {}
   ) {
-    const res = await this.api.post(path, { multipart: multipartData });
+    log.step(`API ${method.toUpperCase()} ${path}`);
+    const methodMap = {
+      get: this.api.get.bind(this.api),
+      post: this.api.post.bind(this.api),
+      put: this.api.put.bind(this.api),
+      patch: this.api.patch.bind(this.api),
+      delete: this.api.delete.bind(this.api),
+    };
 
-    let responseBody: any;
+    const res = await methodMap[method](path, options);
+
+    let body: any;
     try {
-      responseBody = await res.json();
+      body = await res.json();
     } catch {
-      responseBody = await res.text();
+      body = await res.text();
     }
+
+    log.error(`➡️ Request URL: ${res.url()}`);
+    if (options.data)
+      log.error(`➡️ Request body: ${JSON.stringify(options.data)}`);
+    log.error(`⬅️ Response: ${JSON.stringify(body)}`);
 
     return {
       status: res.status(),
-      body: responseBody,
+      body,
       ok: res.ok(),
     };
+  }
+
+  get(path: string, params?: any) {
+    return this.request("get", path, { params });
+  }
+
+  post(path: string, data?: any) {
+    return this.request("post", path, { data });
+  }
+
+  put(path: string, data?: any) {
+    return this.request("put", path, { data });
+  }
+
+  patch(path: string, data?: any) {
+    return this.request("patch", path, { data });
+  }
+
+  delete(path: string, data?: any) {
+    return this.request("delete", path, data ? { data } : {});
+  }
+
+  postMultipart(path: string, multipartData: Record<string, any>) {
+    return this.request("post", path, { multipart: multipartData });
   }
 }
