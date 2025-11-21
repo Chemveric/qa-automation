@@ -20,6 +20,7 @@ test.describe("API: get organization roleset", () => {
   });
 
   test(`get buyer organization roleset`, async () => {
+    const api = new OrganizationsApiClient();
     await api.init({}, buyerCookie);
     const res = await api.getOrganizationRoles();
     expect(
@@ -34,18 +35,14 @@ test.describe("API: get organization roleset", () => {
       RolesSchema
     );
     expect(validated.role).toEqual("BUYER");
-    expect(validated.secondaryRole).toEqual("Vendor");
+    expect(validated.secondaryRole).toBeUndefined();
     expect(validated.subroles.BUYER).toEqual([
       "BUYER_PROCUREMENT_MANAGER",
       "BUYER_SCIENTIST",
       "BUYER_LEGAL",
       "BUYER_CUSTOMER_SERVICE",
     ]);
-    expect(validated.subroles.VENDOR).toEqual([
-      "VENDOR_SALES",
-      "VENDOR_TECH_LEAD",
-      "VENDOR_QUALITY",
-    ]);
+    expect(validated.subroles.VENDOR).toBeNull();
   });
 
   test(`get supplier organization roleset`, async () => {
@@ -63,7 +60,7 @@ test.describe("API: get organization roleset", () => {
       RolesSchema
     );
     expect(validated.role).toEqual("BUYER");
-    expect(validated.secondaryRole).toEqual("Vendor");
+    expect(validated.secondaryRole).toEqual("VENDOR");
     expect(validated.subroles.BUYER).toEqual([
       "BUYER_PROCUREMENT_MANAGER",
       "BUYER_SCIENTIST",
@@ -79,6 +76,7 @@ test.describe("API: get organization roleset", () => {
 
   test("should return 401 Unauthorized when login with admin cookie", async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
+    const api = new OrganizationsApiClient();
     await api.init({}, fakeCookie);
     const res = await api.getOrganizationRoles();
     validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
