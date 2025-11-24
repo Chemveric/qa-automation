@@ -1,4 +1,4 @@
-import { test, expect } from "../../src/base/testFixtures.ui";
+import { test } from "../../src/base/testFixtures.ui";
 import { UserLoginPage } from "../../src/pages/UserLoginPage";
 import { UserDashboardPage } from "../../src/pages/UserDashboardPage";
 import { UserMainProductsPage } from "../../src/pages/UserMainProductsPage";
@@ -24,7 +24,6 @@ test.describe("Company Menegement", () => {
     await companyPage.editCity();
     await companyPage.editStreet();
     await companyPage.editPostalCode();
-    // await companyPage.uploadFile();
 
     // save changes
     await companyPage.clickSaveChangesBth();

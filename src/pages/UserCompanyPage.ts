@@ -58,6 +58,7 @@ export class UserCompanyPage extends BasePage {
   }
 
   async assertCompanyDetailsUpdated() {
+    await this.successUpdatedMessage.waitFor({ state: 'visible', timeout: 15000 });
     await expect(this.successUpdatedMessage).toBeVisible();
   }
 
@@ -130,19 +131,24 @@ export class UserCompanyPage extends BasePage {
   }
 
   async openFilePreview(): Promise<Page> {
-    const popupPromise = this.popup;
+    log.step("Open File Preview");
+    const popupPromise = this.page.waitForEvent("popup");
     await this.viewFileButton.scrollIntoViewIfNeeded();
     await this.viewFileButton.click({ force: true });
     const popup = await popupPromise;
-    log.step("Open File Preview");
+    await popup.waitForLoadState("domcontentloaded");
     return popup;
   }
 
   async downloadFile() {
-    const downloadPromise = this.downloadPromise;
-    await this.downloadButton.click({ force: true });
-    const download = await downloadPromise;
     log.step("Download File");
+
+    const downloadPromise = this.page.waitForEvent("download");
+    await this.downloadButton.scrollIntoViewIfNeeded();
+    await this.downloadButton.click({ force: true });
+
+    const download = await downloadPromise;
+    await download.path(); 
     return download;
   }
 

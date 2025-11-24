@@ -15,10 +15,6 @@ export abstract class BasePage {
   }
 
   async goto(relative?: string) {
-    // const url = relative?.startsWith("http")
-    //   ? relative
-    //   : `${this.baseUrl}${relative || this.path || "/"}`;
-
     const targetPath = relative ?? this.path ?? "/";
 
     const url = targetPath.startsWith("http")
