@@ -26,7 +26,9 @@
   "dependencies": {
     "@faker-js/faker": "^10.1.0",
     "@nestjs/config": "^4.0.2",
+    "exceljs": "^4.4.0",
     "jose": "^6.1.0",
-    "mime-types": "^3.0.1"
+    "mime-types": "^3.0.1",
+    "uuid": "^13.0.0"
   }
 }
