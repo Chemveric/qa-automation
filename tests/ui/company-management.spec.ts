@@ -7,8 +7,6 @@ import { ENV } from "../../src/config/env";
 import { da } from "@faker-js/faker/.";
 
 test.describe("Company Menegement", () => {
-  // let user: UserLoginPage;
-
   test("should change company info as buyer", async ({ page }) => {
     const buyer = new UserLoginPage(page);
     await buyer.loginWithAuth0(ENV.buyer.email, ENV.buyer.password);
@@ -43,6 +41,7 @@ test.describe("Company Menegement", () => {
     // upload file and save
     await companyPage.clickEditButton();
     await companyPage.uploadFile();
+
     await companyPage.clickSaveChangesBth();
 
     // assert
