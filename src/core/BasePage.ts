@@ -14,10 +14,16 @@ export abstract class BasePage {
     this.baseUrl = baseUrl || process.env.CHEMVERIC_UI_URL || "";
   }
 
-   async goto(relative?: string) {
-    const url = relative?.startsWith("http")
-      ? relative
-      : `${this.baseUrl}${relative || this.path || "/"}`;
+  async goto(relative?: string) {
+    // const url = relative?.startsWith("http")
+    //   ? relative
+    //   : `${this.baseUrl}${relative || this.path || "/"}`;
+
+    const targetPath = relative ?? this.path ?? "/";
+
+    const url = targetPath.startsWith("http")
+      ? targetPath
+      : `${this.baseUrl.replace(/\/$/, "")}/${targetPath.replace(/^\//, "")}`;
 
     log.step(`Navigate to: ${url}`);
     await this.page.goto(url);

@@ -6,14 +6,23 @@ import { UserCompanyPage } from "../../src/pages/UserCompanyPage";
 import { ENV } from "../../src/config/env";
 import { da } from "@faker-js/faker/.";
 
-test.describe("Company Menegement", () => {
-  // let user: UserLoginPage;
+test.describe("E2E: Company Menegement", () => {
 
   test("should change company info as buyer", async ({ page }) => {
     const buyer = new UserLoginPage(page);
     await buyer.loginWithAuth0(ENV.buyer.email, ENV.buyer.password);
+
+    // navigate on Dashboard page
+    const mainPage = new UserMainProductsPage(page);
+    await mainPage.sidebar.openDashboard();
+
+    // open Dashbord page 
+    const dashboardPage = new UserDashboardPage(page);
+    await dashboardPage.assertLoaded();
+    await dashboardPage.clickOnCompanyManagement();
+
+    // open Company Management page
     const companyPage = new UserCompanyPage(page);
-    await companyPage.goto();
     await companyPage.assertLoaded();
 
     // edit user data
@@ -24,44 +33,22 @@ test.describe("Company Menegement", () => {
     await companyPage.editCity();
     await companyPage.editStreet();
     await companyPage.editPostalCode();
-    // await companyPage.uploadFile();
+
+    // upload file
+    await companyPage.uploadFile();
 
     // save changes
     await companyPage.clickSaveChangesBth();
 
-    // assert
+    // assert 
     await companyPage.assertCompanyDetailsUpdated();
     await companyPage.assertFieldsDataUpdated();
-  });
-
-  test("should upload NDA file as buyer", async ({ page }) => {
-    const buyer = new UserLoginPage(page);
-    await buyer.loginWithAuth0(ENV.buyer.email, ENV.buyer.password);
-    const companyPage = new UserCompanyPage(page);
-    await companyPage.goto();
-    await companyPage.assertLoaded();
-
-    // upload file and save
-    await companyPage.clickEditButton();
-    await companyPage.uploadFile();
-    await companyPage.clickSaveChangesBth();
-
-    // assert
-    await companyPage.assertCompanyDetailsUpdated();
 
     // view uploaded file
     await companyPage.openFilePreview();
     await companyPage.downloadFile();
-  });
 
-  test("should remove uploaded NDA file as buyer", async ({ page }) => {
-    const buyer = new UserLoginPage(page);
-    await buyer.loginWithAuth0(ENV.buyer.email, ENV.buyer.password);
-    const companyPage = new UserCompanyPage(page);
-    await companyPage.goto();
-    await companyPage.assertLoaded();
-
-    // remove uploaded file and save
+    // remove file
     await companyPage.clickEditButton();
     await companyPage.removeFile();
     await companyPage.clickSaveChangesBth();
