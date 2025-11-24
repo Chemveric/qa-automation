@@ -44,4 +44,16 @@ export class OrganizationsApiClient extends BaseAPIClient {
   async organizationsTeammateReinvite(body: Record<string, any>) {
     return this.post(`/v1/organizations/teammates/reinvite`, body);
   }
+
+  async getOrganizationRoles() {
+    return this.get(`/v1/organizations/roles`);
+  }
+
+  async getOrganizationRoleset() {
+    return this.get(`/v1/organizations/roleset`);
+  }
+
+  async getOrganizationNda() {
+    return this.get(`/v1/organizations/nda`);
+  }
 }
