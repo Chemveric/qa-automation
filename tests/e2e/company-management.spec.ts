@@ -1,22 +1,19 @@
-import { test, expect } from "../../src/base/testFixtures.ui";
-import { UserLoginPage } from "../../src/pages/UserLoginPage";
+import { test } from "@playwright/test";
 import { UserDashboardPage } from "../../src/pages/UserDashboardPage";
 import { UserMainProductsPage } from "../../src/pages/UserMainProductsPage";
 import { UserCompanyPage } from "../../src/pages/UserCompanyPage";
-import { ENV } from "../../src/config/env";
-import { da } from "@faker-js/faker/.";
+import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 
 test.describe("E2E: Company Management", () => {
-
+  test.use({
+    storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Buyer),
+  });
   test("should change company info as buyer", async ({ page }) => {
-    const buyer = new UserLoginPage(page);
-    await buyer.loginWithAuth0(ENV.buyer.email, ENV.buyer.password);
-
     // navigate on Dashboard page
     const mainPage = new UserMainProductsPage(page);
     await mainPage.sidebar.openDashboard();
 
-    // open Dashbord page 
+    // open Dashbord page
     const dashboardPage = new UserDashboardPage(page);
     await dashboardPage.assertLoaded();
     await dashboardPage.clickOnCompanyManagement();
@@ -40,7 +37,7 @@ test.describe("E2E: Company Management", () => {
     // save changes
     await companyPage.clickSaveChangesBth();
 
-    // assert 
+    // assert
     await companyPage.assertCompanyDetailsUpdated();
     await companyPage.assertFieldsDataUpdated();
 
