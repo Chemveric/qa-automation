@@ -6,7 +6,7 @@ import { UserCompanyPage } from "../../src/pages/UserCompanyPage";
 import { ENV } from "../../src/config/env";
 import { da } from "@faker-js/faker/.";
 
-test.describe("E2E: Company Menegement", () => {
+test.describe("E2E: Company Management", () => {
 
   test("should change company info as buyer", async ({ page }) => {
     const buyer = new UserLoginPage(page);

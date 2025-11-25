@@ -1,12 +1,9 @@
 import { test } from "../../src/base/testFixtures.ui";
 import { UserLoginPage } from "../../src/pages/UserLoginPage";
-import { UserDashboardPage } from "../../src/pages/UserDashboardPage";
-import { UserMainProductsPage } from "../../src/pages/UserMainProductsPage";
 import { UserCompanyPage } from "../../src/pages/UserCompanyPage";
 import { ENV } from "../../src/config/env";
-import { da } from "@faker-js/faker/.";
 
-test.describe("Company Menegement", () => {
+test.describe("Company Management", () => {
   test("should change company info as buyer", async ({ page }) => {
     const buyer = new UserLoginPage(page);
     await buyer.loginWithAuth0(ENV.buyer.email, ENV.buyer.password);
