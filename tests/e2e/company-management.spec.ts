@@ -10,6 +10,9 @@ test.describe("E2E: Company Management", () => {
   });
   test("should change company info as buyer", async ({ page }) => {
     // navigate on Dashboard page
+    const companyPage = new UserCompanyPage(page);
+    await companyPage.goto();
+    await companyPage.assertLoaded();
     const mainPage = new UserMainProductsPage(page);
     await mainPage.sidebar.openDashboard();
 
@@ -19,7 +22,6 @@ test.describe("E2E: Company Management", () => {
     await dashboardPage.clickOnCompanyManagement();
 
     // open Company Management page
-    const companyPage = new UserCompanyPage(page);
     await companyPage.assertLoaded();
 
     // edit user data
