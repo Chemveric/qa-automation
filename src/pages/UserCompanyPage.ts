@@ -17,9 +17,7 @@ export class UserCompanyPage extends BasePage {
   readonly saveChangesButton;
   readonly uploadFileButton;
   readonly fileInput;
-  readonly popup;
   readonly viewFileButton;
-  readonly downloadPromise;
   readonly downloadButton;
   readonly removeFileButton;
   readonly successUpdatedMessage;
@@ -40,15 +38,11 @@ export class UserCompanyPage extends BasePage {
     this.uploadFileButton = page.getByText("Click to upload");
     this.fileInput = page.locator('input[type="file"]');
     this.removeFileButton = page.locator('button[title="Remove File"]').first();
-    this.popup = page.waitForEvent("popup");
     this.viewFileButton = page
       .getByRole("button", { name: "View File" })
       .first();
-    this.downloadPromise = page.waitForEvent("download");
-    this.downloadButton = this.page
-      .getByRole("button", {
-        name: "Download File",
-      })
+    this.downloadButton = page
+      .getByRole("button", { name: "Download File" })
       .first();
     this.successUpdatedMessage = page.getByText("Company details updated.");
   }
@@ -69,15 +63,11 @@ export class UserCompanyPage extends BasePage {
     expect(await this.inputCompanyName.inputValue()).toBe(
       companyProfileTestData.companyName
     );
-
     expect(await this.province.inputValue()).toBe(
       companyProfileTestData.province
     );
-
     expect(await this.city.inputValue()).toBe(companyProfileTestData.city);
-
     expect(await this.street.inputValue()).toBe(companyProfileTestData.street);
-
     expect(await this.postalCode.inputValue()).toBe(
       companyProfileTestData.postalCode
     );
@@ -86,7 +76,6 @@ export class UserCompanyPage extends BasePage {
   async clickEditButton() {
     await this.editButton.click();
   }
-
   async clickSaveChangesBth() {
     await this.saveChangesButton.click();
   }
@@ -95,31 +84,26 @@ export class UserCompanyPage extends BasePage {
     await this.inputCompanyName.fill(companyProfileTestData.companyName);
     log.step("Edit Company name");
   }
-
   async editCountry() {
     await this.country.click();
     await this.selectCountry.click();
     log.step("Edit Country");
   }
-
   async editProvince() {
     await this.province.click();
     await this.province.fill(companyProfileTestData.province);
     log.step("Edit Province");
   }
-
   async editCity() {
     await this.city.click();
     await this.city.fill(companyProfileTestData.city);
     log.step("Edit City");
   }
-
   async editStreet() {
     await this.street.click();
     await this.street.fill(companyProfileTestData.street);
     log.step("Edit Street");
   }
-
   async editPostalCode() {
     await this.postalCode.click();
     await this.postalCode.fill(companyProfileTestData.postalCode);
@@ -135,9 +119,7 @@ export class UserCompanyPage extends BasePage {
 
   async openFilePreview(): Promise<Page> {
     log.step("Open File Preview");
-
     await this.viewFileButton.scrollIntoViewIfNeeded();
-
     const [popup] = await Promise.all([
       this.page.waitForEvent("popup"),
       this.viewFileButton.click({ force: true }),
@@ -148,7 +130,6 @@ export class UserCompanyPage extends BasePage {
 
   async downloadFile() {
     log.step("Download File");
-
     await this.downloadButton.scrollIntoViewIfNeeded();
     const [download] = await Promise.all([
       this.page.waitForEvent("download"),
