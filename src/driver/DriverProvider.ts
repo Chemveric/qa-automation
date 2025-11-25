@@ -45,8 +45,5 @@ export class DriverProvider {
     }
 
     async dispose() {
-        if (!this.context) return;
-        await this.context?.close();
-        await this.browser?.close();
     }
 }
