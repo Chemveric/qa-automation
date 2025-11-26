@@ -13,17 +13,21 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     inv = new InvitationsPage(page);
   });
 
-  test("should show success toaster after sending Buyer invitations", async ({ page }) => {
+  test("should show success toaster after sending Buyer invitations", async ({
+    page,
+  }) => {
     await inv.open();
     await inv.openCreateForm();
     const buyerData = Invitations.buyer;
     //Act
     await inv.fillAndSend(buyerData);
     //Assert
-    await inv.expectMessage(Messages.success)
+    await inv.expectMessage(Messages.success);
   });
 
-  test("should show success toaster after sending Vendor invitations", async ({ page }) => {
+  test("should show success toaster after sending Vendor invitations", async ({
+    page,
+  }) => {
     await inv.open();
     await inv.openCreateForm();
     const vendorData = Invitations.vendor;
@@ -33,7 +37,9 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     await inv.expectMessage(Messages.success);
   });
 
-  test("should show validation error when send Buyer invitations with the same email", async ({ page }) => {
+  test("should show validation error when send Buyer invitations with the same email", async ({
+    page,
+  }) => {
     await inv.open();
     await inv.openCreateForm();
     const buyerData = Invitations.buyer;
@@ -43,7 +49,9 @@ test.describe("ADA-US-001: Admin sends invitation", () => {
     await inv.expectMessage(Messages.duplicate);
   });
 
-  test("should show validation errors when clicking Invitation button without filling data", async ({ page }) => {
+  test("should show validation errors when clicking Invitation button without filling data", async ({
+    page,
+  }) => {
     await inv.open();
     await inv.openCreateForm();
     await inv.sendWithEmptyFields();

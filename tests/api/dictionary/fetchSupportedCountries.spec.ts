@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { getAdminCookie } from "../../../src/utils/getEnv";
 import { DictionaryApiClient } from "../../../src/api/DictionaryApiClient";
 import { faker } from "@faker-js/faker";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
