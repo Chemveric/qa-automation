@@ -22,7 +22,7 @@ export class UserSidebar {
   }
 
   async openDashboard() {
-    await this.dashboard.click();
+    await this.dashboard.first().click();
     log.step("Open Dashboard Page");
   }
 

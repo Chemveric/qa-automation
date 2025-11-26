@@ -4,10 +4,10 @@ import { Invitations, Messages } from "../../src/data/invitationData";
 import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 
 test.describe("ADA-US-001: Admin sends invitation", () => {
-  let inv: InvitationsPage;
-  test.use({
-    storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Admin),
-  });
+    let inv: InvitationsPage;
+    test.use({
+        storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Admin),
+    });
 
   test.beforeEach(async ({ page }) => {
     inv = new InvitationsPage(page);

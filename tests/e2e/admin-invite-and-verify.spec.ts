@@ -1,9 +1,13 @@
-import { test, expect } from '../../src/base/testFixtures.ui';
+import { test } from "@playwright/test";
 import { InvitationsPage } from "../../src/pages/InvitationsPage";
 import { Invitations, Messages } from "../../src/data/invitationData";
+import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 
 test.describe("E2E: Admin invites Buyer & Vendor", () => {
-  let inv: InvitationsPage;
+    let inv: InvitationsPage;
+    test.use({
+        storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Admin),
+    });
 
   test.beforeEach(async ({ page }) => {
     inv = new InvitationsPage(page);
