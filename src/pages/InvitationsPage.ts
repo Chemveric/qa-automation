@@ -1,6 +1,6 @@
 import { BasePage } from "../core/BasePage";
 import { Page, expect } from "@playwright/test";
-import { IUserData, MessageStatus } from '../data/invitationData';
+import { IUserData, MessageStatus } from "../data/invitationData";
 
 export class InvitationsPage extends BasePage {
   constructor(page: Page) {
@@ -19,7 +19,7 @@ export class InvitationsPage extends BasePage {
     await expect(this.page).toHaveURL(/#\/invitations\/create/);
   }
 
-  async expectMessage(message: string, timeout = 15000){
+  async expectMessage(message: string, timeout = 15000) {
     const locator = this.page.locator("p", { hasText: message });
     await locator.first().waitFor({ timeout });
     const actualCount = await locator.count();
@@ -27,40 +27,40 @@ export class InvitationsPage extends BasePage {
     await expect(locator.first()).toBeVisible();
   }
 
-  async fillAndSend(userData: IUserData){
+  async fillAndSend(userData: IUserData) {
     const { firstName, lastName, email, company } = userData;
 
     await this.page.getByLabel(/first name/i).fill(firstName);
     await this.page.getByLabel(/last name/i).fill(lastName);
     await this.page
-        .locator('input[type="text"][name="companyName"]')
-        .fill(company);
+      .locator('input[type="text"][name="companyName"]')
+      .fill(company);
     await this.page.locator('input[type="text"][name="email"]').fill(email);
     await this.page.getByRole("button", { name: /send invitation/i }).click();
   }
 
   async sendWithEmptyFields() {
-      await this.page.getByRole("button", { name: /send invitation/i }).click();
+    await this.page.locator("//button[@aria-label='Send Invitation']").click();
   }
 
   async expectValidationErrors() {
     const fields = [
-        { name: "First name", error: "First name is required" },
-        { name: "Last name", error: "Last name is required" },
-        { name: "Company name", error: "Company name is required" },
-        { name: "Email", error: "Email is required" },
+      { name: "First name", error: "First name is required" },
+      { name: "Last name", error: "Last name is required" },
+      { name: "Company name", error: "Company name is required" },
+      { name: "Email", error: "Email is required" },
     ];
 
     for (const { name, error } of fields) {
-        const input = this.page.getByRole("textbox", { name });
-        await expect(input, `Expect ${name} to be red color`).toHaveCSS(
-            "color",
-            "rgb(211, 47, 47)"
-        );
-        await expect(
-            this.page.getByText(error),
-            `Expected error message: ${error} is not visible`
-        ).toBeVisible();
+      const input = this.page.getByRole("textbox", { name });
+      await expect(input, `Expect ${name} to be red color`).toHaveCSS(
+        "color",
+        "rgb(211, 47, 47)"
+      );
+      await expect(
+        this.page.getByText(error),
+        `Expected error message: ${error} is not visible`
+      ).toBeVisible();
     }
   }
 }

@@ -157,12 +157,12 @@ export class SignupPage extends BasePage {
     firstName: string;
     lastName: string;
     email: string;
-    company: string;
+    role: string;
   }) {
     await this.firstNameInput.fill(data.firstName);
     await this.lastNameInput.fill(data.lastName);
     await this.emailInput.fill(data.email);
-    await this.companyNameInput.fill(data.company);
+    await this.roleInput.fill(data.role);
     await this.agreementCheckbox.check();
     await this.clickNext();
   }
@@ -212,15 +212,15 @@ export class SignupPage extends BasePage {
 
   async verifyFullPersonalInfoIsFilled(
     invitation: Invitation,
-    data: { role: string }
+    data: { role: string; firstName: string; lastName: string }
   ) {
     const actualFirstName = await this.firstNameInput.inputValue();
     const actualLastName = await this.lastNameInput.inputValue();
     const actualEmail = await this.emailInput.inputValue();
     const actualRole = await this.roleInput.inputValue();
 
-    expect(actualFirstName).toBe(invitation.firstName);
-    expect(actualLastName).toBe(invitation.lastName);
+    expect(actualFirstName).toBe(data.firstName);
+    expect(actualLastName).toBe(data.lastName);
     expect(actualEmail).toBe(invitation.email);
     expect(actualRole).toBe(data.role);
     await expect(this.agreementCheckbox).toBeChecked();

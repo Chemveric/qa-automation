@@ -21,7 +21,8 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
   test("should successfully complete the signup flow as invited buyer.", async ({
     page,
   }) => {
-    const invitationData = InvitationFactory.valid();
+    const user = createSignupTestData();
+    const invitationData = InvitationFactory.invitationWithEmail(user.email);
     const res = await api.postSignupInvite(invitationData);
     const jwtWrapper = new JoseJwtWrapper();
     const invitationId = res.body.id;
@@ -30,7 +31,6 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
 
     await signupPage.clickSignUpButton();
@@ -39,10 +39,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     await signupPage.selectBuyerRoleAndClickNext();
     await signupPage.verifyPersonalInfoStep();
 
-    await signupPage.prefilledPersonalInfoFillRole(user);
-    await signupPage.verifyPrefilledPersonalInfo(invitationData);
-
-    await signupPage.clickNext();
+    await signupPage.fillInPersonalInformationWithCompanyAndClickNext(user);
     await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
@@ -57,7 +54,8 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
   test("should successfully complete the signup flow as invited supplier.", async ({
     page,
   }) => {
-    const invitationData = InvitationFactory.valid();
+    const user = createSignupTestData();
+    const invitationData = InvitationFactory.invitationWithEmail(user.email);
     const res = await api.postSignupInvite(invitationData);
     const jwtWrapper = new JoseJwtWrapper();
     const invitationId = res.body.id;
@@ -66,7 +64,6 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
 
     await signupPage.clickSignUpButton();
@@ -75,10 +72,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     await signupPage.selectSupplierRoleAndClickNext();
     await signupPage.verifyPersonalInfoStep();
 
-    await signupPage.prefilledPersonalInfoFillRole(user);
-    await signupPage.verifyPrefilledPersonalInfo(invitationData);
-
-    await signupPage.clickNext();
+    await signupPage.fillInPersonalInformationWithCompanyAndClickNext(user);
     await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
@@ -93,7 +87,8 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
   test("should successfully complete the signup flow as invited buyer with subrole.", async ({
     page,
   }) => {
-    const invitationData = InvitationFactory.valid();
+    const user = createSignupTestData();
+    const invitationData = InvitationFactory.invitationWithEmail(user.email);
     const res = await api.postSignupInvite(invitationData);
     const jwtWrapper = new JoseJwtWrapper();
     const invitationId = res.body.id;
@@ -102,7 +97,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = createSignupTestData();
+
     await signupPage.openAsInvitedUser(validToken);
 
     await signupPage.clickSignUpButton();
@@ -111,21 +106,13 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     await signupPage.selectBuyerRoleWithSubroleAndClickNext();
     await signupPage.verifyPersonalInfoStep();
 
-    await signupPage.fillInPersonalInformationWithCompanyAndClickNext({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      company: user.company.name,
-    });
-    await signupPage.verifyPrefilledPersonalInfo(invitationData);
-
-    await signupPage.clickNext();
+    await signupPage.fillInPersonalInformationWithCompanyAndClickNext(user);
     await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
     await signupPage.clickNext();
     await signupPage.verifyToastMessage();
-    await signupPage.verifyReviewMessage(invitationData.email);
+    await signupPage.verifyReviewMessage(user.email);
 
     await signupPage.clickDone();
     await signupPage.verifyPendingReviewMessage();
@@ -134,7 +121,8 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
   test("should successfully complete the signup flow as invited supplier with subrole.", async ({
     page,
   }) => {
-    const invitationData = InvitationFactory.valid();
+    const user = createSignupTestData();
+    const invitationData = InvitationFactory.invitationWithEmail(user.email);
     const res = await api.postSignupInvite(invitationData);
     const jwtWrapper = new JoseJwtWrapper();
     const invitationId = res.body.id;
@@ -143,7 +131,6 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
@@ -151,10 +138,7 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     await signupPage.selectSupplierRoleWithSubroleAndClickNext();
     await signupPage.verifyPersonalInfoStep();
 
-    await signupPage.prefilledPersonalInfoFillRole(user);
-    await signupPage.verifyPrefilledPersonalInfo(invitationData);
-
-    await signupPage.clickNext();
+    await signupPage.fillInPersonalInformationWithCompanyAndClickNext(user);
     await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
@@ -169,7 +153,8 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
   test("should allow user to navigate back and see previously filled data", async ({
     page,
   }) => {
-    const invitationData = InvitationFactory.valid();
+    const user = createSignupTestData();
+    const invitationData = InvitationFactory.invitationWithEmail(user.email);
     const res = await api.postSignupInvite(invitationData);
     const jwtWrapper = new JoseJwtWrapper();
     const invitationId = res.body.id;
@@ -178,7 +163,6 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
       signUpInvitation: invitationId,
     });
     const signupPage = new SignupPage(page);
-    const user = createSignupTestData();
     await signupPage.openAsInvitedUser(validToken);
     await signupPage.clickSignUpButton();
     await signupPage.verifyBusinessTypeStep();
@@ -190,9 +174,8 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     await signupPage.verifyBuyerRadioIsChecked();
     await signupPage.clickNext();
 
-    await signupPage.prefilledPersonalInfoFillRole(user);
-    await signupPage.verifyPrefilledPersonalInfo(invitationData);
-    await signupPage.clickNext();
+    await signupPage.fillInPersonalInformationWithCompanyAndClickNext(user);
+    await signupPage.verifyCompanyDetailsStep();
 
     await signupPage.fillInCompanyInformation(user.company);
     await signupPage.clickBack();
