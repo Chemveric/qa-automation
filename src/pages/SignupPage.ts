@@ -153,6 +153,20 @@ export class SignupPage extends BasePage {
     await this.clickNext();
   }
 
+  async fillInPersonalInformationWithCompanyAndClickNext(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    company: string;
+  }) {
+    await this.firstNameInput.fill(data.firstName);
+    await this.lastNameInput.fill(data.lastName);
+    await this.emailInput.fill(data.email);
+    await this.companyNameInput.fill(data.company);
+    await this.agreementCheckbox.check();
+    await this.clickNext();
+  }
+
   async prefilledPersonalInfoFillRole(data: { role: string }) {
     await this.roleInput.fill(data.role);
     await this.agreementCheckbox.check();

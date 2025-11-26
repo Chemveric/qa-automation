@@ -111,7 +111,12 @@ test.describe("ABA-US-001 Sign Up as Buyer and Supplier Invited by Admin ", () =
     await signupPage.selectBuyerRoleWithSubroleAndClickNext();
     await signupPage.verifyPersonalInfoStep();
 
-    await signupPage.prefilledPersonalInfoFillRole(user);
+    await signupPage.fillInPersonalInformationWithCompanyAndClickNext({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      company: user.company.name,
+    });
     await signupPage.verifyPrefilledPersonalInfo(invitationData);
 
     await signupPage.clickNext();
