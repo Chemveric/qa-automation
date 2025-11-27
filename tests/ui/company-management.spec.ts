@@ -3,18 +3,47 @@ import { UserCompanyPage } from "../../src/pages/UserCompanyPage";
 import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 
 test.describe("Company Management", () => {
+  let companyPage: UserCompanyPage;
+
   test.use({
     storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Buyer),
   });
-  test("should change company info as buyer", async ({ page }) => {
-    const companyPage = new UserCompanyPage(page);
+
+  test.beforeEach(async ({ page }) => {
+    companyPage = new UserCompanyPage(page);
+  });
+
+  test("buyer should change company info to Europe", async ({ page }) => {
     await companyPage.goto();
     await companyPage.assertLoaded();
 
     // edit user data
     await companyPage.clickEditButton();
     await companyPage.editCompanyName();
-    await companyPage.editCountry();
+    await companyPage.editRegionSelectEurope();
+    await companyPage.editCountrySelectEstonia();
+    await companyPage.editProvince();
+    await companyPage.editCity();
+    await companyPage.editStreet();
+    await companyPage.editPostalCode();
+
+    // save changes
+    await companyPage.clickSaveChangesBth();
+
+    // assert
+    await companyPage.assertCompanyDetailsUpdated();
+    await companyPage.assertFieldsDataUpdated();
+  });
+
+  test("buyer should change company info to China", async ({ page }) => {
+    await companyPage.goto();
+    await companyPage.assertLoaded();
+
+    // edit user data
+    await companyPage.clickEditButton();
+    await companyPage.editCompanyName();
+    await companyPage.editRegionSelectChina();
+    await companyPage.editCountrySelectChina();
     await companyPage.editProvince();
     await companyPage.editCity();
     await companyPage.editStreet();
@@ -29,7 +58,6 @@ test.describe("Company Management", () => {
   });
 
   test("should upload NDA file as buyer", async ({ page }) => {
-    const companyPage = new UserCompanyPage(page);
     await companyPage.goto();
     await companyPage.assertLoaded();
 
@@ -48,7 +76,7 @@ test.describe("Company Management", () => {
   });
 
   test("should remove uploaded NDA file as buyer", async ({ page }) => {
-    const companyPage = new UserCompanyPage(page);
+    // const companyPage = new UserCompanyPage(page);
     await companyPage.goto();
     await companyPage.assertLoaded();
 

@@ -42,6 +42,6 @@ export const companyProfileTestData = {
   country: randomCountry,
   province: faker.location.state(),
   city: faker.location.city(),
-  street: faker.location.street(),
+  street: faker.location.streetAddress(),
   postalCode: faker.location.zipCode(),
 };
