@@ -24,6 +24,13 @@ export class UserMembersPage extends BasePage {
   readonly firstNameErrorMessage;
   readonly lastNameErrorMessage;
   readonly emailErrorMessage;
+  readonly resendButton;
+  readonly cancelButton;
+  readonly deleteButton;
+  readonly successResendMessage;
+  readonly successUpdatedMessage;
+  readonly successDeleteMessage;
+  readonly dialog;
 
   private readonly roleMap: Record<Role, Locator>;
 
@@ -61,9 +68,18 @@ export class UserMembersPage extends BasePage {
 
     this.saveChangesButton = page.getByRole("button", { name: "Save Changes" });
     this.successMessage = page.getByText(/successfully invited/i);
-    this.firstNameErrorMessage = page.getByText("This field is required").nth(0);
+    this.successResendMessage = page.getByText(/successfully resent/i);
+    this.successUpdatedMessage = page.getByText(/successfully edited/i);
+    this.successDeleteMessage = page.getByText(/successfully deleted/i)
+    this.firstNameErrorMessage = page
+      .getByText("This field is required")
+      .nth(0);
     this.lastNameErrorMessage = page.getByText("This field is required").nth(1);
     this.emailErrorMessage = page.getByText("Invalid email format");
+    this.resendButton = page.getByRole("button", { name: "Resend" });
+    this.cancelButton = page.getByRole("button", { name: "Cancel" });
+    this.deleteButton = page.getByRole("button", { name: "Delete"});
+    this.dialog = page.locator(".MuiDialog-paper");
   }
 
   async assertLoaded() {
@@ -83,10 +99,35 @@ export class UserMembersPage extends BasePage {
     await expect(this.firstNameErrorMessage).toBeVisible();
     await expect(this.lastNameErrorMessage).toBeVisible();
     await expect(this.emailErrorMessage).toBeVisible();
-    await expect(this.memberFirstName).toHaveCSS('color', 'rgb(211, 47, 47)');
-    await expect(this.memberLastName).toHaveCSS('color', 'rgb(211, 47, 47)');
-    await expect(this.corporateEmail).toHaveCSS('color', 'rgb(211, 47, 47)');
-    await expect(this.memberRolesDropdown).toHaveCSS('color', 'rgb(211, 47, 47)');
+    await expect(this.memberFirstName).toHaveCSS("color", "rgb(211, 47, 47)");
+    await expect(this.memberLastName).toHaveCSS("color", "rgb(211, 47, 47)");
+    await expect(this.corporateEmail).toHaveCSS("color", "rgb(211, 47, 47)");
+    await expect(this.memberRolesDropdown).toHaveCSS(
+      "color",
+      "rgb(211, 47, 47)"
+    );
+  }
+
+  async assertInvited() {
+    const row = await this.getRowByMemberName();
+    const chip = row.locator("div.MuiChip-colorDefault");
+    await expect(chip).toHaveText(/invited/i);
+  }
+
+  async assertRecendInvite() {
+    await expect(this.successResendMessage).toBeVisible();
+  }
+
+  async assertUpdateInvite() {
+    await expect(this.successUpdatedMessage).toBeVisible();
+  }
+
+  async assertDialogIsCloced() {
+    await expect(this.dialog).not.toBeVisible();
+  }
+
+  async assertDeleteInvite(){
+    await expect(this.successDeleteMessage).toBeVisible();
   }
 
   async clickOnInviteMember() {
@@ -99,6 +140,10 @@ export class UserMembersPage extends BasePage {
 
   async fillMemberLastName() {
     await this.memberLastName.fill("AQA-Member-test");
+  }
+
+  async updateMemberLastName(){
+    await this.memberLastName.fill("AQA-Member-updated");
   }
 
   async fillMemberEmail() {
@@ -128,5 +173,39 @@ export class UserMembersPage extends BasePage {
 
   async saveChanges() {
     await this.saveChangesButton.click();
+  }
+
+  async getRowByMemberName() {
+    return this.page
+      .getByRole("row")
+      .filter({
+        has: this.page.getByText("AQA-Nadia AQA-Member-test"),
+      })
+      .first();
+  }
+
+  async resendInvite() {
+    const row = await this.getRowByMemberName();
+    await row.getByLabel("Resend Invitation").click();
+    await this.resendButton.click();
+  }
+
+  async cancelResend() {
+    const row = await this.getRowByMemberName();
+   await row.getByLabel("Resend Invitation").click();
+    await this.cancelButton.click();
+  }
+
+  async clickEditMember() {
+    const row = await this.getRowByMemberName();
+    const editBtn = row.getByLabel('Edit');
+    await editBtn.click();
+  }
+
+  async deleteMember() {
+    const row = await this.getRowByMemberName();
+    const deleteBtn = row.getByLabel("Delete");
+    await deleteBtn.click();
+    await this.deleteButton.click();
   }
 }
