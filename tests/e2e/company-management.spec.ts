@@ -27,11 +27,12 @@ test.describe("E2E: Company Management", () => {
     // edit user data
     await companyPage.clickEditButton();
     await companyPage.editCompanyName();
-    await companyPage.editCountry();
-    await companyPage.editProvince();
+    await companyPage.editRegionSelectUSA();
+    await companyPage.editCountrySelectUSA();
+    await companyPage.selectState();
     await companyPage.editCity();
     await companyPage.editStreet();
-    await companyPage.editPostalCode();
+    await companyPage.editPostalCodeUsa();
 
     // upload file
     await companyPage.uploadFile();
@@ -40,8 +41,7 @@ test.describe("E2E: Company Management", () => {
     await companyPage.clickSaveChangesBth();
 
     // assert
-    await companyPage.assertCompanyDetailsUpdated();
-    await companyPage.assertFieldsDataUpdated();
+    await companyPage.assertFieldsDataUpdatedForUSA();
 
     // view uploaded file
     await companyPage.openFilePreview();

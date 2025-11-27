@@ -6,6 +6,7 @@ import { ENV } from "../config/env";
 export class UserDashboardPage extends BasePage {
   readonly sidebar: UserSidebar;
   readonly companyManagement;
+  readonly teamManagement;
 
   constructor(page: Page) {
     super(page, "dashboard", ENV.guest.url);
@@ -13,10 +14,12 @@ export class UserDashboardPage extends BasePage {
     this.companyManagement = page.getByRole("button", {
       name: "Company Management",
     });
+    this.teamManagement = page.getByRole("button", {
+      name: "Team Management",
+    });
   }
 
   async assertLoaded() {
-    await this.goto(this.path);
     await expect(
       this.page.getByRole("heading", { name: "Dashboard" })
     ).toBeVisible();
@@ -24,5 +27,9 @@ export class UserDashboardPage extends BasePage {
 
   async clickOnCompanyManagement() {
     await this.companyManagement.click();
+  }
+
+  async clickOnTeamManagement(){
+    await this.teamManagement.click();
   }
 }
