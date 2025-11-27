@@ -25,6 +25,7 @@ test.describe("Team Managemant", () => {
 
     //assert
     await teamMembersPage.assertSuccessMessageIsVisible();
+    await teamMembersPage.assertInvited();
   });
 
   test("buyer should successfully invite admin member: Bug", async ({
@@ -57,5 +58,53 @@ test.describe("Team Managemant", () => {
 
     //assert
     await teamMembersPage.assertErrors();
+  });
+
+  test("should successfully resend invitation ", async ({ page }) => {
+    await teamMembersPage.goto();
+    await teamMembersPage.assertLoaded();
+
+    // act
+    await teamMembersPage.resendInvite();
+
+    //assert
+    await teamMembersPage.assertRecendInvite();
+  });
+
+  test("should cansel resend invitation ", async ({ page }) => {
+    await teamMembersPage.goto();
+    await teamMembersPage.assertLoaded();
+
+    // act
+    await teamMembersPage.cancelResend();
+
+    //assert
+    await teamMembersPage.assertDialogIsCloced();
+  });
+
+  test("should edit invitation ", async ({ page }) => {
+    await teamMembersPage.goto();
+    await teamMembersPage.assertLoaded();
+
+    // act
+    await teamMembersPage.clickEditMember();
+    await teamMembersPage.updateMemberLastName();
+    await teamMembersPage.saveChanges();
+
+    //assert
+    await teamMembersPage.assertUpdateInvite();
+    await teamMembersPage.assertDialogIsCloced();
+  });
+
+    test("should delete invitation ", async ({ page }) => {
+    await teamMembersPage.goto();
+    await teamMembersPage.assertLoaded();
+
+    // act
+    await teamMembersPage.deleteMember();
+
+    //assert
+    await teamMembersPage.assertDialogIsCloced();
+    await teamMembersPage.assertDeleteInvite();
   });
 });
