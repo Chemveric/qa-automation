@@ -28,7 +28,7 @@ export class UserMembersPage extends BasePage {
   private readonly roleMap: Record<Role, Locator>;
 
   constructor(page: Page) {
-    super(page, "members", ENV.guest.url);
+    super(page, "/dashboard/members", ENV.guest.url);
     this.sidebar = new UserSidebar(page);
     this.inviteMemberButton = page.getByRole("button", {
       name: "Invite Member",
