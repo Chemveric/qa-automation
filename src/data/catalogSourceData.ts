@@ -20,42 +20,36 @@ function randomCasNumber() {
   }-${Math.floor(Math.random() * 9)}`;
 }
 
-function randomSmiles() {
-  const smiles = [
-    "O=C(N)c1ccc(Cl)cc1",
-    "C1=CC=CC=C1",
-    "CC(=O)O",
-    "N[C@@H](C)C(=O)O",
-  ];
-  return smiles[Math.floor(Math.random() * smiles.length)];
-}
-
 export async function createRandomXlsx(filename: string, count: number = 1) {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Chemicals");
 
   sheet.addRow([
-    "name",
-    "structureUrl",
-    "molWeight",
-    "molFormula",
+    "structure",
+    "molecular_weight",
+    "molecular_formula",
     "mfcd",
-    "cas",
-    "suppliers",
-    "smiles",
+    "cas_number",
+    "supplier",
+    "catalog_no",
+    "product_name",
+    "name",
   ]);
 
   for (let i = 0; i < count; i++) {
-    const name = randomString(6);
+    const productName = randomString(8);
+    const catalogNo = "CAT-" + Math.floor(Math.random() * 999999);
+
     sheet.addRow([
-      name,
       `https://cdn.example.com/structures/${randomString(8)}.png`,
       randomNumber(),
       `C${Math.floor(Math.random() * 20)}H${Math.floor(Math.random() * 40)}`,
       `MFCD${Math.floor(Math.random() * 100000)}`,
       randomCasNumber(),
-      `SUP-${Math.floor(Math.random() * 9999)}`,
-      randomSmiles(),
+      `Supplier-${Math.floor(Math.random() * 5000)}`,
+      catalogNo,
+      productName,
+      randomString(6),
     ]);
   }
 
@@ -66,4 +60,26 @@ export async function createRandomXlsx(filename: string, count: number = 1) {
   await workbook.xlsx.writeFile(filePath);
 
   return filePath;
+}
+
+export async function readChemicalXlsx(xlsxPath: string) {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(xlsxPath);
+
+  const sheet = workbook.getWorksheet("Chemicals");
+  if (!sheet) throw new Error("Worksheet 'Chemicals' not found");
+
+  const row = sheet.getRow(2);
+
+  return {
+    structure: row.getCell(1).value?.toString() || "",
+    molecular_weight: Number(row.getCell(2).value),
+    molecular_formula: row.getCell(3).value?.toString() || "",
+    mfcd: row.getCell(4).value?.toString() || "",
+    cas_number: row.getCell(5).value?.toString() || "",
+    supplier: row.getCell(6).value?.toString() || "",
+    catalog_no: row.getCell(7).value?.toString() || "",
+    product_name: row.getCell(8).value?.toString() || "",
+    name: row.getCell(9).value?.toString() || "",
+  };
 }

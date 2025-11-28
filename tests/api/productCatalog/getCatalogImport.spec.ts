@@ -12,10 +12,9 @@ import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import fs from "fs";
-import { createRandomXlsx } from "../../../src/data/catalogueSourceData";
+import { createRandomXlsx } from "../../../src/data/catalogSourceData";
 import { getFileInfo } from "../../../src/utils/fileInfo";
 import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient";
-import { faker } from "@faker-js/faker";
 import { JobStatusSchema } from "../../../src/schema/jobSchema";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 
