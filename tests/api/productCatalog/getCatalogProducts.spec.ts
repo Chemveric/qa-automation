@@ -1,9 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  getAdminCookie,
-  getSupplierCookie,
-  getBuyerCookie,
-} from "../../../src/utils/getEnv";
+import { getSupplierCookie, getBuyerCookie } from "../../../src/utils/getEnv";
 import {
   UploadSessionsApiClient,
   UploadData,
@@ -12,15 +8,19 @@ import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import fs from "fs";
-import { createRandomXlsx } from "../../../src/data/catalogueSourceData";
+import {
+  createRandomXlsx,
+  readChemicalXlsx,
+} from "../../../src/data/catalogSourceData";
 import { getFileInfo } from "../../../src/utils/fileInfo";
 import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient";
-import { JobStatusSchema } from "../../../src/schema/jobSchema";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
+import { CatalogResponseSchema } from "../../../src/schema/catalogProductsSchema";
+import { randomUUID } from "crypto";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: GET catalog imports", () => {
+test.describe("API: GET catalog products", () => {
   let api: UploadSessionsApiClient;
   let importApi: CatalogImportApiClient;
   let userApi: UserApiClient;
@@ -30,13 +30,12 @@ test.describe("API: GET catalog imports", () => {
   let sessionId: string;
   let xlsxPath: string;
   let fileid: string;
-  let jobId: string;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
     buyerCookie = getBuyerCookie();
 
-    xlsxPath = await createRandomXlsx("chemical_random.xlsx", 3);
+    xlsxPath = await createRandomXlsx("chemical_random.xlsx", 1);
     const fileInfo = await getFileInfo(xlsxPath);
 
     // get user data
@@ -102,28 +101,36 @@ test.describe("API: GET catalog imports", () => {
       withRefresh: true,
     };
     const importResponse = await importApi.postImports(importBody);
-    jobId = importResponse.body.jobId;
+    let jobId = importResponse.body.jobId;
+    await waitForImportCompleted(importApi, jobId);
   });
 
-  test(`should return status for existing jobId`, async () => {
+  test(`should return all existing products`, async () => {
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
 
-    const res = await importApi.getImports(jobId);
+    const res = await importApi.getProducts();
     expect(res.status).toBe(200);
     const body = await res.body;
 
     const validated = await validateResponse(
       { status: res.status, body },
-      JobStatusSchema
+      CatalogResponseSchema
     );
-    expect(validated.jobId).toBe(jobId);
+    const excelData = await readChemicalXlsx(xlsxPath);
+    expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+      true
+    );
   });
 
-  test(`should return status for existing jobId session via backend`, async () => {
+  test(`should return product uploaded via backend`, async () => {
     // upload file via backend
     const uploadApi = new UploadSessionsApiClient();
-    const fileInfo = await getFileInfo(xlsxPath);
+    let xlsxPathbackend = await createRandomXlsx(
+      "chemical_random_backend.xlsx",
+      1
+    );
+    const fileInfo = await getFileInfo(xlsxPathbackend);
     await uploadApi.init({ "Content-Type": false }, supplierCookie);
     const uploadData: UploadData = FileUploadValidData.catalog(
       supplierOrganizationId,
@@ -164,21 +171,28 @@ test.describe("API: GET catalog imports", () => {
         withRefresh: true,
       };
       const importCatalog = await importApi.postImports(importBody);
-
-      const res = await importApi.getImports(importCatalog.body.jobId);
-      expect(res.status).toBe(201);
+      await waitForImportCompleted(importApi, importCatalog.body.jobId);
+      const res = await importApi.getProducts();
+      expect(res.status).toBe(200);
       const body = await res.body;
 
       const validated = await validateResponse(
         { status: res.status, body },
-        JobStatusSchema
+        CatalogResponseSchema
       );
-      expect(validated.jobId).toBe(importCatalog.body.jobId);
+      const excelData = await readChemicalXlsx(xlsxPathbackend);
+      expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+        true
+      );
     }
   });
 
-  test(`should return status for existing jobId when send request with buyer cookie`, async () => {
-    const fileInfo = await getFileInfo(xlsxPath);
+  test(`should return products send request with buyer cookie`, async () => {
+    const xlsxPathBuyer = await createRandomXlsx(
+      "chemical_random_buyer.xlsx",
+      1
+    );
+    const fileInfo = await getFileInfo(xlsxPathBuyer);
 
     // get buyer data
     userApi = new UserApiClient();
@@ -202,7 +216,7 @@ test.describe("API: GET catalog imports", () => {
     const uploadRes = await api.uploadFile(
       resSession.body.presignedUrl,
       resSession.body.headers,
-      fs.readFileSync(xlsxPath)
+      fs.readFileSync(xlsxPathBuyer)
     );
     expect([200, 201, 204]).toContain(uploadRes.status);
 
@@ -244,31 +258,47 @@ test.describe("API: GET catalog imports", () => {
       withRefresh: true,
     };
     const importCatalog = await importApi.postImports(importBody);
-    const res = await importApi.getImports(importCatalog.body.jobId);
+    await waitForImportCompleted(importApi, importCatalog.body.jobId);
+    const res = await importApi.getProducts();
     expect(res.status).toBe(200);
     const body = await res.body;
 
     const validated = await validateResponse(
       { status: res.status, body },
-      JobStatusSchema
+      CatalogResponseSchema
     );
-    expect(validated.jobId).toBe(importCatalog.body.jobId);
+    const excelData = await readChemicalXlsx(xlsxPathBuyer);
+    expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+      true
+    );
   });
 
-  test(`should return 404 when wrong jobId`, async () => {
+  test(`should return 404 when fake coockie`, async () => {
+    const fakeCookie = `__Secure-admin-sid=${randomUUID()}`;
     importApi = new CatalogImportApiClient();
-    const wrongId = 0;
-    await importApi.init({}, supplierCookie);
-    const res = await importApi.getImports(wrongId);
-    expect(res.status).toBe(200);
-    const body = await res.body;
-
-    const validated = await validateResponse(
-      { status: res.status, body },
-      JobStatusSchema
-    );
-    expect(validated.jobId).toBe(wrongId.toString());
-    expect(validated.state).toBe("failed");
-    expect(validated.failureReason).toBe("Job not found");
+    await importApi.init({}, fakeCookie);
+    const res = await importApi.getProducts();
+    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
+
+  async function waitForImportCompleted(
+    importApi: CatalogImportApiClient,
+    jobId: number,
+    timeoutMs = 180_000,
+    intervalMs = 5000
+  ) {
+    const start = Date.now();
+    while (true) {
+      const res = await importApi.getImports(jobId);
+      if (res.status !== 200) throw new Error(res.body.failureReason);
+      const body = res.body;
+      await res.body;
+      const state = body.state;
+      if (state === "completed") return body;
+      if (state === "failed") throw new Error(body.failureReason);
+      if (Date.now() - start > timeoutMs)
+        throw new Error("Timeout waiting for completion");
+      await new Promise((r) => setTimeout(r, intervalMs));
+    }
+  }
 });

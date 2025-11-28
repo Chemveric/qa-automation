@@ -11,4 +11,7 @@ export class CatalogImportApiClient extends BaseAPIClient {
   async getImports(id: string | number) {
     return this.get(`/v1/catalog/imports/${id}`);
   }
+  async getProducts() {
+    return this.get(`/v1/catalog/products`);
+  }
 }
