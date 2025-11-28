@@ -1,24 +1,24 @@
 import { z } from "zod";
 
 export const CatalogItemSchema = z.object({
-	id: z.string(), 
-	name: z.string(),
+  id: z.string(),
+  name: z.string(),
 
-	structureUrl: z.string().url().optional(),
-	molWeight: z.number().optional(),
-	molFormula: z.string().optional(),
-	mfcd: z.string().optional(),
-	cas: z.string().optional(),
-	smiles: z.string().optional(),
+  structureUrl: z.string().url().optional(),
+  molWeight: z.number().optional(),
+  molFormula: z.string().optional(),
+  mfcd: z.string().optional(),
+  cas: z.string().optional(),
+  smiles: z.string().optional(),
 
-	suppliers: z.array(z.string()),
-	catalogNumbers: z.array(z.string()),
-	inStock: z.boolean()
+  suppliers: z.array(z.string()),
+  catalogNumbers: z.array(z.string()),
+  inStock: z.boolean(),
 });
 
 export const CatalogResponseSchema = z.object({
-	total: z.number(),
-	items: z.array(CatalogItemSchema)
+  total: z.number(),
+  items: z.array(CatalogItemSchema),
 });
 
 export type CatalogItem = z.infer<typeof CatalogItemSchema>;
