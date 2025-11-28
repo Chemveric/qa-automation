@@ -8,4 +8,7 @@ export class CatalogImportApiClient extends BaseAPIClient {
   async postImports(body: Record<string, any>) {
     return this.post("/v1/catalog/imports", body);
   }
+  async getImports(id: string | number) {
+    return this.get(`/v1/catalog/imports/${id}`);
+  }
 }
