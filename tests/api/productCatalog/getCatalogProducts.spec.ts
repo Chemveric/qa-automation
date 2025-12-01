@@ -1,9 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  getAdminCookie,
-  getSupplierCookie,
-  getBuyerCookie,
-} from "../../../src/utils/getEnv";
+import { getSupplierCookie, getBuyerCookie } from "../../../src/utils/getEnv";
 import {
   UploadSessionsApiClient,
   UploadData,
@@ -12,20 +8,24 @@ import { UserApiClient } from "../../../src/api/UserApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploadValidData";
 import fs from "fs";
+import {
+  createRandomXlsx,
+  readChemicalXlsx,
+} from "../../../src/data/catalogSourceData";
 import { getFileInfo } from "../../../src/utils/fileInfo";
 import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient";
-import { faker } from "@faker-js/faker";
-import { createRandomXlsx } from "../../../src/data/catalogSourceData";
+import { validateResponse } from "../../../helpers/schemaResponseValidator";
+import { CatalogResponseSchema } from "../../../src/schema/catalogProductsSchema";
+import { randomUUID } from "crypto";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: POST catalog imports", () => {
+test.describe("API: GET catalog products", () => {
   let api: UploadSessionsApiClient;
   let importApi: CatalogImportApiClient;
   let userApi: UserApiClient;
   let supplierCookie: string;
   let buyerCookie: string;
-  let adminCookie: string;
   let supplierOrganizationId: string;
   let sessionId: string;
   let xlsxPath: string;
@@ -33,10 +33,9 @@ test.describe("API: POST catalog imports", () => {
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
-    adminCookie = getAdminCookie();
     buyerCookie = getBuyerCookie();
 
-    xlsxPath = await createRandomXlsx("chemical_random.xlsx", 3);
+    xlsxPath = await createRandomXlsx("chemical_random.xlsx", 1);
     const fileInfo = await getFileInfo(xlsxPath);
 
     // get user data
@@ -94,9 +93,6 @@ test.describe("API: POST catalog imports", () => {
     const resFinalize = await api.postUploadSessionsFinalize(finalizeBody);
     expect(resFinalize.status).toBe(201);
     fileid = resFinalize.body.fileIds[0];
-  });
-
-  test(`should return jobid for checking file upload`, async () => {
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
     const importBody = {
@@ -104,16 +100,37 @@ test.describe("API: POST catalog imports", () => {
       mode: "merge",
       withRefresh: true,
     };
-    const importCatalog = await importApi.postImports(importBody);
-    expect(importCatalog.status).toBe(201);
-    expect(importCatalog.body).toHaveProperty("jobId");
+    const importResponse = await importApi.postImports(importBody);
+    let jobId = importResponse.body.jobId;
+    await waitForImportCompleted(importApi, jobId);
   });
 
-  test(`should finalize upload session via backend`, async () => {
-    // upload file via backend
+  test(`should return all existing products`, async () => {
+    importApi = new CatalogImportApiClient();
+    await importApi.init({}, supplierCookie);
 
+    const res = await importApi.getProducts();
+    expect(res.status).toBe(200);
+    const body = await res.body;
+
+    const validated = await validateResponse(
+      { status: res.status, body },
+      CatalogResponseSchema
+    );
+    const excelData = await readChemicalXlsx(xlsxPath);
+    expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+      true
+    );
+  });
+
+  test(`should return product uploaded via backend`, async () => {
+    // upload file via backend
     const uploadApi = new UploadSessionsApiClient();
-    const fileInfo = await getFileInfo(xlsxPath);
+    let xlsxPathbackend = await createRandomXlsx(
+      "chemical_random_backend.xlsx",
+      1
+    );
+    const fileInfo = await getFileInfo(xlsxPathbackend);
     await uploadApi.init({ "Content-Type": false }, supplierCookie);
     const uploadData: UploadData = FileUploadValidData.catalog(
       supplierOrganizationId,
@@ -154,13 +171,28 @@ test.describe("API: POST catalog imports", () => {
         withRefresh: true,
       };
       const importCatalog = await importApi.postImports(importBody);
-      expect(importCatalog.status).toBe(201);
-      expect(importCatalog.body).toHaveProperty("jobId");
+      await waitForImportCompleted(importApi, importCatalog.body.jobId);
+      const res = await importApi.getProducts();
+      expect(res.status).toBe(200);
+      const body = await res.body;
+
+      const validated = await validateResponse(
+        { status: res.status, body },
+        CatalogResponseSchema
+      );
+      const excelData = await readChemicalXlsx(xlsxPathbackend);
+      expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+        true
+      );
     }
   });
 
-  test(`should finalize upload session via presigned link when send request with buyer cookie`, async () => {
-    const fileInfo = await getFileInfo(xlsxPath);
+  test(`should return products send request with buyer cookie`, async () => {
+    const xlsxPathBuyer = await createRandomXlsx(
+      "chemical_random_buyer.xlsx",
+      1
+    );
+    const fileInfo = await getFileInfo(xlsxPathBuyer);
 
     // get buyer data
     userApi = new UserApiClient();
@@ -184,7 +216,7 @@ test.describe("API: POST catalog imports", () => {
     const uploadRes = await api.uploadFile(
       resSession.body.presignedUrl,
       resSession.body.headers,
-      fs.readFileSync(xlsxPath)
+      fs.readFileSync(xlsxPathBuyer)
     );
     expect([200, 201, 204]).toContain(uploadRes.status);
 
@@ -226,37 +258,47 @@ test.describe("API: POST catalog imports", () => {
       withRefresh: true,
     };
     const importCatalog = await importApi.postImports(importBody);
-    expect(importCatalog.status).toBe(201);
-    expect(importCatalog.body).toHaveProperty("jobId");
-  });
+    await waitForImportCompleted(importApi, importCatalog.body.jobId);
+    const res = await importApi.getProducts();
+    expect(res.status).toBe(200);
+    const body = await res.body;
 
-  test(`should return 404 when wrong fileId`, async () => {
-    importApi = new CatalogImportApiClient();
-    var wrongFileId = faker.string.uuid();
-    await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: wrongFileId,
-      mode: "merge",
-      withRefresh: true,
-    };
-    const importCatalog = await importApi.postImports(importBody);
-    validator.expectStatusCodeAndMessage(importCatalog, 404, "File not found");
-  });
-
-  test(`should return 422 when not uuid`, async () => {
-    importApi = new CatalogImportApiClient();
-    var wrongFileId = "000-3443-223232";
-    await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: wrongFileId,
-      mode: "merge",
-      withRefresh: true,
-    };
-    const importCatalog = await importApi.postImports(importBody);
-    validator.expectStatusCodeAndMessage(
-      importCatalog,
-      422,
-      "fileId must be a UUID"
+    const validated = await validateResponse(
+      { status: res.status, body },
+      CatalogResponseSchema
+    );
+    const excelData = await readChemicalXlsx(xlsxPathBuyer);
+    expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+      true
     );
   });
+
+  test(`should return 404 when fake coockie`, async () => {
+    const fakeCookie = `__Secure-admin-sid=${randomUUID()}`;
+    importApi = new CatalogImportApiClient();
+    await importApi.init({}, fakeCookie);
+    const res = await importApi.getProducts();
+    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
+  });
+
+  async function waitForImportCompleted(
+    importApi: CatalogImportApiClient,
+    jobId: number,
+    timeoutMs = 180_000,
+    intervalMs = 5000
+  ) {
+    const start = Date.now();
+    while (true) {
+      const res = await importApi.getImports(jobId);
+      if (res.status !== 200) throw new Error(res.body.failureReason);
+      const body = res.body;
+      await res.body;
+      const state = body.state;
+      if (state === "completed") return body;
+      if (state === "failed") throw new Error(body.failureReason);
+      if (Date.now() - start > timeoutMs)
+        throw new Error("Timeout waiting for completion");
+      await new Promise((r) => setTimeout(r, intervalMs));
+    }
+  }
 });
