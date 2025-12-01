@@ -27,7 +27,7 @@ test.describe("API: publish/post RFQs ", () => {
   test(`should return success when publish BULK RFQ without notes`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqBulk();
+    const rfqDataOpen = RfqFactory.bulk();
     const resPost = await api.postRfqs(rfqDataOpen);
     const id = resPost.body.id;
     expect(
@@ -87,7 +87,7 @@ test.describe("API: publish/post RFQs ", () => {
     // create RFQ
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataCustom = RfqFactory.validRfqCustom(fileId, "RFQ.pdf");
+    const rfqDataCustom = RfqFactory.custom(fileId, "RFQ.pdf");
     const resPost = await api.postRfqs(rfqDataCustom);
     const id = resPost.body.id;
 
@@ -107,7 +107,7 @@ test.describe("API: publish/post RFQs ", () => {
   test(`should return succcess when publish OPEN RFQ with notes`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqOpen();
+    const rfqDataOpen = RfqFactory.open();
     const resPost = await api.postRfqs(rfqDataOpen);
     const id = resPost.body.id;
     const publishData = {
@@ -140,7 +140,7 @@ test.describe("API: publish/post RFQs ", () => {
   test(`should return 422 when publish RFQ with invalid body`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqOpen();
+    const rfqDataOpen = RfqFactory.open();
     const resPost = await api.postRfqs(rfqDataOpen);
     const id = resPost.body.id;
     api = new RfqsApiClient();

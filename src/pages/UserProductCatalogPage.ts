@@ -37,6 +37,9 @@ export class UserProductCatalogPage extends BasePage {
   readonly productsDetailsPage;
   readonly twoDStructureImage;
   readonly productName;
+  readonly buildingBlocksRadio;
+  readonly screeningCompoundsRadio;
+  readonly libraryName;
 
   private readonly allOptions: Locator[];
 
@@ -50,11 +53,20 @@ export class UserProductCatalogPage extends BasePage {
     this.partialUpdateButton = page.getByRole("button", {
       name: "Partial Update",
     });
+    this.buildingBlocksRadio = page.getByRole("radio", {
+      name: "Only Building Blocks",
+    });
+    this.screeningCompoundsRadio = page.getByRole("radio", {
+      name: "Only Screening Compounds",
+    });
+    this.libraryName = page.getByRole("textbox", {
+      name: "Library Name (as provided by",
+    });
     this.fileInput = page.locator('input[type="file"]');
     this.uploadButton = page.getByRole("button", { name: "Upload" });
     this.importStartedMessage = page.getByText(/Import started/i);
     this.updateStartedMessage = page.getByText("Partial update started.");
-    this.importStatus = page.getByText(/Import status: active/i);
+    this.importStatus = page.getByText(/Import status/i);
     this.successImportMessage = page.getByText(/Catalog import completed/i);
     this.partialUpdateDialogName = page.locator("h2");
     this.nextButton = page.getByRole("button", { name: "Next" });
@@ -95,9 +107,11 @@ export class UserProductCatalogPage extends BasePage {
     });
     this.casOption = page.getByRole("option", { name: "CAS" });
     this.confirmButton = page.getByRole("button", { name: "Confirm" });
-    this.firstRowStructure = page.locator('.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeSmall').nth(0);
-    this.productsDetailsPage = page.getByText('Product Details Page');
-    this.twoDStructureImage = page.getByRole('img', { name: '2D Structure' });
+    this.firstRowStructure = page
+      .locator(".MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeSmall")
+      .nth(0);
+    this.productsDetailsPage = page.getByText("Product Details Page");
+    this.twoDStructureImage = page.getByRole("img", { name: "2D Structure" });
     this.productName = page.locator("h5");
 
     this.allOptions = [
@@ -110,10 +124,10 @@ export class UserProductCatalogPage extends BasePage {
   }
 
   private async selectRandomOption(): Promise<void> {
-  const randomIndex = Math.floor(Math.random() * this.allOptions.length);
-  const option = this.allOptions[randomIndex];
-  await option.click();
-}
+    const randomIndex = Math.floor(Math.random() * this.allOptions.length);
+    const option = this.allOptions[randomIndex];
+    await option.click();
+  }
 
   async assertLoaded() {
     await expect(this.pageHeading).toBeVisible();
@@ -161,15 +175,15 @@ export class UserProductCatalogPage extends BasePage {
     await expect(this.updateStartedMessage).toBeVisible();
   }
 
-  async assertProductDetailsPage(){
+  async assertProductDetailsPage() {
     await expect(this.productsDetailsPage).toBeVisible();
   }
 
-  async assert2DStructureIsVisible(){
+  async assert2DStructureIsVisible() {
     await expect(this.twoDStructureImage).toBeVisible();
   }
 
-  async assertProductNameIsVisible(){
+  async assertProductNameIsVisible() {
     await expect(this.productName).toBeVisible();
   }
 
@@ -179,6 +193,20 @@ export class UserProductCatalogPage extends BasePage {
 
   async clickOnPartialUpdate() {
     await this.partialUpdateButton.click();
+  }
+
+  async checkOnlyBuildingBlocks() {
+    await this.buildingBlocksRadio.check();
+  }
+
+  async checkOnlyScreeningCompounds() {
+    await this.screeningCompoundsRadio.check();
+    await this.libraryName.click();
+    await this.libraryName.fill("Test123");
+  }
+
+  async checkOnlyScreeningCompoundsForUpdate() {
+    await this.screeningCompoundsRadio.check();
   }
 
   async uploadFile(filePathath: string) {
@@ -207,7 +235,7 @@ export class UserProductCatalogPage extends BasePage {
     await this.structureRow.click();
     await this.selectRandomOption();
   }
- 
+
   async updateProductName() {
     await this.productNameRow.click();
     await this.selectRandomOption();
@@ -252,7 +280,7 @@ export class UserProductCatalogPage extends BasePage {
     await this.confirmButton.click();
   }
 
-  async openFirstProductDetails(){
+  async openFirstProductDetails() {
     await this.firstRowStructure.click();
   }
 }

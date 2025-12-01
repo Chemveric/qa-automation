@@ -28,14 +28,14 @@ test.describe("API: PATCH RFQs ", () => {
     // create RFQ
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqData = RfqFactory.validRfqBulk();
+    const rfqData = RfqFactory.bulk();
     const resPost = await api.postRfqs(rfqData);
     const id = resPost.body.id;
     expect(
       resPost.status,
       `Expected status code is 200, but got ${resPost.status}`
     ).toBe(201);
-    const patchBulkData = RfqFactory.changeType("OPEN");
+    const patchBulkData = RfqFactory.patchOnlyType("OPEN");
     const patchRes = await api.patchRfqsId(id, patchBulkData);
     expect(patchRes.status).toBe(200);
     expect(patchRes.body).toHaveProperty("id");
@@ -93,12 +93,26 @@ test.describe("API: PATCH RFQs ", () => {
     // create RFQ
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataCustom = RfqFactory.validRfqCustom(fileId, "RFQ.pdf");
+    const rfqDataCustom = RfqFactory.custom(fileId, "RFQ.pdf");
     const resPost = await api.postRfqs(rfqDataCustom);
     const id = resPost.body.id;
 
     //change RFQ
-    const patchBulkData = RfqFactory.changeNonconf();
+    const patchBulkData = RfqFactory.patchNonconfOnly({
+      projectDescription: "Updated project description",
+      proposalTurnaroundDays: 10,
+      deliveryDate: "2026-01-01",
+      targetBudget: 20000,
+      sector: "Pharmaceutical",
+      stage: "Preclinical",
+      complexity: "Medium",
+      companySize: "Mid-size",
+      region: "Europe",
+      priority: "High",
+      quantity: "10kg",
+      purityMinPct: 97,
+      deliveryTime: "3-4 weeks",
+    });
     const patchRes = await api.patchRfqsId(id, patchBulkData);
     expect(patchRes.status).toBe(200);
     expect(patchRes.body).toHaveProperty("id");
@@ -109,12 +123,12 @@ test.describe("API: PATCH RFQs ", () => {
   test(`should return succcess when patch OPEN RFQ`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqOpen();
+    const rfqDataOpen = RfqFactory.open();
     const resPost = await api.postRfqs(rfqDataOpen);
     const id = resPost.body.id;
 
     //change RFQ
-    const patchOpenRfqData = RfqFactory.changeDueDate();
+    const patchOpenRfqData = RfqFactory.patchDueDateOnly("2026-04-23");
     const patchRes = await api.patchRfqsId(id, patchOpenRfqData);
     expect(patchRes.status).toBe(200);
     expect(patchRes.body).toHaveProperty("id");
@@ -134,7 +148,7 @@ test.describe("API: PATCH RFQs ", () => {
     const fakeId = faker.string.uuid();
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const patchOpenRfqData = RfqFactory.changeDueDate();
+    const patchOpenRfqData = RfqFactory.patchDueDateOnly("2026-05-05");
     const patchRes = await api.patchRfqsId(fakeId, patchOpenRfqData);
     validator.expectStatusCodeAndMessage(
       patchRes,
@@ -146,7 +160,7 @@ test.describe("API: PATCH RFQs ", () => {
   test(`should return 422 when patch RFQ with invalid body`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqOpen();
+    const rfqDataOpen = RfqFactory.open();
     const resPost = await api.postRfqs(rfqDataOpen);
     const id = resPost.body.id;
 

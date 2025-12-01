@@ -1,7 +1,7 @@
 import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 import { UserMembersPage } from "../../src/pages/UserMembersPage";
 import { UserProductCatalogPage } from "../../src/pages/UserProductCatalogPage";
-import { createRandomXlsx } from "../../src/data/catalogueSourceData";
+import { createRandomXlsx } from "../../src/data/catalogSourceData";
 import { test } from "@playwright/test";
 
 test.describe("Product Catalog Management", () => {
@@ -21,7 +21,7 @@ test.describe("Product Catalog Management", () => {
     xlsxPath = await createRandomXlsx("chemical_random.xlsx", 3);
   });
 
-  test("vendor should successfully upload product catalog", async ({
+  test("vendor should successfully upload product catalog and check only building blocks", async ({
     page,
   }) => {
     await productCatalogPage.goto();
@@ -30,6 +30,7 @@ test.describe("Product Catalog Management", () => {
     //act
     await productCatalogPage.clickOnUploadProductCatalog();
     await productCatalogPage.uploadFile(xlsxPath);
+    await productCatalogPage.checkOnlyBuildingBlocks();
 
     await productCatalogPage.assertFileIsUploaded();
     await productCatalogPage.clickUploadButton();
@@ -41,7 +42,28 @@ test.describe("Product Catalog Management", () => {
     await productCatalogPage.assertImportSuccess();
   });
 
-  test("vendor should successfully partially update products", async ({
+  test("vendor should successfully upload product catalog and check only screening compounds", async ({
+    page,
+  }) => {
+    await productCatalogPage.goto();
+    await productCatalogPage.assertLoaded();
+
+    //act
+    await productCatalogPage.clickOnUploadProductCatalog();
+    await productCatalogPage.uploadFile(xlsxPath);
+    await productCatalogPage.checkOnlyScreeningCompounds();
+
+    await productCatalogPage.assertFileIsUploaded();
+    await productCatalogPage.clickUploadButton();
+
+    // accert
+    await productCatalogPage.assertImportStated();
+    await productCatalogPage.assertImportStatus();
+
+    await productCatalogPage.assertImportSuccess();
+  });
+
+  test("vendor should successfully partially update products with only building blocks", async ({
     page,
   }) => {
     await productCatalogPage.goto();
@@ -52,6 +74,42 @@ test.describe("Product Catalog Management", () => {
     await productCatalogPage.assertPartialUpdateDialogIsVisible();
 
     await productCatalogPage.uploadFileForUpdate();
+    await productCatalogPage.checkOnlyBuildingBlocks();
+    await productCatalogPage.assertFileForPartialUpdateIsUploaded();
+
+    await productCatalogPage.clickOnNextButton();
+
+    await productCatalogPage.updateStructure();
+    await productCatalogPage.updateProductName();
+    await productCatalogPage.updateMolecularWeight();
+    await productCatalogPage.updateMolecularFormula();
+    await productCatalogPage.updateMfcd();
+    await productCatalogPage.updateCasNumber();
+    await productCatalogPage.updateSupplier();
+    await productCatalogPage.updateCatalogNo();
+    await productCatalogPage.updateStock();
+
+    await productCatalogPage.clickOnNextButton();
+    await productCatalogPage.clickOnConfirmButton();
+
+    // assert
+    await productCatalogPage.assertUpdatestarted();
+    await productCatalogPage.assertImportStatus();
+    await productCatalogPage.assertImportSuccess();
+  });
+
+  test("vendor should successfully partially update products with only screening compounds", async ({
+    page,
+  }) => {
+    await productCatalogPage.goto();
+    await productCatalogPage.assertLoaded();
+
+    //act
+    await productCatalogPage.clickOnPartialUpdate();
+    await productCatalogPage.assertPartialUpdateDialogIsVisible();
+
+    await productCatalogPage.uploadFileForUpdate();
+    await productCatalogPage.checkOnlyScreeningCompoundsForUpdate();
     await productCatalogPage.assertFileForPartialUpdateIsUploaded();
 
     await productCatalogPage.clickOnNextButton();
