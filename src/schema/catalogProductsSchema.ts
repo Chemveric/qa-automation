@@ -3,8 +3,7 @@ import { z } from "zod";
 export const CatalogItemSchema = z.object({
   id: z.string(),
   name: z.string(),
-
-  structureUrl: z.string().url().optional(),
+  structureUrl: z.url().optional(),
   molWeight: z.number().optional(),
   molFormula: z.string().optional(),
   mfcd: z.string().optional(),

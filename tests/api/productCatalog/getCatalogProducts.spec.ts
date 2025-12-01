@@ -97,6 +97,7 @@ test.describe("API: GET catalog products", () => {
     await importApi.init({}, supplierCookie);
     const importBody = {
       fileId: fileid,
+      importKind: "BUILDING_BLOCK",
       mode: "merge",
       withRefresh: true,
     };
@@ -167,6 +168,7 @@ test.describe("API: GET catalog products", () => {
       await importApi.init({}, supplierCookie);
       const importBody = {
         fileId: fileid,
+        importKind: "BUILDING_BLOCK",
         mode: "merge",
         withRefresh: true,
       };
@@ -254,6 +256,7 @@ test.describe("API: GET catalog products", () => {
     await importApi.init({}, buyerCookie);
     const importBody = {
       fileId: fileid,
+      importKind: "BUILDING_BLOCK",
       mode: "merge",
       withRefresh: true,
     };
