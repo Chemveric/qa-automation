@@ -224,7 +224,7 @@ test.describe("API: GET catalog product by id", () => {
     validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 
-  test(`should return 400 when fake coockie`, async () => {
+  test(`should return 400 when wrong product id`, async () => {
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
     let fakeProductId = "fake-product-id-12345";
