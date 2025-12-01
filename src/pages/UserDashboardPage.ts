@@ -8,6 +8,7 @@ export class UserDashboardPage extends BasePage {
   readonly companyManagement;
   readonly teamManagement;
   readonly productCatalogManagement;
+  readonly cart;
 
   constructor(page: Page) {
     super(page, "dashboard", ENV.guest.url);
@@ -21,6 +22,7 @@ export class UserDashboardPage extends BasePage {
     this.productCatalogManagement = page.getByRole("button", {
       name: "Product Catalog Management",
     });
+    this.cart = page.getByRole('button', { name: 'Cart' });
   }
 
   async assertLoaded() {
@@ -39,5 +41,9 @@ export class UserDashboardPage extends BasePage {
 
   async clickOnProductCatalogManagement() {
     await this.productCatalogManagement.click();
+  }
+
+  async clickOnCart(){
+    await this.cart.click();
   }
 }
