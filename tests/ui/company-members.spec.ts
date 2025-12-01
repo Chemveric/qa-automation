@@ -2,7 +2,7 @@ import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 import { UserMembersPage } from "../../src/pages/UserMembersPage";
 import { test } from "@playwright/test";
 
-test.describe("Team Managemant", () => {
+test.describe("Team Management", () => {
   let teamMembersPage: UserMembersPage;
   test.use({
     storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Buyer),

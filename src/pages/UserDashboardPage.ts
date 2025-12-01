@@ -7,6 +7,7 @@ export class UserDashboardPage extends BasePage {
   readonly sidebar: UserSidebar;
   readonly companyManagement;
   readonly teamManagement;
+  readonly productCatalogManagement;
 
   constructor(page: Page) {
     super(page, "dashboard", ENV.guest.url);
@@ -16,6 +17,9 @@ export class UserDashboardPage extends BasePage {
     });
     this.teamManagement = page.getByRole("button", {
       name: "Team Management",
+    });
+    this.productCatalogManagement = page.getByRole("button", {
+      name: "Product Catalog Management",
     });
   }
 
@@ -29,7 +33,11 @@ export class UserDashboardPage extends BasePage {
     await this.companyManagement.click();
   }
 
-  async clickOnTeamManagement(){
+  async clickOnTeamManagement() {
     await this.teamManagement.click();
+  }
+
+  async clickOnProductCatalogManagement() {
+    await this.productCatalogManagement.click();
   }
 }

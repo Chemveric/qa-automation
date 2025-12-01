@@ -1,34 +1,22 @@
 import {
-  Attachment,
+  RfqAttachment,
   RfqNonConf,
   RfqRequestBase,
-  PatchRfqRequest,
+  RfqStructure,
+  RfqConf
 } from "../types/rfqs.types";
 
 export class RfqBuilder {
-  private data: PatchRfqRequest = {};
-  constructor(type?: "BULK" | "CUSTOM" | "OPEN") {
-    if (type) {
-      this.data.type = type;
+  private data: RfqRequestBase;
 
-      if (type !== "BULK") {
-        this.data.nonconf = {
-          quantity: "",
-          purityMinPct: 0,
-          deliveryTime: "",
-          attachments: [],
-        };
-      }
-    }
+  constructor(type?: RfqRequestBase["type"]) {
+    this.data = {
+      type: type ?? "BULK",
+    };
   }
 
-  private ensureNonconf() {
-    if (!this.data.nonconf) {
-      this.data.nonconf = {} as any;
-    }
-  }
-
-  setType(type: "BULK" | "CUSTOM" | "OPEN") {
+  // --- Core fields ---
+  setType(type: RfqRequestBase["type"]) {
     this.data.type = type;
     return this;
   }
@@ -38,58 +26,91 @@ export class RfqBuilder {
     return this;
   }
 
-   setQuantity(q: string) {
-    this.ensureNonconf();
-    this.data.nonconf!.quantity = q;
-    return this;
-  }
-
-  setPurity(p: number) {
-    this.ensureNonconf();
-    this.data.nonconf!.purityMinPct = p;
-    return this;
-  }
-
-  setDeliveryTime(t: string) {
-    this.ensureNonconf();
-    this.data.nonconf!.deliveryTime = t;
-    return this;
-  }
-
-  addAttachment(a: Attachment) {
-    this.ensureNonconf();
-    if (!this.data.nonconf!.attachments) {
-      this.data.nonconf!.attachments = [];
-    }
-    this.data.nonconf!.attachments.push(a);
-    return this;
-  }
-
   setDueDateInMonths(months: number) {
     const d = new Date();
     d.setMonth(d.getMonth() + months);
-    this.data.dueDate = d.toISOString().split("T")[0];
+    this.data.dueDate = d.toISOString();
     return this;
   }
 
-  /**
-   * 💥 Override any field for invalid case testing
-   */
+  // --- Services / Engagement ---
+  addService(serviceId: string) {
+    if (!this.data.services) this.data.services = [];
+    this.data.services.push({ serviceId });
+    return this;
+  }
+
+  setEngagementModel(model: string) {
+    this.data.engagementModel = model;
+    return this;
+  }
+
+  // --- Non-conf section ---
+  private ensureNonconf() {
+    if (!this.data.nonconf) this.data.nonconf = {};
+  }
+
+  setNonconfField<K extends keyof RfqNonConf>(key: K, value: RfqNonConf[K]) {
+    this.ensureNonconf();
+    this.data.nonconf![key] = value;
+    return this;
+  }
+
+  addNonconfAttachment(att: RfqAttachment) {
+    this.ensureNonconf();
+    if (!this.data.nonconf!.attachments) this.data.nonconf!.attachments = [];
+    this.data.nonconf!.attachments.push(att);
+    return this;
+  }
+
+  // --- CONF section ---
+  private ensureConf() {
+    if (!this.data.conf) this.data.conf = {};
+  }
+
+  addStructure(struct: RfqStructure) {
+    this.ensureConf();
+    if (!this.data.conf!.structures) this.data.conf!.structures = [];
+    this.data.conf!.structures.push(struct);
+    return this;
+  }
+
+  addConfAttachment(att: RfqAttachment) {
+    this.ensureConf();
+    if (!this.data.conf!.attachments) this.data.conf!.attachments = [];
+    this.data.conf!.attachments.push(att);
+    return this;
+  }
+
+  setConfNotes(notes: string) {
+    this.ensureConf();
+    this.data.conf!.notes = notes;
+    return this;
+  }
+
+  // --- Overrides for negative tests ---
   override(patch: Partial<RfqRequestBase>) {
     this.data = { ...this.data, ...patch };
     return this;
   }
 
-  /**
-   * 💥 Override nested nonconf fields
-   */
   overrideNonconf(patch: Partial<RfqNonConf>) {
     this.ensureNonconf();
-    this.data.nonconf = { ...this.data.nonconf, ...patch };
+    this.data.nonconf = { ...this.data.nonconf!, ...patch };
     return this;
   }
 
-  build() {
-    return structuredClone(this.data);
+  overrideConf(patch: Partial<RfqConf>) {
+    this.ensureConf();
+    this.data.conf = { ...this.data.conf!, ...patch };
+    return this;
+  }
+  
+
+  build(): RfqRequestBase {
+    return JSON.parse(JSON.stringify(this.data));
   }
 }
+
+
+

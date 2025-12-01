@@ -29,8 +29,8 @@ test.describe("API: GET RFQs by ID", () => {
   test(`should return valid shema when get BULK RFQ by Id`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqBulk();
-    const resPost = await api.postRfqs(rfqDataOpen);
+    const rfqDataBulk = RfqFactory.bulk();
+    const resPost = await api.postRfqs(rfqDataBulk);
     const id = resPost.body.id;
     expect(
       resPost.status,
@@ -92,7 +92,7 @@ test.describe("API: GET RFQs by ID", () => {
     // create RFQ
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataCustom = RfqFactory.validRfqCustom(fileId, "RFQ.pdf");
+    const rfqDataCustom = RfqFactory.custom(fileId, "RFQ.pdf");
     const resPost = await api.postRfqs(rfqDataCustom);
     const id = resPost.body.id;
 
@@ -118,7 +118,7 @@ test.describe("API: GET RFQs by ID", () => {
   test(`should return valid shema when get OPEN RFQ with by Id`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqOpen();
+    const rfqDataOpen = RfqFactory.open();
     const resPost = await api.postRfqs(rfqDataOpen);
     const id = resPost.body.id;
 
