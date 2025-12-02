@@ -17,26 +17,43 @@ test.describe("Add product to cart", () => {
     await mainPage.goto();
     await mainPage.assertLoaded();
 
-    await mainPage.searchForProduct();
-    await mainPage.assertProductIsFound();
+    // search for product
+    await mainPage.searchForProduct("mock");
+    await mainPage.assertProductIsFound("Mock compound");
 
+    // open product details
+    const productDetails = await mainPage.openProductByName("Mock compound");
+    await productDetails.assertLoaded();
+    const productId = productDetails.getProductId();
+    console.log("Product ID:", productId);
 
-    await mainPage.openProductDetails();
+    // assert product details page
+    await productDetails.assertProductNameIsVisible("Mock compound");
+    await productDetails.assertColumnNamesAreVisisble();
 
-    // product details page
-    await mainPage.assertProductNameIsVisible();
-    await mainPage.assertColumnNamesAreVisisble();
+    // add product to cart
+    await productDetails.addProductToCart();
 
-    await mainPage.addProductToCart();
-    await mainPage.assertProductAddedToCart();
+    // assert success
+    await productDetails.assertProductAddedToCart();
 
+    //check product is in the cart
     await mainPage.sidebar.openDashboard();
-    
     const dashboardPage = new UserDashboardPage(page);
     await dashboardPage.clickOnCart();
-
     const cartPage = new UserCartPage(page);
+    await cartPage.assertProductNameIsVisible("Mock compound");
+  });
 
-    await page.pause();
+  test("buyer should delete product from the cart", async ({ page }) => {
+    const cartPage = new UserCartPage(page);
+    await cartPage.goto();
+    await cartPage.assertProductNameIsVisible("Mock compound");
+
+    // act
+    await cartPage.removeProduct("Mock compound");
+
+    // assert
+    await cartPage.assertProductRemoved();
   });
 });

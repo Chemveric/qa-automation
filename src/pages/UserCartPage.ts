@@ -7,32 +7,39 @@ import { faker } from "@faker-js/faker";
 export class UserCartPage extends BasePage {
   readonly sidebar: UserSidebar;
   readonly heading;
-  readonly cartProduct;
   readonly checkoutButton;
-  readonly removeItemButton;
+  readonly successRemoveMessage;
 
   constructor(page: Page) {
     super(page, "/dashboard/cart", ENV.guest.url);
     this.sidebar = new UserSidebar(page);
     this.heading = page.getByRole("heading", { name: "My Cart" });
-    this.cartProduct = page.getByRole('heading', { name: 'L-Asparagine monohydrate' });
-    this.checkoutButton = page.getByRole('button', { name: 'Checkout' });
-    this.removeItemButton = page.getByRole('button', { name: 'Remove Item' }).first();
-    
+    this.checkoutButton = page.getByRole("button", { name: "Checkout" });
+    this.successRemoveMessage = page.getByText(
+      /Product successfully removed from your cart/i
+    );
   }
 
   async assertLoaded() {
     await expect(this.heading).toBeVisible();
   }
-  async assertCartProductNameIsVisible(){
-    await expect(this.cartProduct).toBeVisible();
+  async assertProductNameIsVisible(productName: string) {
+    await expect(
+      this.page.getByRole("heading", {
+        name: productName,
+      })
+    ).toBeVisible();
   }
 
-  async removeItemFromTheCart(){
-    await this.removeItemButton.click();
+  async assertProductRemoved(){
+    await expect(this.successRemoveMessage).toBeVisible();
   }
+
+async removeProduct(productName: string) {
+  const item = this.page.locator('.MuiStack-root').filter({
+    has: this.page.getByText(productName, { exact: false })
+  });
+
+  await item.getByRole("button", { name: /remove/i }).click();
 }
-
-
-
-
+}
