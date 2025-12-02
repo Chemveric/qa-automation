@@ -4,6 +4,8 @@ import { ENV } from "../config/env";
 import { companyProfileTestData } from "../../src/data/companyData";
 import { log } from "../core/logger";
 
+
+
 export class UserCompanyPage extends BasePage {
   readonly pageHeading;
   readonly editButton;

@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { getSupplierCookie, getBuyerCookie } from "../../../src/utils/getEnv";
+import {
+  getSupplierCookie,
+  getBuyerCookie,
+  getAdminCookie,
+} from "../../../src/utils/getEnv";
 import { RfqsApiClient } from "../../../src/api/RfqsApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import {
@@ -17,17 +21,19 @@ test.describe("API: POST RFQs", () => {
   let api: RfqsApiClient;
   let supplierCookie: string;
   let buyerCookie: string;
+  let adminCookie: string;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
     buyerCookie = getBuyerCookie();
+    adminCookie = getAdminCookie();
   });
 
-  test(`should return success when send valid data for BULK RFQ with buyer cookie`, async () => {
+  test(`should return success when send valid data for BULK RFQ`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqBulk();
-    const res = await api.postRfqs(rfqDataOpen);
+    const rfqDataBulk = RfqFactory.bulk();
+    const res = await api.postRfqs(rfqDataBulk);
     const body = res.body;
     expect(
       res.status,
@@ -39,6 +45,63 @@ test.describe("API: POST RFQs", () => {
     expect(body).toHaveProperty("dueDate");
     expect(body).toHaveProperty("createdAt");
     expect(body.type).toBe("BULK");
+    expect(body.status).toBe("DRAFT");
+  });
+
+  test(`should return success when send valid data for CUSTOM Minimal RFQ Step1 `, async () => {
+    api = new RfqsApiClient();
+    await api.init({}, buyerCookie);
+    const rfqDataBulk = RfqFactory.customStep1Minimal();
+    const res = await api.postRfqs(rfqDataBulk);
+    const body = res.body;
+    expect(
+      res.status,
+      `Expected status code is 200, but got ${res.status}`
+    ).toBe(201);
+    expect(body).toHaveProperty("id");
+    expect(body).toHaveProperty("type");
+    expect(body).toHaveProperty("status");
+    expect(body).toHaveProperty("dueDate");
+    expect(body).toHaveProperty("createdAt");
+    expect(body.type).toBe("CUSTOM");
+    expect(body.status).toBe("DRAFT");
+  });
+
+  test(`should return success when send valid data for CUSTOM Non-conf RFQ Step2 Required fields`, async () => {
+    api = new RfqsApiClient();
+    await api.init({}, buyerCookie);
+    const rfqDataBulk = RfqFactory.customStep2RequiredFields();
+    const res = await api.postRfqs(rfqDataBulk);
+    const body = res.body;
+    expect(
+      res.status,
+      `Expected status code is 200, but got ${res.status}`
+    ).toBe(201);
+    expect(body).toHaveProperty("id");
+    expect(body).toHaveProperty("type");
+    expect(body).toHaveProperty("status");
+    expect(body).toHaveProperty("dueDate");
+    expect(body).toHaveProperty("createdAt");
+    expect(body.type).toBe("CUSTOM");
+    expect(body.status).toBe("DRAFT");
+  });
+
+  test(`should return success when send valid data for Full CUSTOM RFQ Step3 `, async () => {
+    api = new RfqsApiClient();
+    await api.init({}, buyerCookie);
+    const rfqDataBulk = RfqFactory.createCustomFullStep3();
+    const res = await api.postRfqs(rfqDataBulk);
+    const body = res.body;
+    expect(
+      res.status,
+      `Expected status code is 200, but got ${res.status}`
+    ).toBe(201);
+    expect(body).toHaveProperty("id");
+    expect(body).toHaveProperty("type");
+    expect(body).toHaveProperty("status");
+    expect(body).toHaveProperty("dueDate");
+    expect(body).toHaveProperty("createdAt");
+    expect(body.type).toBe("CUSTOM");
     expect(body.status).toBe("DRAFT");
   });
 
@@ -61,10 +124,11 @@ test.describe("API: POST RFQs", () => {
     );
 
     // get status by id
-    await uploadApi.getUploadsSessions(
+    const getRes = await uploadApi.getUploadsSessions(
       backendUploadRes.body.id,
       organizationId
     );
+    console.log("State of scanning: ", getRes.body.state);
 
     // finalise upload session
     await uploadApi.init({}, buyerCookie);
@@ -81,7 +145,7 @@ test.describe("API: POST RFQs", () => {
     // create RFQ
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataCustom = RfqFactory.validRfqCustom(fileId, "RFQ.pdf");
+    const rfqDataCustom = RfqFactory.custom(fileId, "RFQ.pdf");
     const res = await api.postRfqs(rfqDataCustom);
     const body = res.body;
     expect(
@@ -100,7 +164,7 @@ test.describe("API: POST RFQs", () => {
   test(`should return success when send valid data for OPEN RFQ with buyer cookie`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqDataOpen = RfqFactory.validRfqOpen();
+    const rfqDataOpen = RfqFactory.open();
     const res = await api.postRfqs(rfqDataOpen);
     const body = res.body;
     expect(
@@ -131,7 +195,7 @@ test.describe("API: POST RFQs", () => {
   test(`should return 422 when send empty date`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqData = RfqFactory.emptyDate();
+    const rfqData = RfqFactory.createOpenWithDueDate("");
     const res = await api.postRfqs(rfqData);
     validator.expectStatusCodeAndMessage(
       res,
@@ -141,10 +205,10 @@ test.describe("API: POST RFQs", () => {
     );
   });
 
-  test(`should return 400 when send NonConf on BULK`, async () => {
+  test(`should return 400 when send BULK with buyer cookie`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqData = RfqFactory.invalidNonconfOnBulk();
+    const rfqData = RfqFactory.bulkFull();
     const res = await api.postRfqs(rfqData);
     validator.expectStatusCodeAndMessage(
       res,
@@ -156,7 +220,7 @@ test.describe("API: POST RFQs", () => {
   test(`should return 422 when send invalid date`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqData = RfqFactory.invalidDueDate();
+    const rfqData = RfqFactory.createOpenWithDueDate("date");
     const res = await api.postRfqs(rfqData);
     validator.expectStatusCodeAndMessage(
       res,
@@ -169,7 +233,9 @@ test.describe("API: POST RFQs", () => {
   test(`should return 400 when send invalid purity`, async () => {
     api = new RfqsApiClient();
     await api.init({}, buyerCookie);
-    const rfqData = RfqFactory.invalidPurity();
+    const rfqData = RfqFactory.open({
+      nonconf: { purityMinPct: "hello!" }, // override only purity
+    });
     const res = await api.postRfqs(rfqData);
     validator.expectStatusCodeAndMessage(
       res,
