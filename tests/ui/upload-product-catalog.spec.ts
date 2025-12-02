@@ -1,6 +1,7 @@
 import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 import { UserMembersPage } from "../../src/pages/UserMembersPage";
 import { UserProductCatalogPage } from "../../src/pages/UserProductCatalogPage";
+import { VendorProductDetailsPage } from "../../src/pages/VendorProductDetailsPage";
 import { createRandomXlsx } from "../../src/data/catalogSourceData";
 import { test } from "@playwright/test";
 
@@ -139,10 +140,13 @@ test.describe("Product Catalog Management", () => {
 
     // act
     await productCatalogPage.openFirstProductDetails();
+    const productDetails = new VendorProductDetailsPage(page);
 
     // assert
-    await productCatalogPage.assertProductDetailsPage();
-    await productCatalogPage.assert2DStructureIsVisible();
-    await productCatalogPage.assertProductNameIsVisible();
+    await productDetails.assertLoaded();
+    await productDetails.assertProductNameIsVisible();
+    await productDetails.assertStructuresAreVisible();
+    await productDetails.assertColumnNamesAreVisisble();
+    await productDetails.assertTabNamesAreVisible();
   });
 });
