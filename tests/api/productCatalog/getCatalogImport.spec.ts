@@ -98,6 +98,7 @@ test.describe("API: GET catalog imports", () => {
     await importApi.init({}, supplierCookie);
     const importBody = {
       fileId: fileid,
+      importKind: "BUILDING_BLOCK",
       mode: "merge",
       withRefresh: true,
     };
@@ -160,13 +161,14 @@ test.describe("API: GET catalog imports", () => {
       await importApi.init({}, supplierCookie);
       const importBody = {
         fileId: fileid,
+        importKind: "BUILDING_BLOCK",
         mode: "merge",
         withRefresh: true,
       };
       const importCatalog = await importApi.postImports(importBody);
 
       const res = await importApi.getImports(importCatalog.body.jobId);
-      expect(res.status).toBe(201);
+      expect(res.status).toBe(200);
       const body = await res.body;
 
       const validated = await validateResponse(
@@ -240,6 +242,7 @@ test.describe("API: GET catalog imports", () => {
     await importApi.init({}, buyerCookie);
     const importBody = {
       fileId: fileid,
+      importKind: "BUILDING_BLOCK",
       mode: "merge",
       withRefresh: true,
     };

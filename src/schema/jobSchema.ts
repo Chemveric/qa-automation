@@ -2,7 +2,9 @@ import { z } from "zod";
 
 export const JobStatusSchema = z.object({
   jobId: z.string(),
-  state: z.enum(["active", "completed", "failed", "pending"]).default("active"),
+  state: z
+    .enum(["active", "completed", "failed", "pending", "queued"])
+    .default("active"),
   progressPct: z.number(),
   total: z.number(),
   valid: z.number(),
