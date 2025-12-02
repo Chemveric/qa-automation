@@ -3,7 +3,7 @@ import { UserSidebar } from "./components/UserSidebar";
 import { Page, expect } from "@playwright/test";
 import { ENV } from "../config/env";
 
-export class UserProductDetailsPage extends BasePage {
+export class BuyerProductDetailsPage extends BasePage {
   readonly sidebar: UserSidebar;
   readonly pageName;
   readonly packSizeColumn;

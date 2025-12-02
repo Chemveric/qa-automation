@@ -2,7 +2,7 @@ import { BasePage } from "../core/BasePage";
 import { UserSidebar } from "./components/UserSidebar";
 import { Page, expect } from "@playwright/test";
 import { ENV } from "../config/env";
-import { UserProductDetailsPage } from "../pages/UserProductDetailsPage";
+import { BuyerProductDetailsPage } from "./BuyerProductDetailsPage";
 
 export class UserMainProductsPage extends BasePage {
   readonly sidebar: UserSidebar;
@@ -43,7 +43,7 @@ export class UserMainProductsPage extends BasePage {
    * Click any product card by displayed name
    * and return ProductDetailsPage.
    */
-  async openProductByName(name: string): Promise<UserProductDetailsPage> {
+  async openProductByName(name: string): Promise<BuyerProductDetailsPage> {
     const productCard = this.page.getByText(name).first();
 
     await Promise.all([
@@ -51,6 +51,6 @@ export class UserMainProductsPage extends BasePage {
       productCard.click(),
     ]);
 
-    return new UserProductDetailsPage(this.page);
+    return new BuyerProductDetailsPage(this.page);
   }
 }
