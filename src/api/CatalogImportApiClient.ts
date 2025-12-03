@@ -1,5 +1,12 @@
 import { BaseAPIClient } from "../core/BaseAPIClient";
 
+
+export interface ImportData {
+    fileId: string;
+    importKind: string;
+    mode: string;
+    withRefresh: string;
+}
 export class CatalogImportApiClient extends BaseAPIClient {
   async health() {
     return this.get("/v1/health");

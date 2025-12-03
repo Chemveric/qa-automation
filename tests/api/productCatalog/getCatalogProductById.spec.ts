@@ -16,8 +16,8 @@ import { getFileInfo } from "../../../src/utils/fileInfo";
 import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { CatalogResponseSchema } from "../../../src/schema/catalogProductsSchema";
-import { randomUUID } from "crypto";
 import { CatalogProductSchema } from "../../../src/schema/catalogProductSchema";
+import { createCatalogImportData } from "../../../src/data/catalogImportData";
 
 const validator = new ResponseValidationHelper();
 
@@ -99,12 +99,7 @@ test.describe("API: GET catalog product by id", () => {
     //import catalog file and wait for complete
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importResponse = await importApi.postImports(importBody);
     let jobId = importResponse.body.jobId;
     await waitForImportCompleted(importApi, jobId);
@@ -182,11 +177,7 @@ test.describe("API: GET catalog product by id", () => {
       //Get fileupload jobId and wait for complete
       importApi = new CatalogImportApiClient();
       await importApi.init({}, supplierCookie);
-      const importBody = {
-        fileId: fileid,
-        mode: "merge",
-        withRefresh: true,
-      };
+      const importBody = createCatalogImportData(fileid);
       const importCatalog = await importApi.postImports(importBody);
       await waitForImportCompleted(importApi, importCatalog.body.jobId);
 
