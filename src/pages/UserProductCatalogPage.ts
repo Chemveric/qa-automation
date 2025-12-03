@@ -34,9 +34,6 @@ export class UserProductCatalogPage extends BasePage {
   readonly confirmButton;
   readonly updateStartedMessage;
   readonly firstRowStructure;
-  readonly productsDetailsPage;
-  readonly twoDStructureImage;
-  readonly productName;
   readonly buildingBlocksRadio;
   readonly screeningCompoundsRadio;
   readonly libraryName;
@@ -110,9 +107,6 @@ export class UserProductCatalogPage extends BasePage {
     this.firstRowStructure = page
       .locator(".MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeSmall")
       .nth(0);
-    this.productsDetailsPage = page.getByText("Product Details Page");
-    this.twoDStructureImage = page.getByRole("img", { name: "2D Structure" });
-    this.productName = page.locator("h5");
 
     this.allOptions = [
       this.inChIKeyOption,
@@ -173,18 +167,6 @@ export class UserProductCatalogPage extends BasePage {
 
   async assertUpdatestarted() {
     await expect(this.updateStartedMessage).toBeVisible();
-  }
-
-  async assertProductDetailsPage() {
-    await expect(this.productsDetailsPage).toBeVisible();
-  }
-
-  async assert2DStructureIsVisible() {
-    await expect(this.twoDStructureImage).toBeVisible();
-  }
-
-  async assertProductNameIsVisible() {
-    await expect(this.productName).toBeVisible();
   }
 
   async clickOnUploadProductCatalog() {
