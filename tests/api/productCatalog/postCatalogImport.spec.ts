@@ -16,6 +16,7 @@ import { getFileInfo } from "../../../src/utils/fileInfo";
 import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient";
 import { faker } from "@faker-js/faker";
 import { createRandomXlsx } from "../../../src/data/catalogSourceData";
+import { createCatalogImportData } from "../../../src/data/catalogImportData";
 
 const validator = new ResponseValidationHelper();
 
@@ -99,12 +100,7 @@ test.describe("API: POST catalog imports", () => {
   test(`should return jobid for checking file upload`, async () => {
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importCatalog = await importApi.postImports(importBody);
     expect(importCatalog.status).toBe(201);
     expect(importCatalog.body).toHaveProperty("jobId");
@@ -149,12 +145,7 @@ test.describe("API: POST catalog imports", () => {
       expect(resSessionComplete.status).toBe(201);
       importApi = new CatalogImportApiClient();
       await importApi.init({}, supplierCookie);
-      const importBody = {
-        fileId: fileid,
-        importKind: "BUILDING_BLOCK",
-        mode: "merge",
-        withRefresh: true,
-      };
+      const importBody = createCatalogImportData(fileid);
       const importCatalog = await importApi.postImports(importBody);
       expect(importCatalog.status).toBe(201);
       expect(importCatalog.body).toHaveProperty("jobId");
@@ -222,12 +213,7 @@ test.describe("API: POST catalog imports", () => {
 
     importApi = new CatalogImportApiClient();
     await importApi.init({}, buyerCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importCatalog = await importApi.postImports(importBody);
     expect(importCatalog.status).toBe(201);
     expect(importCatalog.body).toHaveProperty("jobId");
@@ -237,12 +223,7 @@ test.describe("API: POST catalog imports", () => {
     importApi = new CatalogImportApiClient();
     var wrongFileId = faker.string.uuid();
     await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: wrongFileId,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(wrongFileId);
     const importCatalog = await importApi.postImports(importBody);
     validator.expectStatusCodeAndMessage(importCatalog, 404, "File not found");
   });
@@ -251,12 +232,7 @@ test.describe("API: POST catalog imports", () => {
     importApi = new CatalogImportApiClient();
     var wrongFileId = "000-3443-223232";
     await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: wrongFileId,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(wrongFileId);
     const importCatalog = await importApi.postImports(importBody);
     validator.expectStatusCodeAndMessage(
       importCatalog,

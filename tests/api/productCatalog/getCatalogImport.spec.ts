@@ -1,9 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  getAdminCookie,
-  getSupplierCookie,
-  getBuyerCookie,
-} from "../../../src/utils/getEnv";
+import { getSupplierCookie, getBuyerCookie } from "../../../src/utils/getEnv";
 import {
   UploadSessionsApiClient,
   UploadData,
@@ -17,6 +13,7 @@ import { getFileInfo } from "../../../src/utils/fileInfo";
 import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient";
 import { JobStatusSchema } from "../../../src/schema/jobSchema";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
+import { createCatalogImportData } from "../../../src/data/catalogImportData";
 
 const validator = new ResponseValidationHelper();
 
@@ -96,12 +93,7 @@ test.describe("API: GET catalog imports", () => {
     fileid = resFinalize.body.fileIds[0];
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importResponse = await importApi.postImports(importBody);
     jobId = importResponse.body.jobId;
   });
@@ -159,12 +151,7 @@ test.describe("API: GET catalog imports", () => {
       expect(resSessionComplete.status).toBe(201);
       importApi = new CatalogImportApiClient();
       await importApi.init({}, supplierCookie);
-      const importBody = {
-        fileId: fileid,
-        importKind: "BUILDING_BLOCK",
-        mode: "merge",
-        withRefresh: true,
-      };
+      const importBody = createCatalogImportData(fileid);
       const importCatalog = await importApi.postImports(importBody);
 
       const res = await importApi.getImports(importCatalog.body.jobId);
@@ -240,12 +227,7 @@ test.describe("API: GET catalog imports", () => {
 
     importApi = new CatalogImportApiClient();
     await importApi.init({}, buyerCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importCatalog = await importApi.postImports(importBody);
     const res = await importApi.getImports(importCatalog.body.jobId);
     expect(res.status).toBe(200);

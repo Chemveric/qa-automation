@@ -17,6 +17,7 @@ import { CatalogImportApiClient } from "../../../src/api/CatalogImportApiClient"
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { CatalogResponseSchema } from "../../../src/schema/catalogProductsSchema";
 import { randomUUID } from "crypto";
+import { createCatalogImportData } from "../../../src/data/catalogImportData";
 
 const validator = new ResponseValidationHelper();
 
@@ -95,12 +96,7 @@ test.describe("API: GET catalog products", () => {
     fileid = resFinalize.body.fileIds[0];
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importResponse = await importApi.postImports(importBody);
     let jobId = importResponse.body.jobId;
     await waitForImportCompleted(importApi, jobId);
@@ -166,12 +162,7 @@ test.describe("API: GET catalog products", () => {
       expect(resSessionComplete.status).toBe(201);
       importApi = new CatalogImportApiClient();
       await importApi.init({}, supplierCookie);
-      const importBody = {
-        fileId: fileid,
-        importKind: "BUILDING_BLOCK",
-        mode: "merge",
-        withRefresh: true,
-      };
+      const importBody = createCatalogImportData(fileid);
       const importCatalog = await importApi.postImports(importBody);
       await waitForImportCompleted(importApi, importCatalog.body.jobId);
       const res = await importApi.getProducts();
@@ -254,12 +245,7 @@ test.describe("API: GET catalog products", () => {
 
     importApi = new CatalogImportApiClient();
     await importApi.init({}, buyerCookie);
-    const importBody = {
-      fileId: fileid,
-      importKind: "BUILDING_BLOCK",
-      mode: "merge",
-      withRefresh: true,
-    };
+    const importBody = createCatalogImportData(fileid);
     const importCatalog = await importApi.postImports(importBody);
     await waitForImportCompleted(importApi, importCatalog.body.jobId);
     const res = await importApi.getProducts();
