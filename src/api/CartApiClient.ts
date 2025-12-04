@@ -11,8 +11,8 @@ export class CartApiClient extends BaseAPIClient {
   async getCart() {
     return this.get(`/v1/cart`);
   }
-  async removeItemFromCart(id: string | number) {
-    return this.delete(`/v1/cart/items/${id}`);
+  async removeItemFromCart(id: string | number, body: Record<string, any>) {
+    return this.delete(`/v1/cart/items/${id}`, body);
   }
   async updateCartItem(body: Record<string, any>, id: string | number) {
     return this.post(`/v1/cart/update-item/${id}`, body);
