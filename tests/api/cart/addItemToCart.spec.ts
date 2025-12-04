@@ -4,12 +4,12 @@ import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHel
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { randomUUID } from "crypto";
 import { CartApiClient } from "../../../src/api/CartApiClient";
-import { CartSchema } from "../../../src/schema/addCartSchema";
 import { SearchApiClient } from "../../../src/api/SearchApiClient";
 import {
   SearchItem,
   SearchResponseSchema,
 } from "../../../src/schema/searchResponseSchema";
+import { AddCartSchema } from "../../../src/schema/addCartSchema";
 
 const validator = new ResponseValidationHelper();
 
@@ -52,7 +52,7 @@ test.describe("API: POST add item to the cart", () => {
 
     const validated = await validateResponse(
       { status: res.status, body },
-      CartSchema,
+      AddCartSchema,
       201
     );
     expect(validated.items.length).toBeGreaterThan(0);

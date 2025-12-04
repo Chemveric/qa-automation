@@ -1,16 +1,20 @@
 import { test, expect } from "@playwright/test";
-import { getSupplierCookie, getBuyerCookie } from "../../../src/utils/getEnv";
+import {
+  getSupplierCookie,
+  getBuyerCookie,
+  getAdminCookie,
+} from "../../../src/utils/getEnv";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
-import { randomUUID } from "crypto";
 import { CartApiClient } from "../../../src/api/CartApiClient";
 import { SearchApiClient } from "../../../src/api/SearchApiClient";
 import { SearchResponseSchema } from "../../../src/schema/searchResponseSchema";
 import { CartSchema } from "../../../src/schema/cartSchema";
+import { randomUUID } from "crypto";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: DELETE item from the cart", () => {
+test.describe("API: Get cart items", () => {
   let api: CartApiClient;
   let searchApi: SearchApiClient;
   let supplierCookie: string;
@@ -36,7 +40,7 @@ test.describe("API: DELETE item from the cart", () => {
     let product = validated.items.find((item) => item.inStock === true);
     packageId = product?.packages[0].id;
 
-    // Add item to the cart before deleting
+    // Add item to the cart
     api = new CartApiClient();
     await api.init({}, buyerCookie);
     const addRes = await api.addCartItem({
@@ -46,11 +50,11 @@ test.describe("API: DELETE item from the cart", () => {
     expect(addRes.status).toBe(201);
   });
 
-  test(`should delete item from the cart`, async () => {
+  test(`should return items from the cart`, async () => {
     api = new CartApiClient();
     await api.init({}, buyerCookie);
 
-    const res = await api.removeItemFromCart(packageId!, { packageId });
+    const res = await api.getCart();
     expect(res.status).toBe(200);
     const body = await res.body;
 
@@ -59,20 +63,19 @@ test.describe("API: DELETE item from the cart", () => {
       CartSchema,
       200
     );
-    if (validated.items.length > 0) {
-      expect(
-        validated.items
-          .flatMap((item) => item.packs)
-          .some((pack) => pack.id === packageId)
-      ).toBe(false);
-    }
+    expect(validated.items.length).toBeGreaterThan(0);
+    expect(
+      validated.items
+        .flatMap((item) => item.packs)
+        .some((pack) => pack.id === packageId)
+    ).toBe(true);
   });
 
   test(`should return 403 forbidden for supplier cookie`, async () => {
     api = new CartApiClient();
     await api.init({}, supplierCookie);
 
-    const res = await api.removeItemFromCart(packageId!, { packageId });
+    const res = await api.getCart();
     validator.expectStatusCodeAndMessage(
       res,
       403,
@@ -80,43 +83,19 @@ test.describe("API: DELETE item from the cart", () => {
     );
   });
 
-  test(`should return 403 forbidden for admin cookie`, async () => {
+  test(`should return 401 unauthorized for admin cookie`, async () => {
     api = new CartApiClient();
-    let adminCookie = getSupplierCookie();
+    let adminCookie = getAdminCookie();
     await api.init({}, adminCookie);
-
-    const res = await api.removeItemFromCart(packageId!, { packageId });
-    validator.expectStatusCodeAndMessage(
-      res,
-      403,
-      "Forbidden for your permission"
-    );
+    const res = await api.getCart();
+    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 
-  test(`should return 200 when non existing product id`, async () => {
-    const fakePackageId = randomUUID();
+  test(`should return 401 unauthorized for fake cookie`, async () => {
+    const fakeCookie = `__Secure-admin-sid=${randomUUID()}`;
     api = new CartApiClient();
-    await api.init({}, buyerCookie);
-    const res = await api.removeItemFromCart(fakePackageId, {
-      packageId: fakePackageId,
-    });
-    expect(res.status).toBe(200);
-    const body = await res.body;
-
-    const validated = await validateResponse(
-      { status: res.status, body },
-      CartSchema,
-      200
-    );
-  });
-
-  test(`should return 422 when wrong package id`, async () => {
-    const wrongPackageId = "";
-    api = new CartApiClient();
-    await api.init({}, buyerCookie);
-    const res = await api.removeItemFromCart(wrongPackageId!, {
-      packageId: wrongPackageId,
-    });
-    validator.expectStatusCodeAndMessage(res, 422, "Internal server error");
+    await api.init({}, fakeCookie);
+    const res = await api.getCart();
+    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 });
