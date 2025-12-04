@@ -110,13 +110,13 @@ test.describe("API: DELETE item from the cart", () => {
     );
   });
 
-  test(`should return 500 when wrong package id`, async () => {
+  test(`should return 422 when wrong package id`, async () => {
     const wrongPackageId = "";
     api = new CartApiClient();
     await api.init({}, buyerCookie);
     const res = await api.removeItemFromCart(wrongPackageId!, {
       packageId: wrongPackageId,
     });
-    validator.expectStatusCodeAndMessage(res, 500, "Internal server error");
+    validator.expectStatusCodeAndMessage(res, 422, "Internal server error");
   });
 });
