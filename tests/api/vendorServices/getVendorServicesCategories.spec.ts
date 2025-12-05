@@ -6,7 +6,7 @@ import {
 } from "../../../src/utils/getEnv";
 import { VendorServicesApiClient } from "../../../src/api/VendorServicesApiClient";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
-import { CategoriesShema } from "../../../src/schema/vendorServicesShema";
+import { CategoriesSchema } from "../../../src/schema/vendorServicesSchema";
 
 
 test.describe("API: GET categories of vendor services", () => {
@@ -21,7 +21,7 @@ test.describe("API: GET categories of vendor services", () => {
     adminCookie = getAdminCookie();
   });
 
-  test(`should return valid shema when supplier get categories`, async () => {
+  test(`should return valid schema when supplier get categories`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
     const resGet = await api.getCategories();
@@ -32,7 +32,7 @@ test.describe("API: GET categories of vendor services", () => {
     ).toBe(200);
     const validated = await validateResponse(
       { status: resGet.status, body },
-      CategoriesShema
+      CategoriesSchema
     );
     validated.forEach((item) => {
       expect(item).toHaveProperty("id");
@@ -41,7 +41,7 @@ test.describe("API: GET categories of vendor services", () => {
     });
   });
 
-  test(`should return valid shema when buyer get categories`, async () => {
+  test(`should return valid schema when buyer get categories`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, buyerCookie);
     const resGet = await api.getCategories();
@@ -52,7 +52,7 @@ test.describe("API: GET categories of vendor services", () => {
     ).toBe(200);
     const validated = await validateResponse(
       { status: resGet.status, body },
-      CategoriesShema
+      CategoriesSchema
     );
     validated.forEach((item) => {
       expect(item).toHaveProperty("id");
@@ -61,7 +61,7 @@ test.describe("API: GET categories of vendor services", () => {
     });
   });
 
-  test(`should return valid shema when admin get categories`, async () => {
+  test(`should return valid schema when admin get categories`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, adminCookie);
     const resGet = await api.getCategories();
@@ -72,7 +72,7 @@ test.describe("API: GET categories of vendor services", () => {
     ).toBe(200);
     const validated = await validateResponse(
       { status: resGet.status, body },
-      CategoriesShema
+      CategoriesSchema
     );
      validated.forEach((item) => {
       expect(item).toHaveProperty("id");

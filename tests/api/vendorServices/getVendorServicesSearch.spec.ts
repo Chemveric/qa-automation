@@ -7,7 +7,7 @@ import {
 import { VendorServicesApiClient } from "../../../src/api/VendorServicesApiClient";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
-import { SearchResponseSchema } from "../../../src/schema/vendorServicesShema";
+import { SearchResponseSchema } from "../../../src/schema/vendorServicesSchema";
 
 const validator = new ResponseValidationHelper();
 

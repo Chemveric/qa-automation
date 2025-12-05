@@ -6,7 +6,7 @@ import {
 } from "../../../src/utils/getEnv";
 import { VendorServicesApiClient } from "../../../src/api/VendorServicesApiClient";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
-import { ServicesListSchema } from "../../../src/schema/vendorServicesShema";
+import { ServicesListSchema } from "../../../src/schema/vendorServicesSchema";
 
 
 test.describe("API: GET vendor services list", () => {
@@ -21,7 +21,7 @@ test.describe("API: GET vendor services list", () => {
     adminCookie = getAdminCookie();
   });
 
-  test(`should return valid shema when supplier get services list`, async () => {
+  test(`should return valid schema when supplier get services list`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
     const resGet = await api.getList();
@@ -42,7 +42,7 @@ test.describe("API: GET vendor services list", () => {
     });
   });
 
-  test(`should return valid shema when buyer get services list`, async () => {
+  test(`should return valid schema when buyer get services list`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, buyerCookie);
     const resGet = await api.getList();
@@ -63,7 +63,7 @@ test.describe("API: GET vendor services list", () => {
     });
   });
 
-  test(`should return valid shema when admin get services list`, async () => {
+  test(`should return valid schema when admin get services list`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, adminCookie);
     const resGet = await api.getList();

@@ -6,7 +6,7 @@ import {
 } from "../../../src/utils/getEnv";
 import { VendorServicesApiClient } from "../../../src/api/VendorServicesApiClient";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
-import { OrganizationServicesListSchema } from "../../../src/schema/vendorServicesShema";
+import { OrganizationServicesListSchema } from "../../../src/schema/vendorServicesSchema";
 
 
 test.describe("API: GET vendor services list by organization ID", () => {
@@ -21,7 +21,7 @@ test.describe("API: GET vendor services list by organization ID", () => {
     adminCookie = getAdminCookie();
   });
 
-  test(`should return valid shema when get supplier's services list as supplier`, async () => {
+  test(`should return valid schema when get supplier's services list as supplier`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
     const resGet = await api.getListByOrganization();
@@ -39,7 +39,7 @@ test.describe("API: GET vendor services list by organization ID", () => {
     expect(validated).toHaveProperty("services");
   });
 
-  test(`should return valid shema when get supplier's services list as buyer`, async () => {
+  test(`should return valid schema when get supplier's services list as buyer`, async () => {
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, buyerCookie);
     const resGet = await api.getListByOrganization();
