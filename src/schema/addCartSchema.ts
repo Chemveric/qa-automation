@@ -44,7 +44,7 @@ export const CartItemSchema = z.object({
   warehouse: WarehouseSchema.optional(),
 });
 
-export const CartSchema = z.object({
+export const AddCartSchema = z.object({
   id: z.uuid(),
   items: z.array(CartItemSchema),
   totalAmount: z.number(),
@@ -57,4 +57,4 @@ export type ChemicalInfo = z.infer<typeof ChemicalInfoSchema>;
 export type SupplierLite = z.infer<typeof SupplierLiteSchema>;
 export type Warehouse = z.infer<typeof WarehouseSchema>;
 export type CartItem = z.infer<typeof CartItemSchema>;
-export type Cart = z.infer<typeof CartSchema>;
+export type Cart = z.infer<typeof AddCartSchema>;
