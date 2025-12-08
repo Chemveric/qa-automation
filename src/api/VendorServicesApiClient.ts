@@ -39,4 +39,17 @@ export class VendorServicesApiClient extends BaseAPIClient {
   async getListByOrganization() {
     return this.get("/v1/vendor-services/list/by-organization");
   }
+
+  async postRequest(body: Record<string, any> = {}){
+    return this.post("/v1/vendor-services/request", body)
+  }
+
+   async postSetup(body: Record<string, any> = {}){
+    return this.post("/v1/vendor-services/setup", body)
+  }
+
+  async postCustom(body: Record<string, any> = {}){
+    return this.post("/v1/vendor-services/custom", body)
+  }
+
 }
