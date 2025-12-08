@@ -53,7 +53,9 @@ export class BaseAPIClient {
 
   async post(path: string, data?: any) {
     log.step(`API POST ${path}`);
-    const res = await this.api.post(path, { data });
+    const res = await this.api.post(path, {
+      data,
+    });
     let responseBody: any;
     try {
       responseBody = await res.json();
