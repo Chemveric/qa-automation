@@ -1,8 +1,5 @@
 import { test } from "@playwright/test";
-import { UserDashboardPage } from "../../src/pages/UserDashboardPage";
 import { UserRfqPage } from "../../src/pages/UserRfqPage";
-import { UserMainProductsPage } from "../../src/pages/UserMainProductsPage";
-import { UserCartPage } from "../../src/pages/UserCartPage";
 import { CookiesTag, DriverProvider } from "../../src/driver/DriverProvider";
 import { rfqTestData } from "../../src/data/rfqData";
 
@@ -10,65 +7,217 @@ test.describe("Create RFQ", () => {
   test.use({
     storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Buyer),
   });
-  const filePathath = "src/data/files/RFQ.pdf";
-  test("buyer can create RFQ", async ({ page }) => {
-    // navigate on RFQ page
+
+  const filePath = "src/data/files/RFQ.pdf";
+  const chemFilePath = "src/data/files/meldonium_and_analog.sdf";
+  const confFilePath = "src/data/files/confidential_test_file.docx";
+
+  test("buyer can create RFQ steps 1-4", async ({ page }) => {
     const rfqPage = new UserRfqPage(page);
     await rfqPage.goto();
     await rfqPage.assertLoaded();
-
-    // click on crete rfq
     await rfqPage.clickOnCreateRfqButton();
-    await rfqPage.assertStepOne();
 
-    // fill step 1
-    await rfqPage.selectService(
-      rfqTestData.serviceName,
-      rfqTestData.serviceOption
+    // step 1
+    await rfqPage.assertStepOneIsVisible();
+    await rfqPage.fillStep1(rfqTestData.serviceName, rfqTestData.serviceOption);
+
+    // step 2
+    await rfqPage.assertStepTwoIsVisible();
+    await rfqPage.fillStep2(
+      rfqTestData.turaroundDays,
+      rfqTestData.deliveryDate,
+      rfqTestData.targetBudget,
+      rfqTestData.description,
+      filePath,
+      rfqTestData.sector,
+      rfqTestData.complexity,
+      rfqTestData.region,
+      rfqTestData.projectStage,
+      rfqTestData.companySize,
+      rfqTestData.priorityLevel
     );
-    await rfqPage.checkFeeForService();
-    await rfqPage.clickContinue();
 
-    // fill step 2
-    await rfqPage.assertStepTwo();
-    await rfqPage.setProposalTurnaroundDays(rfqTestData.turaroundDays);
-    await rfqPage.setRequiredDeliveryDate(rfqTestData.deliveryDate);
-    await rfqPage.setTargetBudget(rfqTestData.targetBudget);
-    await rfqPage.addDescription(rfqTestData.description);
-
-    await rfqPage.uploadFile(filePathath);
-
-    await rfqPage.selectSector(rfqTestData.sector);
-    await rfqPage.selectComplexity(rfqTestData.complexity);
-    await rfqPage.selectRegion(rfqTestData.region);
-    await rfqPage.selectProjectStage(rfqTestData.projectStage);
-    await rfqPage.selectCompanySize(rfqTestData.companySize);
-    await rfqPage.selectPriorityLevel(rfqTestData.priorityLevel);
-    await rfqPage.clickContinue();
-
-    await rfqPage.assertStepThree();
-
-    // fill step 3
-    await rfqPage.addCompoundName("Meldonium");
-    await rfqPage.addQuantity("1000");
-    await rfqPage.addPurity("99");
-    await rfqPage.selectAnalitycalMethod("HPLC");
-    // await page.pause();
-
-    await rfqPage.uploadChemFile("src/data/files/meldonium_and_analog.sdf");
-    await rfqPage.assertChemFileIsLoaded();
-    await rfqPage.clickOnAddCompoundButton();
-
-    await rfqPage.uploadConfFile("src/data/files/confidential_test_file.docx");
-    await rfqPage.addConfNotes("Lorem ipsum test");
-
-    await page.pause();
-
-    await rfqPage.clickContinue();
-    await rfqPage.assertStepFour();
+    // step 3
+    await rfqPage.assertStepThreeIsVisible();
+    await rfqPage.fillStep3(
+      rfqTestData.compoundName,
+      rfqTestData.quantity,
+      rfqTestData.purity,
+      rfqTestData.analyticalMethod,
+      chemFilePath,
+      confFilePath,
+      rfqTestData.notes
+    );
 
     // step 4
+    await rfqPage.assertStepFourIsVisible();
+    await rfqPage.fillStage4(
+      rfqTestData.title,
+      rfqTestData.area,
+      rfqTestData.startDate,
+      rfqTestData.endDate,
+      rfqTestData.criteria,
+      rfqTestData.firstName,
+      rfqTestData.lastName,
+      rfqTestData.company,
+      rfqTestData.email,
+      rfqTestData.phone,
+      rfqTestData.notes
+    );
+
+    // step 5
+    await rfqPage.assertStepFiveIsVisible();
   });
 
+  test("buyer can create an RFQ without filling in the data for step 2", async ({
+    page,
+  }) => {
+    const rfqPage = new UserRfqPage(page);
+    await rfqPage.goto();
+    await rfqPage.assertLoaded();
+    await rfqPage.clickOnCreateRfqButton();
 
+    // step 1
+    await rfqPage.assertStepOneIsVisible();
+    await rfqPage.fillStep1(rfqTestData.serviceName, rfqTestData.serviceOption);
+
+    // step 2
+    await rfqPage.assertStepTwoIsVisible();
+    await rfqPage.clickContinue();
+
+    // step 3
+    await rfqPage.assertStepThreeIsVisible();
+    await rfqPage.fillStep3(
+      rfqTestData.compoundName,
+      rfqTestData.quantity,
+      rfqTestData.purity,
+      rfqTestData.analyticalMethod,
+      chemFilePath,
+      confFilePath,
+      rfqTestData.notes
+    );
+
+    // step 4
+    await rfqPage.assertStepFourIsVisible();
+    await rfqPage.fillStage4(
+      rfqTestData.title,
+      rfqTestData.area,
+      rfqTestData.startDate,
+      rfqTestData.endDate,
+      rfqTestData.criteria,
+      rfqTestData.firstName,
+      rfqTestData.lastName,
+      rfqTestData.company,
+      rfqTestData.email,
+      rfqTestData.phone,
+      rfqTestData.notes
+    );
+
+    // step 5
+    await rfqPage.assertStepFiveIsVisible();
+  });
+
+  test("buyer can add smiles on step 3", async ({ page }) => {
+    const rfqPage = new UserRfqPage(page);
+    await rfqPage.goto();
+    await rfqPage.assertLoaded();
+    await rfqPage.clickOnCreateRfqButton();
+
+    // step 1
+    await rfqPage.assertStepOneIsVisible();
+    await rfqPage.fillStep1(rfqTestData.serviceName, rfqTestData.serviceOption);
+
+    // step 2
+    await rfqPage.assertStepTwoIsVisible();
+    await rfqPage.clickContinue();
+
+    // step 3
+    await rfqPage.assertStepThreeIsVisible();
+    await rfqPage.fillStep3UseSmile(
+      rfqTestData.compoundName,
+      rfqTestData.quantity,
+      rfqTestData.purity,
+      rfqTestData.analyticalMethod,
+      rfqTestData.smile,
+      rfqTestData.notes,
+      confFilePath
+    );
+
+    // step 4
+    await rfqPage.assertStepFourIsVisible();
+  });
+
+  test("buyer can not upload cofidential info on step 3", async ({ page }) => {
+    const rfqPage = new UserRfqPage(page);
+    await rfqPage.goto();
+    await rfqPage.assertLoaded();
+    await rfqPage.clickOnCreateRfqButton();
+
+    // step 1
+    await rfqPage.assertStepOneIsVisible();
+    await rfqPage.fillStep1(rfqTestData.serviceName, rfqTestData.serviceOption);
+
+    // step 2
+    await rfqPage.assertStepTwoIsVisible();
+    await rfqPage.clickContinue();
+
+    // step 3
+    await rfqPage.assertStepThreeIsVisible();
+    await rfqPage.fillStep3UseSmileNoConfFileAndNotes(
+      rfqTestData.compoundName,
+      rfqTestData.quantity,
+      rfqTestData.purity,
+      rfqTestData.analyticalMethod,
+      rfqTestData.smile
+    );
+
+    // step 4
+    await rfqPage.assertStepFourIsVisible();
+  });
+
+  test("buyer can create RFQ without adding notes on step 4", async ({
+    page,
+  }) => {
+    const rfqPage = new UserRfqPage(page);
+    await rfqPage.goto();
+    await rfqPage.assertLoaded();
+    await rfqPage.clickOnCreateRfqButton();
+
+    // step 1
+    await rfqPage.assertStepOneIsVisible();
+    await rfqPage.fillStep1(rfqTestData.serviceName, rfqTestData.serviceOption);
+
+    // step 2
+    await rfqPage.assertStepTwoIsVisible();
+    await rfqPage.clickContinue();
+
+    // step 3
+    await rfqPage.assertStepThreeIsVisible();
+    await rfqPage.fillStep3UseSmileNoConfFileAndNotes(
+      rfqTestData.compoundName,
+      rfqTestData.quantity,
+      rfqTestData.purity,
+      rfqTestData.analyticalMethod,
+      rfqTestData.smile
+    );
+
+    // step 4
+    await rfqPage.assertStepFourIsVisible();
+    await rfqPage.fillStage4WithoutNotes(
+      rfqTestData.title,
+      rfqTestData.area,
+      rfqTestData.startDate,
+      rfqTestData.endDate,
+      rfqTestData.criteria,
+      rfqTestData.firstName,
+      rfqTestData.lastName,
+      rfqTestData.company,
+      rfqTestData.email,
+      rfqTestData.phone
+    );
+
+    // step 5
+    await rfqPage.assertStepFiveIsVisible();
+  });
 });
