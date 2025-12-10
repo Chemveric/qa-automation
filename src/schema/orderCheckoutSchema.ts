@@ -47,7 +47,7 @@ const OrderItemSchema = z.object({
   totalPrice: z.number(),
   currency: z.string(),
   supplier: OrderItemSupplierSchema,
-  estimatedDeliveryDate: IsoDateSchema.nullable(),
+  estimatedDeliveryDate: z.string().datetime().nullable(),
   chemicalInfo: ChemicalInfoSchema,
 });
 
@@ -71,5 +71,3 @@ export const OrderCheckoutSchema = z.object({
   suppliers: z.array(SupplierSchema),
   orderItems: z.array(OrderItemSchema),
 });
-
-export type Order = z.infer<typeof OrderCheckoutSchema>;
