@@ -1,9 +1,5 @@
-import { test, expect } from "@playwright/test";
-import {
-  getSupplierCookie,
-  getBuyerCookie,
-  getAdminCookie,
-} from "../../../src/utils/getEnv";
+import { test, expect, request } from "@playwright/test";
+import { getSupplierCookie, getAdminCookie } from "../../../src/utils/getEnv";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { randomUUID } from "crypto";
@@ -13,22 +9,22 @@ import { SearchResponseSchema } from "../../../src/schema/searchResponseSchema";
 import { OrdersApiClient } from "../../../src/api/OrdersApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { OrderListSchema } from "../../../src/schema/orderListSchema";
+import { OrderDetailsSchema } from "../../../src/schema/orderItemSchema";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: GET orders", () => {
+test.describe("API: GET order by id", () => {
   let userApi: UserApiClient;
   let api: OrdersApiClient;
   let cartApi: CartApiClient;
   let searchApi: SearchApiClient;
   let supplierCookie: string;
-  let buyerCookie: string;
   let adminCookie: string;
   let packageId: string | undefined;
+  let orderItems: Array<any>;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
-    buyerCookie = getBuyerCookie();
     adminCookie = getAdminCookie();
 
     searchApi = new SearchApiClient();
@@ -67,9 +63,31 @@ test.describe("API: GET orders", () => {
       quantity: 1,
     });
     expect(addRes.status).toBe(201);
+
+    //get all orders
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const ordersBody = {
+      setRole: "BUYER",
+    };
+    const ordersPost = await userApi.postUserRoles(ordersBody);
+    expect(
+      ordersPost.status,
+      `Expected status code is 201, but got ${ordersPost.status}`
+    ).toBe(201);
+    api = new OrdersApiClient();
+    await api.init({ "Content-Type": false }, supplierCookie);
+
+    const ordersRes = await api.getOrders();
+    const orders = await validateResponse(
+      { status: ordersRes.status, body: await ordersRes.body },
+      OrderListSchema,
+      200
+    );
+    orderItems = orders.items;
   });
 
-  test(`should get orders with filter`, async () => {
+  test(`should get order by id`, async () => {
     userApi = new UserApiClient();
     await userApi.init({}, supplierCookie);
     const postBody = {
@@ -82,26 +100,23 @@ test.describe("API: GET orders", () => {
     ).toBe(201);
     api = new OrdersApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
-
-    const params = {
-      status: ["PAYMENT_PROCESSING"],
-    };
-    const res = await api.getOrders(params);
+    const order = orderItems[0];
+    const res = await api.getOrderById(order.id);
     expect(res.status).toBe(200);
     const body = await res.body;
 
     const validated = await validateResponse(
       { status: res.status, body },
-      OrderListSchema,
+      OrderDetailsSchema,
       200
     );
 
-    expect(
-      validated.items.every((item) => item.status === "PAYMENT_PROCESSING")
-    ).toBe(true);
+    expect(validated.id).toBe(order.id);
+    expect(validated.totalAmount).toBe(order.totalAmount);
+    expect(validated.status).toBe(order.status);
   });
 
-  test(`should get orders with no filters`, async () => {
+  test(`should get 404 with not existing order id`, async () => {
     userApi = new UserApiClient();
     await userApi.init({}, supplierCookie);
     const postBody = {
@@ -114,17 +129,41 @@ test.describe("API: GET orders", () => {
     ).toBe(201);
     api = new OrdersApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
+    let wrongOrderId = randomUUID();
+    const res = await api.getOrderById(wrongOrderId);
+    expect(res.status).toBe(404);
+    validator.expectStatusCodeAndMessage(res, 404, "Order not found");
+  });
 
-    const res = await api.getOrders();
-    expect(res.status).toBe(200);
-    const body = await res.body;
-
-    const validated = await validateResponse(
-      { status: res.status, body },
-      OrderListSchema,
-      200
+  test(`should get 404 with wrong order id`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "BUYER",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
+    api = new OrdersApiClient();
+    await api.init({ "Content-Type": false }, supplierCookie);
+    let wrongOrderId = "123453";
+    const res = await api.getOrderById(wrongOrderId);
+    expect(res.status).toBe(400);
+    validator.expectStatusCodeAndMessage(
+      res,
+      400,
+      "Validation failed (uuid is expected)"
     );
-    expect(validated.items.length).toBeGreaterThan(0);
+  });
+
+  test(`should return 401 unauthorized for admin cookie`, async () => {
+    api = new OrdersApiClient();
+    await api.init({ "Content-Type": false }, adminCookie);
+
+    const res = await api.getOrderById(orderItems[0].id);
+    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 
   test(`should return 403 forbidden for supplier cookie`, async () => {
@@ -140,9 +179,7 @@ test.describe("API: GET orders", () => {
     ).toBe(201);
     api = new OrdersApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
-
-    const res = await api.getOrders();
-    expect(res.status).toBe(403);
+    const res = await api.getOrderById(orderItems[0].id);
     validator.expectStatusCodeAndMessage(
       res,
       403,
@@ -150,78 +187,11 @@ test.describe("API: GET orders", () => {
     );
   });
 
-  test(`should return 401 unauthorized for admin cookie`, async () => {
-    api = new OrdersApiClient();
-    await api.init({ "Content-Type": false }, adminCookie);
-    const res = await api.getOrders();
-    validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
-  });
-
-  test(`should return orders with limit`, async () => {
-    userApi = new UserApiClient();
-    await userApi.init({}, supplierCookie);
-    const postBody = {
-      setRole: "BUYER",
-    };
-    const resPost = await userApi.postUserRoles(postBody);
-    expect(
-      resPost.status,
-      `Expected status code is 201, but got ${resPost.status}`
-    ).toBe(201);
-    api = new OrdersApiClient();
-    await api.init({ "Content-Type": false }, supplierCookie);
-    const params = {
-      limit: 10,
-    };
-    const res = await api.getOrders(params);
-    expect(res.status).toBe(200);
-    const checkoutBody = await res.body;
-
-    const validated = await validateResponse(
-      { status: res.status, body: checkoutBody },
-      OrderListSchema,
-      200
-    );
-    expect(validated.totalCount).toBe(10);
-  });
-
-  test(`should return no orders when start date filter in future`, async () => {
-    userApi = new UserApiClient();
-    await userApi.init({}, supplierCookie);
-    const postBody = {
-      setRole: "BUYER",
-    };
-    const resPost = await userApi.postUserRoles(postBody);
-    expect(
-      resPost.status,
-      `Expected status code is 201, but got ${resPost.status}`
-    ).toBe(201);
-    api = new OrdersApiClient();
-    await api.init({ "Content-Type": false }, supplierCookie);
-    const d = new Date();
-    d.setUTCFullYear(d.getUTCFullYear() + 1);
-    const iso = d.toISOString().replace(".000Z", "Z");
-    const params = {
-      startDate: iso,
-    };
-    const res = await api.getOrders(params);
-    expect(res.status).toBe(200);
-    const checkoutBody = await res.body;
-
-    const validated = await validateResponse(
-      { status: res.status, body: checkoutBody },
-      OrderListSchema,
-      200
-    );
-    expect(validated.items).toHaveLength(0);
-    expect(validated.totalCount).toBe(0);
-  });
-
   test(`should return 401 when fake cookie`, async () => {
     const fakeCookie = `__Secure-admin-sid=${randomUUID()}`;
     api = new OrdersApiClient();
     await api.init({ "Content-Type": false }, fakeCookie);
-    const res = await api.getOrders();
+    const res = await api.getOrderById(orderItems[0].id);
     validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 });
