@@ -27,7 +27,7 @@ export class UserCartPage extends BasePage {
     await expect(
       this.page.getByRole("heading", {
         name: productName,
-      })
+      }).first()
     ).toBeVisible();
   }
 
@@ -40,6 +40,6 @@ async removeProduct(productName: string) {
     has: this.page.getByText(productName, { exact: false })
   });
 
-  await item.getByRole("button", { name: /remove/i }).click();
+  await item.getByRole("button", { name: /remove/i }).first().click();
 }
 }
