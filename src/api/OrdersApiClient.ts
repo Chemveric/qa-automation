@@ -36,4 +36,8 @@ export class OrdersApiClient extends BaseAPIClient {
 
     return this.get(url);
   }
+
+  async getOrderById(orderId: string | undefined) {
+    return this.get(`/v1/orders/${orderId}`);
+  }
 }
