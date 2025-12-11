@@ -15,7 +15,7 @@ export class OrdersApiClient extends BaseAPIClient {
 
   async postOrdersCheckout() {
     return this.post(`/v1/orders/checkout`);
-    }
+  }
 
   async getOrders(query?: OrdersQuery) {
     const searchParams = new URLSearchParams();
@@ -40,9 +40,9 @@ export class OrdersApiClient extends BaseAPIClient {
 
   async getOrderById(orderId: string | undefined) {
     return this.get(`/v1/orders/${orderId}`);
-    }
+  }
 
-    async getOrdersAddress() {
-        return this.get(`/v1/orders/shipping-address`);
-    }
+  async getOrdersAddress() {
+    return this.get(`/v1/orders/shipping-address`);
+  }
 }
