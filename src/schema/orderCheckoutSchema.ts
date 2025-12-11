@@ -67,7 +67,7 @@ export const OrderCheckoutSchema = z.object({
   currency: z.string(),
   createdAt: IsoDateSchema,
   updatedAt: IsoDateSchema,
-  recipientInfo: RecipientInfoSchema,
+  recipientInfo: RecipientInfoSchema.nullable(),
   suppliers: z.array(SupplierSchema),
   orderItems: z.array(OrderItemSchema),
 });
