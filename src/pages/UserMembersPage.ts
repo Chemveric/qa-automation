@@ -179,7 +179,7 @@ export class UserMembersPage extends BasePage {
     return this.page
       .getByRole("row")
       .filter({
-        has: this.page.getByText("AQA-Nadia AQA-Member-test"),
+        has: this.page.getByText("AQA-Nadia AQA-Member-"),
       })
       .first();
   }
