@@ -31,11 +31,10 @@ export const europeCountries = [
   "Spain",
   "Sweden",
   "Switzerland",
-  "United Kingdom"
+  "United Kingdom",
 ];
 
-const randomCountry =
-  faker.helpers.arrayElement(europeCountries);
+const randomCountry = faker.helpers.arrayElement(europeCountries);
 
 export const companyProfileTestData = {
   companyName: faker.company.name(),

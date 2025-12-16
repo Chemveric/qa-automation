@@ -56,4 +56,7 @@ export class OrganizationsApiClient extends BaseAPIClient {
   async getOrganizationNda() {
     return this.get(`/v1/organizations/nda`);
   }
+  async postOrganizationNda(body: Record<string, any>) {
+    return this.post(`/v1/organizations/nda/edit`, body);
+  }
 }
