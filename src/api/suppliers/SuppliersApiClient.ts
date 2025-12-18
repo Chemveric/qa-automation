@@ -1,4 +1,5 @@
-﻿import { BaseAPIClient } from "../core/BaseAPIClient";
+﻿import { BaseAPIClient } from "../../core/BaseAPIClient";
+import { SuppliersSearchRequest } from "./suppliers.types";
 
 type SuppliersQuery = {
   modes?: string[];
@@ -21,5 +22,9 @@ export class SuppliersApiClient extends BaseAPIClient {
       searchParams.toString() ? "?" + searchParams.toString() : ""
     }`;
     return this.get(url);
+  }
+
+  async postSuppliersSearch(body: SuppliersSearchRequest) {
+    return this.post("/v1/suppliers/search", body);
   }
 }

@@ -6,12 +6,12 @@ import {
   getBuyerCookie,
   getSupplierCookie,
 } from "../../../src/utils/getEnv";
-import { SuppliersApiClient } from "../../../src/api/SuppliersApiClient";
+import { SuppliersApiClient } from "../../../src/api/suppliers/SuppliersApiClient";
 import { SuppliersResponseSchema } from "../../../src/schema/supplierSchema";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: Get emails filtered", () => {
+test.describe("API: Get suppliers short list", () => {
   let api: SuppliersApiClient;
   let adminCookie: string;
   let supplierCoockie: string;
