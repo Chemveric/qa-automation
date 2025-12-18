@@ -13,7 +13,6 @@ import { SearchResponseSchema } from "../../../src/schema/searchResponseSchema";
 import { OrdersApiClient } from "../../../src/api/OrdersApiClient";
 import { UserApiClient } from "../../../src/api/UserApiClient";
 import { OrderListSchema } from "../../../src/schema/orderListSchema";
-import { OrderDetailsSchema } from "../../../src/schema/orderItemSchema";
 import { PaymentsApiClient } from "../../../src/api/PaymentsApiClient";
 import { PaymentSessionSchema } from "../../../src/schema/paymentsSchema";
 

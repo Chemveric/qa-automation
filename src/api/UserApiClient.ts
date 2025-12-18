@@ -10,7 +10,7 @@ export class UserApiClient extends BaseAPIClient {
     return this.get("/v1/user");
   }
 
-    async getUserRoles() {
+  async getUserRoles() {
     return this.get("/v1/user/roles");
   }
 
