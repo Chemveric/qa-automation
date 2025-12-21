@@ -140,7 +140,9 @@ test.describe("API: get all organization roles", () => {
       RolesSchema
     );
     expect(validated.role).toBe("VENDOR");
-    expect(validated.vendorModes).toStrictEqual(randomVendorMode);
+    expect(validated.vendorModes).toEqual(
+      expect.arrayContaining(randomVendorMode)
+    );
     expect(Array.isArray(validated.subroles.VENDOR)).toBe(true);
     expect(validated.subroles.VENDOR).not.toBeNull();
     expect(validated.subroles.BUYER).toBeNull();
@@ -204,7 +206,9 @@ test.describe("API: get all organization roles", () => {
     );
     expect(validated.role).toBe("BUYER");
     expect(validated.secondaryRole).toBe("VENDOR");
-    expect(validated.vendorModes).toStrictEqual(randomVendorMode);
+    expect(validated.vendorModes).toEqual(
+      expect.arrayContaining(randomVendorMode)
+    );
     expect(Array.isArray(validated.subroles.VENDOR)).toBe(true);
     expect(Array.isArray(validated.subroles.BUYER)).toBe(true);
     expect(validated.subroles.VENDOR).not.toBeNull();

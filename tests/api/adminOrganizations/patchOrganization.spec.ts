@@ -178,8 +178,8 @@ test.describe("API: edit organization by Id", () => {
     const res = await api.patchOrganizationById(fakeId!, params);
     expect(
       res.status,
-      `Expected status code is 500, but got ${res.status}`
-    ).toBe(500);
+      `Expected status code is 404, but got ${res.status}`
+    ).toBe(404);
   });
 
   test(`should be error editing with wrong region id`, async () => {
@@ -200,8 +200,8 @@ test.describe("API: edit organization by Id", () => {
     const res = await api.patchOrganizationById(fakeId!, params);
     expect(
       res.status,
-      `Expected status code is 500, but got ${res.status}`
-    ).toBe(500);
+      `Expected status code is 404, but got ${res.status}`
+    ).toBe(404);
   });
 
   test(`should be error editing with wrong country id`, async () => {
@@ -222,8 +222,8 @@ test.describe("API: edit organization by Id", () => {
     const res = await api.patchOrganizationById(fakeId!, params);
     expect(
       res.status,
-      `Expected status code is 500, but got ${res.status}`
-    ).toBe(500);
+      `Expected status code is 404, but got ${res.status}`
+    ).toBe(404);
   });
 
   for (const testCase of adminOrganizationTestData) {

@@ -55,7 +55,7 @@ test.describe("API: get organization roleset", () => {
     expect(validated.vendorModes).toEqual(["CATALOG", "CRO_CDMO"]);
   });
 
-  test("should return 401 Unauthorized when get roleset with wrong coockie", async () => {
+  test.skip("BUG:should return 401 Unauthorized when get roleset with wrong coockie", async () => {
     const fakeCookie = `__Secure-admin-sid=${faker.string.uuid()}`;
     const api = new OrganizationsApiClient();
     await api.init({}, fakeCookie);

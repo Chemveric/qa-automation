@@ -14,6 +14,7 @@ import {
 } from "../../../src/utils/invalidData/invalidVendorServices";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { VendorService } from "../../../src/utils/types/vendorService.types";
+import { UserApiClient } from "../../../src/api/UserApiClient";
 
 const validator = new ResponseValidationHelper();
 
@@ -22,6 +23,7 @@ test.describe("API: POST custom vendor service", () => {
   let supplierCookie: string;
   let buyerCookie: string;
   let adminCookie: string;
+  let userApi: UserApiClient;
 
   test.beforeAll(async () => {
     supplierCookie = getSupplierCookie();
@@ -30,6 +32,16 @@ test.describe("API: POST custom vendor service", () => {
   });
 
   test(`should return success when send valid data`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     api = new VendorServicesApiClient();
     await api.init({ "Content-Type": false }, supplierCookie);
     const resGet = await api.getCategories();
@@ -43,36 +55,43 @@ test.describe("API: POST custom vendor service", () => {
       CategoriesSchema
     );
     const categoryId = validated[0].id;
-    await api.init({}, supplierCookie);
 
     const postTestData = CustomVendorServiceFactory.valid(categoryId);
     const postRes = await api.postCustom(postTestData);
 
     console.log("POST RES: ", postRes);
-    await expect(postRes.status).toBe(201);
-    await expect(postRes.body).toHaveProperty("id");
-    await expect(postRes.body).toHaveProperty("code");
-    await expect(postRes.body).toHaveProperty("name");
-    await expect(postRes.body).toHaveProperty("domain");
-    await expect(postRes.body).toHaveProperty("developmentPhase");
-    await expect(postRes.body).toHaveProperty("description");
-    await expect(postRes.body).toHaveProperty("categoryId");
-    await expect(postRes.body).toHaveProperty("organizationId");
-    await expect(postRes.body).toHaveProperty("isActive");
-    await expect(postRes.body).toHaveProperty("createdAt");
-    await expect(postRes.body.name).toBe(postTestData.name);
-    await expect(postRes.body.domain).toBe(postTestData.domain);
-    await expect(postRes.body.developmentPhase).toBe(
-      postTestData.developmentPhase
-    );
-    await expect(postRes.body.categoryId).toBe(categoryId);
+    expect(postRes.status).toBe(201);
+    expect(postRes.body).toHaveProperty("id");
+    expect(postRes.body).toHaveProperty("code");
+    expect(postRes.body).toHaveProperty("name");
+    expect(postRes.body).toHaveProperty("domain");
+    expect(postRes.body).toHaveProperty("developmentPhase");
+    expect(postRes.body).toHaveProperty("description");
+    expect(postRes.body).toHaveProperty("categoryId");
+    expect(postRes.body).toHaveProperty("organizationId");
+    expect(postRes.body).toHaveProperty("isActive");
+    expect(postRes.body).toHaveProperty("createdAt");
+    expect(postRes.body.name).toBe(postTestData.name);
+    expect(postRes.body.domain).toBe(postTestData.domain);
+    expect(postRes.body.developmentPhase).toBe(postTestData.developmentPhase);
+    expect(postRes.body.categoryId).toBe(categoryId);
   });
 
   for (const [field, invalidValues] of Object.entries(invalidVendorServices)) {
     for (const { value, expectedError } of invalidValues) {
       test(`should return 422 when POST invitation with invalid or empty value: ${field} = "${value}"`, async () => {
+        userApi = new UserApiClient();
+        await userApi.init({}, supplierCookie);
+        const postBody = {
+          setRole: "BUYER",
+        };
+        const resPost = await userApi.postUserRoles(postBody);
+        expect(
+          resPost.status,
+          `Expected status code is 201, but got ${resPost.status}`
+        ).toBe(201);
         api = new VendorServicesApiClient();
-        await api.init({}, supplierCookie);
+        await api.init({}, buyerCookie);
         const postTestData = CustomVendorServiceFactory.invalid(field, value);
         const postRes = await api.postCustom(postTestData);
 

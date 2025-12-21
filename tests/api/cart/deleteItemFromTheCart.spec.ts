@@ -93,30 +93,32 @@ test.describe("API: DELETE item from the cart", () => {
     );
   });
 
-  test(`should return 200 when non existing product id`, async () => {
+  test(`should return 400 when non existing product id`, async () => {
     const fakePackageId = randomUUID();
     api = new CartApiClient();
     await api.init({}, buyerCookie);
     const res = await api.removeItemFromCart(fakePackageId, {
       packageId: fakePackageId,
     });
-    expect(res.status).toBe(200);
-    const body = await res.body;
-
-    const validated = await validateResponse(
-      { status: res.status, body },
-      CartSchema,
-      200
+    expect(res.status).toBe(400);
+    validator.expectStatusCodeAndMessage(
+      res,
+      400,
+      "Failed to get chemical package"
     );
   });
 
-  test(`should return 422 when wrong package id`, async () => {
+  test(`should return 400 when wrong package id`, async () => {
     const wrongPackageId = "";
     api = new CartApiClient();
     await api.init({}, buyerCookie);
     const res = await api.removeItemFromCart(wrongPackageId!, {
       packageId: wrongPackageId,
     });
-    validator.expectStatusCodeAndMessage(res, 422, "Internal server error");
+    validator.expectStatusCodeAndMessage(
+      res,
+      400,
+      "Validation failed (uuid is expected)"
+    );
   });
 });

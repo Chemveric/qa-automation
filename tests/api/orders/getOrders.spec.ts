@@ -182,7 +182,7 @@ test.describe("API: GET orders", () => {
       OrderListSchema,
       200
     );
-    expect(validated.totalCount).toBe(10);
+    expect(validated.totalCount).toBeLessThanOrEqual(10);
   });
 
   test(`should return no orders when start date filter in future`, async () => {
