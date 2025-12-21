@@ -7,9 +7,9 @@ import {
   getSupplierCookie,
 } from "../../../src/utils/getEnv";
 import { SuppliersApiClient } from "../../../src/api/suppliers/SuppliersApiClient";
-import { SuppliersResponseSchema } from "../../../src/schema/supplierSchema";
 import { SuppliersSearchRequest } from "../../../src/api/suppliers/suppliers.types";
 import { SuppliersSearchSchema } from "../../../src/schema/supplierSearchSchema";
+import { SuppliersShortSchema } from "../../../src/schema/supplierShortSchema";
 
 const validator = new ResponseValidationHelper();
 
@@ -188,7 +188,7 @@ test.describe("API: POST search suppliers", () => {
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
-      SuppliersResponseSchema
+        SuppliersShortSchema
     );
     expect(Array.isArray(validated)).toBe(true);
   });

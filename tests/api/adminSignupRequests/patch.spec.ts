@@ -1,8 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {
   getAdminCookie,
-  getBuyerCookie,
-  getSupplierCookie,
 } from "../../../src/utils/getEnv";
 import { AdminSignupRequestsApiClient } from "../../../src/api/AdminSignupRequestsApiClient";
 import { UsersSignupRequestListSchema } from "../../../src/schema/userSignupRequestSchema";
