@@ -27,4 +27,8 @@ export class SuppliersApiClient extends BaseAPIClient {
   async postSuppliersSearch(body: SuppliersSearchRequest) {
     return this.post("/v1/suppliers/search", body);
   }
+
+  async getSupplierById(id: string) {
+    return this.get(`/v1/suppliers/${id}`);
+  }
 }

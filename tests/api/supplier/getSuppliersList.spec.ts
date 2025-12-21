@@ -7,7 +7,7 @@ import {
   getSupplierCookie,
 } from "../../../src/utils/getEnv";
 import { SuppliersApiClient } from "../../../src/api/suppliers/SuppliersApiClient";
-import { SuppliersResponseSchema } from "../../../src/schema/supplierSchema";
+import { SuppliersShortSchema } from "../../../src/schema/supplierShortSchema";
 
 const validator = new ResponseValidationHelper();
 
@@ -36,7 +36,7 @@ test.describe("API: Get suppliers short list", () => {
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
-      SuppliersResponseSchema
+        SuppliersShortSchema
     );
     expect(Array.isArray(validated)).toBe(true);
   });
@@ -49,7 +49,7 @@ test.describe("API: Get suppliers short list", () => {
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
-      SuppliersResponseSchema
+        SuppliersShortSchema
     );
     expect(Array.isArray(validated)).toBe(true);
   });
@@ -76,7 +76,7 @@ test.describe("API: Get suppliers short list", () => {
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
-      SuppliersResponseSchema
+      SuppliersShortSchema
     );
     expect(Array.isArray(validated)).toBe(true);
   });
@@ -89,7 +89,7 @@ test.describe("API: Get suppliers short list", () => {
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
-      SuppliersResponseSchema
+        SuppliersShortSchema
     );
     expect(Array.isArray(validated)).toBe(true);
   });

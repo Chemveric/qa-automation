@@ -39,10 +39,10 @@ export const DocumentSchema = z.object({
   mime: z.string(),
   size: z.number(),
   key: z.string(),
-  createdAt: z.string().datetime(), // ISO date
+  createdAt: z.coerce.date(),
 });
 
-export const SupplierSchema = z.object({
+const SupplierSchema = z.object({
   id: z.string(),
   name: z.string(),
   modes: z.array(z.string()),
@@ -62,3 +62,5 @@ export const CatalogProductSchema = z.object({
   documents: z.array(DocumentSchema),
   suplier: SupplierSchema,
 });
+
+export type CatalogProductSchema = z.infer<typeof CatalogProductSchema>;
