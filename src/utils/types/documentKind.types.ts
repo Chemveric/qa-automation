@@ -1,0 +1,7 @@
+export enum DocumentKind {
+  STANDARD_NDA = "STANDARD_NDA",
+  TERMS = "TERMS",
+  PRIVACY = "PRIVACY",
+  SECURITY = "SECURITY",
+  EMAIL_LOGO = "EMAIL_LOGO",
+}
