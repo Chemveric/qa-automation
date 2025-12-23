@@ -16,8 +16,12 @@ test.describe("Product Catalog Management", async () => {
   };
   await userApi.postUserRoles(postBody);
 
+<<<<<<< HEAD
   test.describe.configure({ retries: 2 });
 
+=======
+test.describe("Product Catalog Management", () => {
+>>>>>>> main
   let teamMembersPage: UserMembersPage;
   let productCatalogPage: UserProductCatalogPage;
   let xlsxPath: string;
