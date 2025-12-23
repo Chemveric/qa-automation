@@ -1,0 +1,6 @@
+export enum DocumentCategory {
+  LEGAL = "LEGAL",
+  HELP_CENTER = "HELP_CENTER",
+  MARKETING = "MARKETING",
+  EMAIL_ASSETS = "EMAIL_ASSETS",
+}
