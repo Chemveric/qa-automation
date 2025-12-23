@@ -6,8 +6,6 @@ import { createRandomXlsx } from "../../src/data/catalogSourceData";
 import { test } from "@playwright/test";
 
 test.describe("Product Catalog Management", () => {
-  test.describe.configure({ retries: 2 });
-
   let teamMembersPage: UserMembersPage;
   let productCatalogPage: UserProductCatalogPage;
   let xlsxPath: string;
