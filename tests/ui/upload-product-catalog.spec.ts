@@ -9,18 +9,19 @@ import { getSupplierCookie } from "../../src/utils/getEnv";
 
 test.describe("Product Catalog Management", async () => {
   let supplierCookie = getSupplierCookie();
-  let userApi = new UserApiClient();
-  await userApi.init({}, supplierCookie);
-  const postBody = {
-    setRole: "VENDOR",
-  };
-  await userApi.postUserRoles(postBody);
   let teamMembersPage: UserMembersPage;
   let productCatalogPage: UserProductCatalogPage;
   let xlsxPath: string;
 
   test.use({
     storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Vendor),
+  });
+
+  test.beforeAll(async () => {
+    const userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const res = await userApi.postUserRoles({ setRole: "VENDOR" });
+    test.expect(res.status).toBe(201);
   });
 
   test.beforeEach(async ({ page }) => {
