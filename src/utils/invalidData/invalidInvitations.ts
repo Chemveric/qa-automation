@@ -31,18 +31,17 @@ export const invalidInvitations = {
   ],
 };
 
+export const requiredFields = [
+  { field: "email", message: "ERR002" },
+  {
+    field: "companyName",
+    message: "companyName should not be null or undefined",
+  },
+  {
+    field: "firstName",
+    message: "firstName should not be null or undefined",
+  },
+  { field: "lastName", message: "lastName should not be null or undefined" },
+];
 
-  export const requiredFields = [
-    { field: "email", message: "email must be an email" },
-    {
-      field: "companyName",
-      message: "companyName should not be null or undefined",
-    },
-    {
-      field: "firstName",
-      message: "firstName should not be null or undefined",
-    },
-    { field: "lastName", message: "lastName should not be null or undefined" },
-  ];
-
-  export const invalidIds = ["", 12345, "hello world!"];
+export const invalidIds = ["", 12345, "hello world!"];

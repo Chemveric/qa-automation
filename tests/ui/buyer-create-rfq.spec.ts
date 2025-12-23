@@ -9,7 +9,7 @@ test.describe("Create RFQ", () => {
   });
 
   const filePath = "src/data/files/RFQ.pdf";
-  const chemFilePath = "src/data/files/meldonium_and_analog.sdf";
+  const chemFilePath = "src/data/files/meldonium.mol";
   const confFilePath = "src/data/files/confidential_test_file.docx";
 
   test("buyer can create RFQ steps 1-4", async ({ page }) => {

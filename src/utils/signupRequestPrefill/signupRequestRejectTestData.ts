@@ -15,6 +15,7 @@ export interface TestUser {
   companyPostalCode: string;
   licenseFilesId: [string];
   termsAccepted: boolean;
+  lastRejectTokenUuid: string | null;
 }
 
 export function getRejectedRequestData(): TestUser {
@@ -35,6 +36,7 @@ export function getRejectedRequestData(): TestUser {
     companyPostalCode: "90027",
     licenseFilesId: ["52d6d016-e0c6-4d2a-bfaf-f1de10fec268"],
     termsAccepted: true,
+    lastRejectTokenUuid: null,
   };
 }
 

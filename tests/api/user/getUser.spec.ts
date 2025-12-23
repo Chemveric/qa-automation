@@ -39,7 +39,9 @@ test.describe("API: GET user.", () => {
     expect(user).toHaveProperty("status");
     expect(user).toHaveProperty("organization");
     expect(user).toHaveProperty("email");
-    expect(user).toHaveProperty("name");
+    expect(user).toHaveProperty("firstName");
+    expect(user).toHaveProperty("lastName");
+    expect(user).toHaveProperty("hasSeenSupplierOnboarding");
     expect(user).toHaveProperty("activeRole");
     expect(user).toHaveProperty("roles");
     expect(user).toHaveProperty("identities");
@@ -61,7 +63,8 @@ test.describe("API: GET user.", () => {
     expect(user).toHaveProperty("status");
     expect(user).toHaveProperty("organization");
     expect(user).toHaveProperty("email");
-    expect(user).toHaveProperty("name");
+    expect(user).toHaveProperty("firstName");
+    expect(user).toHaveProperty("lastName");
     expect(user).toHaveProperty("activeRole");
     expect(user).toHaveProperty("roles");
     expect(user).toHaveProperty("identities");

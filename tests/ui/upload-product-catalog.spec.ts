@@ -4,14 +4,24 @@ import { UserProductCatalogPage } from "../../src/pages/UserProductCatalogPage";
 import { VendorProductDetailsPage } from "../../src/pages/VendorProductDetailsPage";
 import { createRandomXlsx } from "../../src/data/catalogSourceData";
 import { test } from "@playwright/test";
+import { UserApiClient } from "../../src/api/UserApiClient";
+import { getSupplierCookie } from "../../src/utils/getEnv";
 
-test.describe("Product Catalog Management", () => {
+test.describe("Product Catalog Management", async () => {
+  let supplierCookie = getSupplierCookie();
   let teamMembersPage: UserMembersPage;
   let productCatalogPage: UserProductCatalogPage;
   let xlsxPath: string;
 
   test.use({
     storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Vendor),
+  });
+
+  test.beforeAll(async () => {
+    const userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const res = await userApi.postUserRoles({ setRole: "VENDOR" });
+    test.expect(res.status).toBe(201);
   });
 
   test.beforeEach(async ({ page }) => {

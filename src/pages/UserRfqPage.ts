@@ -16,6 +16,8 @@ export class UserRfqPage extends BasePage {
   readonly stepFour;
   readonly proposalTurnaroundDays;
   readonly requiredDeliveryDate;
+  readonly calendarButton;
+  readonly yearSelection;
   readonly targetBudget;
   readonly projectDescription;
   readonly fileInput;
@@ -36,6 +38,7 @@ export class UserRfqPage extends BasePage {
   readonly smilesField;
   readonly projectTitle;
   readonly startDate;
+  readonly nextMonthButton;
   readonly endDate;
   readonly therapeuticArea;
   readonly successCriteria;
@@ -68,7 +71,11 @@ export class UserRfqPage extends BasePage {
     this.proposalTurnaroundDays = page.getByRole("textbox", {
       name: "Proposal turnaround (days)",
     });
-    this.requiredDeliveryDate = page.locator('input[type="date"]');
+    this.calendarButton = page.getByLabel("Choose date");
+    this.yearSelection = page.getByLabel(
+      "calendar view is open, switch to year view"
+    );
+    this.requiredDeliveryDate = page.getByLabel("Month");
     this.targetBudget = page.getByRole("textbox", { name: "Target budget" });
     this.projectDescription = page.getByRole("textbox", {
       name: "Brief Description",
@@ -111,6 +118,7 @@ export class UserRfqPage extends BasePage {
     // step 4 locators
     this.stepFour = page.getByText("Step 4: Timeline & Contacts");
     this.projectTitle = page.getByRole("textbox", { name: "Project Title" });
+    this.nextMonthButton = page.getByLabel("Next month");
     this.startDate = page.getByRole("textbox", { name: "Start Date" });
     this.endDate = page.getByRole("textbox", { name: "End Date" });
     this.therapeuticArea = page.locator(
@@ -200,8 +208,10 @@ export class UserRfqPage extends BasePage {
   }
 
   async setRequiredDeliveryDate(deliveryDate: string) {
-    await this.requiredDeliveryDate.click();
-    await this.requiredDeliveryDate.fill(deliveryDate);
+    await this.calendarButton.click();
+    await this.yearSelection.click();
+    await this.page.getByRole("radio", { name: "2026" }).click();
+    await this.page.getByRole("gridcell", { name: "24" }).click();
   }
 
   async setTargetBudget(budget: string) {
@@ -351,7 +361,7 @@ export class UserRfqPage extends BasePage {
     analyticalMethod: string,
     smiles: string,
     notes: string,
-    filePath: string,
+    filePath: string
   ) {
     log.step("Fill step 3 RFQ flow with smiles");
     await this.addCompoundName(compoundName);
@@ -362,17 +372,16 @@ export class UserRfqPage extends BasePage {
     await this.addSmiles(smiles);
     await this.clickOnAddCompoundButton();
     await this.addNotes(notes);
-    await this.uploadFile(filePath)
+    await this.uploadFile(filePath);
     await this.clickContinue();
   }
-
 
   async fillStep3UseSmileNoConfFileAndNotes(
     compoundName: string,
     quantity: string,
     purity: string,
     analyticalMethod: string,
-    smiles: string,
+    smiles: string
   ) {
     log.step("Fill step 3 RFQ flow with smiles and no confidential files");
     await this.addCompoundName(compoundName);
@@ -396,11 +405,16 @@ export class UserRfqPage extends BasePage {
   }
 
   async addStartDate(stDate: string) {
-    await this.startDate.fill(stDate);
+    await this.calendarButton.first().click();
+    await this.nextMonthButton.click();
+    await this.page.getByRole("gridcell", { name: "24" }).first().click();
   }
 
   async addEndDate(endDate: string) {
-    await this.endDate.fill(endDate);
+    await this.calendarButton.last().click();
+    await this.yearSelection.last().click();
+    await this.page.getByRole("radio", { name: "2026" }).click();
+    await this.page.getByRole("gridcell", { name: "20" }).click();
   }
 
   async addSuccessCriteria(criteria: string) {
@@ -443,6 +457,7 @@ export class UserRfqPage extends BasePage {
     log.step("Fill step 4 RFQ flow");
     await this.addProjectTitle(title);
     await this.addTherapeuticArea(area);
+
     await this.addStartDate(stDate);
     await this.addEndDate(endDate);
     await this.addSuccessCriteria(criteria);
@@ -465,7 +480,7 @@ export class UserRfqPage extends BasePage {
     lastName: string,
     company: string,
     email: string,
-    phone: string,
+    phone: string
   ) {
     log.step("Fill step 4 RFQ flow without notes");
     await this.addProjectTitle(title);

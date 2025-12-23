@@ -97,7 +97,7 @@ export class SignupPage extends BasePage {
   }
 
   async clickSignUpButton() {
-    await this.signUpButton.click();
+    await this.signUpButton.first().click();
   }
 
   async clickBack() {

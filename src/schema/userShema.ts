@@ -6,41 +6,55 @@ export const userStatus = z.enum([
   "SERVICES_ONBOARDING",
   "CATALOG_ONBOARDING",
   "BLOCKED",
+  "INACTIVE",
+  "PENDING",
 ]);
 
-export const userRole = z.enum(["BUYER", "VENDOR"]);
+export const userRole = z.enum(["BUYER", "VENDOR", "SUPPLIER", "ADMIN"]);
 
-export const userSubrole = z.array(z.enum(["VENDOR_ADMIN", "BUYER_ADMIN"]));
+export const userSubrole = z.enum(["VENDOR_ADMIN", "BUYER_ADMIN"]);
+
+export const vendorMode = z.enum(["CATALOG", "CRO_CDMO"]);
 
 export const Organization = z.object({
   id: z.uuid(),
   name: z.string(),
+  hasActiveStandardNda: z.boolean().optional(),
+  accountNumber: z.number().optional(),
 });
 
-export const useriIdentities = z.array(
-  z.object({
-    provider: z.string(),
-    providerSub: z.string(),
-  })
-);
+export const ProfileImage = z.object({
+  id: z.string().uuid(),
+  key: z.string(),
+  filename: z.string(),
+  size: z.number(),
+  mimeType: z.string(),
+});
 
-export const userRoles = z.array(
-  z.object({
-    role: userRole,
-    subroles: userSubrole,
-  })
-);
+export const UserIdentity = z.object({
+  provider: z.string(),
+  providerSub: z.string(),
+});
+
+export const UserRoleEntry = z.object({
+  role: userRole,
+  subroles: z.array(userSubrole),
+});
 
 export const UserSchema = z.object({
   id: z.uuid(),
   email: z.email(),
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   organization: Organization,
+  identities: z.array(UserIdentity),
   activeRole: userRole,
-  roles: userRoles,
-  identities: useriIdentities,
+  roles: z.array(UserRoleEntry),
+  vendorModes: z.array(vendorMode),
   status: userStatus,
   permissions: z.array(z.string()),
+  hasSeenSupplierOnboarding: z.boolean().optional(),
+  profileImage: ProfileImage.nullable().optional(),
 });
 
-export type UserSchema = z.infer<typeof UserSchema>;
+export type User = z.infer<typeof UserSchema>;

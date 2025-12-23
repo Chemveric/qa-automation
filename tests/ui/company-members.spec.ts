@@ -96,7 +96,7 @@ test.describe("Team Management", () => {
     await teamMembersPage.assertDialogIsCloced();
   });
 
-    test("should delete invitation ", async ({ page }) => {
+  test("should delete invitation ", async ({ page }) => {
     await teamMembersPage.goto();
     await teamMembersPage.assertLoaded();
 

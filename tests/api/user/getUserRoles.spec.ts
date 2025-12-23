@@ -19,7 +19,7 @@ test.describe("API: GET user roles.", () => {
   test(`should return success when send request with valid supplier cookie`, async () => {
     await api.init({ "Content-Type": false }, supplierCookie);
     const res = await api.getUserRoles();
-    const expectedRoles = ["BUYER", "VENDOR"];
+    const expectedRoles = ["VENDOR", "BUYER"];
     expect(
       res.status,
       `Expected status code is 200, but got ${res.status}`

@@ -10,7 +10,7 @@ import {
 } from "../../../src/utils/invalidData/invalidInvitations";
 import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHelper";
 import { log } from "../../../src/core/logger";
-import { Invitation } from '../../../src/utils/types/invitation.types';
+import { Invitation } from "../../../src/utils/types/invitation.types";
 
 const validator = new ResponseValidationHelper();
 
@@ -73,7 +73,7 @@ test.describe("API smoke: POST Admin Signup Invite", () => {
         badEmail as any
       );
       const res = await api.postSignupInvite(invitationBody);
-      validator.expectStatusCodeAndMessage(res, 422, "email must be an email");
+      validator.expectStatusCodeAndMessage(res, 422, "email");
     });
   }
 

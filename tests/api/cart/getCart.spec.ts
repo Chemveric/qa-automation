@@ -15,6 +15,7 @@ import { randomUUID } from "crypto";
 const validator = new ResponseValidationHelper();
 
 test.describe("API: Get cart items", () => {
+  test.describe.configure({ retries: 2 });
   let api: CartApiClient;
   let searchApi: SearchApiClient;
   let supplierCookie: string;

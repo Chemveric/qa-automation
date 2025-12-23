@@ -87,7 +87,6 @@ test.describe("API: POST update item in the cart", () => {
   test(`should return 403 if updated with supplier cookie`, async () => {
     api = new CartApiClient();
     await api.init({}, supplierCookie);
-
     const params = {
       newPackageId: packageId,
       quantity: 2,
@@ -174,6 +173,6 @@ test.describe("API: POST update item in the cart", () => {
       quantity: 2,
     };
     const res = await api.updateCartItem(params, cardItemId!);
-    validator.expectStatusCodeAndMessage(res, 422, "Internal server error");
+    validator.expectStatusCodeAndMessage(res, 422, "newPackageId");
   });
 });

@@ -40,7 +40,7 @@ export const rfqTestData = {
   serviceName: "Biology",
   serviceOption: "Other Biology",
   turaroundDays: "30",
-  deliveryDate: "2026-01-01",
+  deliveryDate: "12 December, 2026",
   targetBudget: "700",
   description: `AQA test ${faker.lorem.sentence({ min: 3, max: 7 })}`,
   sector: randomSector,
