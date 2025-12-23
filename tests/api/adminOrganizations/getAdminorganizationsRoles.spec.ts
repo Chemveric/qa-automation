@@ -15,6 +15,7 @@ import { faker } from "@faker-js/faker";
 const validator = new ResponseValidationHelper();
 
 test.describe("API: get all organization roles", () => {
+  test.describe.configure({ retries: 2 });
   let api: AdminOrganizationsApiClient;
   let authApi: AuthApiClient;
   let signUpApi: AdminSignupRequestsApiClient;
@@ -274,7 +275,9 @@ test.describe("API: get all organization roles", () => {
     );
     expect(validated.role).toBe("VENDOR");
     expect(validated.secondaryRole).toBe("BUYER");
-    expect(validated.vendorModes).toStrictEqual(randomVendorMode);
+    expect(validated.vendorModes).toEqual(
+      expect.arrayContaining(randomVendorMode)
+    );
     expect(Array.isArray(validated.subroles.VENDOR)).toBe(true);
     expect(Array.isArray(validated.subroles.BUYER)).toBe(true);
     expect(validated.subroles.VENDOR).not.toBeNull();

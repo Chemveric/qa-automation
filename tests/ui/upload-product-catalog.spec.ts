@@ -4,8 +4,18 @@ import { UserProductCatalogPage } from "../../src/pages/UserProductCatalogPage";
 import { VendorProductDetailsPage } from "../../src/pages/VendorProductDetailsPage";
 import { createRandomXlsx } from "../../src/data/catalogSourceData";
 import { test } from "@playwright/test";
+import { UserApiClient } from "../../src/api/UserApiClient";
+import { getSupplierCookie } from "../../src/utils/getEnv";
 
-test.describe("Product Catalog Management", () => {
+test.describe("Product Catalog Management", async () => {
+  let supplierCookie = getSupplierCookie();
+  let userApi = new UserApiClient();
+  await userApi.init({}, supplierCookie);
+  const postBody = {
+    setRole: "VENDOR",
+  };
+  await userApi.postUserRoles(postBody);
+
   test.describe.configure({ retries: 2 });
 
   let teamMembersPage: UserMembersPage;
