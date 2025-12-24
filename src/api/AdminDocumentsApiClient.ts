@@ -3,6 +3,11 @@ import fs from "fs";
 import { DocumentCategory } from "../utils/types/documentCategory.typess";
 import { DocumentKind } from "../utils/types/documentKind.types";
 
+type AdminDocumentsQuery = {
+  sort?: string[];
+  range?: (number | string)[];
+  filter?: Record<string, string>;
+};
 export class AdminDocumentsApiClient extends BaseAPIClient {
   async health() {
     return this.get("/v1/health");
@@ -26,5 +31,20 @@ export class AdminDocumentsApiClient extends BaseAPIClient {
       kind: kind,
       displayName: displayName,
     });
+  }
+
+  async getPublicDocuments(query?: AdminDocumentsQuery) {
+    const params = query
+      ? Object.fromEntries(
+          Object.entries(query).map(([key, value]) => [
+            key,
+            JSON.stringify(value),
+          ])
+        )
+      : {};
+
+    const searchParams = new URLSearchParams(params as Record<string, string>);
+    const url = `/v1/admin/public-documents?${searchParams.toString()}`;
+    return this.get(url);
   }
 }
