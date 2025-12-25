@@ -13,6 +13,7 @@ import { FileUploadValidData } from "../../../src/utils/uploadSessions/fileUploa
 import { RfqSchema } from "../../../src/schema/rfqShema";
 import { faker } from "@faker-js/faker";
 import path from "path";
+import { RfqResponseSchema } from "../../../src/schema/rfqResponseSchema";
 
 const validator = new ResponseValidationHelper();
 
@@ -45,12 +46,11 @@ test.describe("API: GET RFQs by ID", () => {
     ).toBe(200);
     const validated = await validateResponse(
       { status: resGet.status, body },
-      RfqSchema
+      RfqResponseSchema
     );
     expect(validated).toHaveProperty("id");
-    expect(validated).toHaveProperty("type");
+    expect(validated).toHaveProperty("projectType");
     expect(validated).toHaveProperty("status");
-    expect(validated).toHaveProperty("dueDate");
   });
 
   test(`should return valid shema when get CUSTOM RFQ by ID`, async () => {
@@ -72,9 +72,14 @@ test.describe("API: GET RFQs by ID", () => {
     );
 
     // get status by id
-    await uploadApi.getUploadsSessions(
+    await waitForCleanStatus(
+      uploadApi,
       backendUploadRes.body.id,
-      organizationId
+      organizationId,
+      {
+        intervalMs: 5000,
+        timeoutMs: 60000,
+      }
     );
 
     // finalise session
@@ -163,4 +168,34 @@ test.describe("API: GET RFQs by ID", () => {
       "Forbidden for your permission"
     );
   });
+
+  const waitForCleanStatus = async (
+    api: UploadSessionsApiClient,
+    uploadId: string,
+    supplierOrganizationId: string,
+    { intervalMs = 5000, timeoutMs = 60_000 } = {}
+  ) => {
+    const start = Date.now();
+
+    while (true) {
+      const res = await api.getUploadsSessions(
+        uploadId,
+        supplierOrganizationId
+      );
+
+      const state = res.body.state;
+
+      if (state === "CLEAN") {
+        return res.body;
+      }
+
+      if (Date.now() - start > timeoutMs) {
+        throw new Error(
+          `Timeout waiting for status CLEAN. Last state: ${state}`
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  };
 });

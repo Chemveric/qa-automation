@@ -5,7 +5,6 @@ import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHel
 import { AdminDocumentsApiClient } from "../../../src/api/AdminDocumentsApiClient";
 import { DocumentCategory } from "../../../src/utils/types/documentCategory.typess";
 import { DocumentKind } from "../../../src/utils/types/documentKind.types";
-import { PublicDocumentSchema } from "../../../src/schema/addDocumentSchema";
 import { randomUUID } from "crypto";
 import { GetAdminDocumentsResponseSchema } from "../../../src/schema/getAdminDocumentResponseSchema";
 

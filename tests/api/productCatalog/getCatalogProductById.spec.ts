@@ -18,6 +18,7 @@ import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { CatalogResponseSchema } from "../../../src/schema/catalogProductsSchema";
 import { CatalogProductSchema } from "../../../src/schema/catalogProductSchema";
 import { createCatalogImportData } from "../../../src/data/catalogImportData";
+import { randomUUID } from "crypto";
 
 const validator = new ResponseValidationHelper();
 
@@ -79,13 +80,10 @@ test.describe("API: GET catalog product by id", () => {
     expect(resSessionComplete.status).toBe(201);
 
     // get session status
-    await api.init({ "Content-Type": false }, supplierCookie);
-    const resSessionStatus = await api.getUploadsSessions(
-      sessionId,
-      supplierOrganizationId
-    );
-    const sessionStatus = resSessionStatus.body.state;
-    console.log("Supplier session status: ", sessionStatus);
+    await waitForCleanStatus(api, sessionId, supplierOrganizationId, {
+      intervalMs: 5000,
+      timeoutMs: 60000,
+    });
 
     //finalize session
     const finalizeBody = {
@@ -117,6 +115,16 @@ test.describe("API: GET catalog product by id", () => {
   });
 
   test(`should return created product by id`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
 
@@ -135,6 +143,16 @@ test.describe("API: GET catalog product by id", () => {
   });
 
   test(`should return product by id uploaded via backend`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     // upload file via backend
     const uploadApi = new UploadSessionsApiClient();
     let xlsxPathbackend = await createRandomXlsx(
@@ -209,13 +227,34 @@ test.describe("API: GET catalog product by id", () => {
   });
 
   test(`should return 401 when fake coockie`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     importApi = new CatalogImportApiClient();
-    await importApi.init({});
+    let fakeCookie = `__Secure-admin-sid=${randomUUID()}`;
+    await importApi.init({}, fakeCookie);
     const res = await importApi.getProductById(productId);
     validator.expectStatusCodeAndMessage(res, 401, "Unauthorized");
   });
 
   test(`should return 400 when wrong product id`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
     let fakeProductId = "fake-product-id-12345";
@@ -247,4 +286,34 @@ test.describe("API: GET catalog product by id", () => {
       await new Promise((r) => setTimeout(r, intervalMs));
     }
   }
+
+  const waitForCleanStatus = async (
+    api: UploadSessionsApiClient,
+    uploadId: string,
+    supplierOrganizationId: string,
+    { intervalMs = 5000, timeoutMs = 60_000 } = {}
+  ) => {
+    const start = Date.now();
+
+    while (true) {
+      const res = await api.getUploadsSessions(
+        uploadId,
+        supplierOrganizationId
+      );
+
+      const state = res.body.state;
+
+      if (state === "CLEAN") {
+        return res.body;
+      }
+
+      if (Date.now() - start > timeoutMs) {
+        throw new Error(
+          `Timeout waiting for status CLEAN. Last state: ${state}`
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  };
 });

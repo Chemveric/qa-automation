@@ -9,34 +9,33 @@ import {
 
 export class RfqFactory {
   static bulk() {
-    return new RfqBuilder("BULK")
-      .setDueDateInMonths(2)
-      .build();
+    return new RfqBuilder("BULK").build();
   }
 
   static bulkFull() {
-  return new RfqBuilder("BULK")
-    .setDueDate("2025-12-31T23:59:59Z")
-    .setNonconfField("projectDescription", "Bulk catalog replenishment managed by Chemveric ops.")
-    .setNonconfField("proposalTurnaroundDays", 7)
-    .setNonconfField("deliveryDate", "2025-09-15")
-    .setNonconfField("targetBudget", 25000)
-    .setNonconfField("sector", "Catalog")
-    .setNonconfField("stage", "Commercial")
-    .setNonconfField("complexity", "Low")
-    .setNonconfField("companySize", "Enterprise")
-    .setNonconfField("region", "Global")
-    .setNonconfField("priority", "Standard")
-    .setNonconfField("quantity", "10kg")
-    .setNonconfField("purityMinPct", 95)
-    .setNonconfField("deliveryTime", "2 weeks")
-    .build();
-}
-
+    return new RfqBuilder("BULK")
+      .setDueDate("2025-12-31T23:59:59Z")
+      .setNonconfField(
+        "projectDescription",
+        "Bulk catalog replenishment managed by Chemveric ops."
+      )
+      .setNonconfField("proposalTurnaroundDays", 7)
+      .setNonconfField("deliveryDate", "2025-09-15")
+      .setNonconfField("targetBudget", 25000)
+      .setNonconfField("sector", "Catalog")
+      .setNonconfField("stage", "Commercial")
+      .setNonconfField("complexity", "Low")
+      .setNonconfField("companySize", "Enterprise")
+      .setNonconfField("region", "Global")
+      .setNonconfField("priority", "Standard")
+      .setNonconfField("quantity", "10kg")
+      .setNonconfField("purityMinPct", 95)
+      .setNonconfField("deliveryTime", "2 weeks")
+      .build();
+  }
 
   static custom(fileId: string, fileName: string) {
     return new RfqBuilder("CUSTOM")
-      .setDueDate("2026-03-15")
       .addService("00145593-4a92-4c53-ab93-7c0fbf52632b")
       .setEngagementModel("FFS")
       .setNonconfField(
@@ -79,7 +78,6 @@ export class RfqFactory {
       })
       .build();
   }
-
 
   static customStep1Minimal() {
     return new RfqBuilder("CUSTOM")
@@ -300,21 +298,21 @@ export class RfqFactory {
   }
 
   static patchNonconfInvalid() {
-  return new RfqBuilder("BULK")
-    .overrideNonconf({
-      projectDescription: 123 as any,       
-      proposalTurnaroundDays: -5 as any,    
-      deliveryDate: "not-a-date" as any,    
-      targetBudget: -1000 as any,           
-      sector: 456 as any,                   
-      stage: true as any,                   
-      complexity: null as any,              
-      companySize: {} as any,              
-      region: [] as any,                   
-      priority: 789 as any                  
-    })
-    .build();
-}
+    return new RfqBuilder("BULK")
+      .overrideNonconf({
+        projectDescription: 123 as any,
+        proposalTurnaroundDays: -5 as any,
+        deliveryDate: "not-a-date" as any,
+        targetBudget: -1000 as any,
+        sector: 456 as any,
+        stage: true as any,
+        complexity: null as any,
+        companySize: {} as any,
+        region: [] as any,
+        priority: 789 as any,
+      })
+      .build();
+  }
 
   static invalidWrongType() {
     return new RfqBuilder("BULK")
@@ -325,10 +323,3 @@ export class RfqFactory {
       .build();
   }
 }
-
-
-
-
-
-
-
