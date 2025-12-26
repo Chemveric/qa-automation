@@ -9,36 +9,37 @@ export class UserLoginPage extends BasePage {
   }
 
   async loginWithAuth0(email: string, password: string) {
-  log.step("Navigate to user UI");
-  await this.page.goto(ENV.guest.url);
+    log.step("Navigate to user UI");
+    await this.page.goto(ENV.guest.url);
 
-  // Open popup safely
-  const [popup] = await Promise.all([
-    this.page.context().waitForEvent("page"),
-    this.page.getByRole("button", { name: "Log In" }).click(),
-  ]);
+    // Open popup safely
+    const [popup] = await Promise.all([
+      this.page.context().waitForEvent("page"),
+      this.page.getByRole("button", { name: "Log In" }).click(),
+    ]);
 
-  log.step("Start user LOGIN");
+    log.step("Start user LOGIN");
 
-  await popup.waitForLoadState("domcontentloaded");
-  await expect(popup.locator("h1")).toHaveText("Login");
+    await popup.waitForLoadState("domcontentloaded");
+    await expect(popup.locator("h1")).toHaveText("Login");
 
-  // Fill credentials
-  await popup.fill("input#username", email);
-  await popup.fill("input#password", password);
+    // Fill credentials
+    await popup.fill("input#username", email);
+    await popup.fill("input#password", password);
 
-  // Submit: wait for either popup close or main page navigation
-  await Promise.all([
-    popup.waitForEvent("close").catch(() => null), // prevent crash if popup stays open
-    popup.click('button[type="submit"]'),
-  ]);
+    // Submit: wait for either popup close or main page navigation
+    await Promise.all([
+      popup.waitForEvent("close").catch(() => null), // prevent crash if popup stays open
+      popup.click('button[type="submit"]'),
+    ]);
 
-  await this.page.waitForLoadState("networkidle");
-  
-  log.step("Login submitted");
+    await this.page.waitForLoadState("load");
 
-  // Ensure main page loaded
-  await expect(this.page.getByText(/dashboard|welcome/i).first()).toBeVisible();
-}
+    log.step("Login submitted");
 
+    // Ensure main page loaded
+    await expect(
+      this.page.getByText(/dashboard|welcome/i).first()
+    ).toBeVisible();
+  }
 }
