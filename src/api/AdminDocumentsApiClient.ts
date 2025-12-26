@@ -47,4 +47,8 @@ export class AdminDocumentsApiClient extends BaseAPIClient {
     const url = `/v1/admin/public-documents?${searchParams.toString()}`;
     return this.get(url);
   }
+
+  async getPublicDocumentById(documentId: string) {
+    return this.get(`/v1/admin/public-documents/${documentId}`);
+  }
 }

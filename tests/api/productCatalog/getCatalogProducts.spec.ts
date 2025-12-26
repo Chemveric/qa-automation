@@ -18,6 +18,7 @@ import { validateResponse } from "../../../helpers/schemaResponseValidator";
 import { CatalogResponseSchema } from "../../../src/schema/catalogProductsSchema";
 import { randomUUID } from "crypto";
 import { createCatalogImportData } from "../../../src/data/catalogImportData";
+import { de } from "@faker-js/faker/.";
 
 const validator = new ResponseValidationHelper();
 
@@ -78,13 +79,10 @@ test.describe("API: GET catalog products", () => {
     expect(resSessionComplete.status).toBe(201);
 
     // get session status
-    await api.init({ "Content-Type": false }, supplierCookie);
-    const resSessionStatus = await api.getUploadsSessions(
-      sessionId,
-      supplierOrganizationId
-    );
-    const sessionStatus = resSessionStatus.body.state;
-    console.log("Supplier session status: ", sessionStatus);
+    await waitForCleanStatus(api, sessionId, supplierOrganizationId, {
+      intervalMs: 5000,
+      timeoutMs: 60000,
+    });
 
     //finalize session
     const finalizeBody = {
@@ -103,6 +101,16 @@ test.describe("API: GET catalog products", () => {
   });
 
   test(`should return all existing products`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     importApi = new CatalogImportApiClient();
     await importApi.init({}, supplierCookie);
 
@@ -121,6 +129,16 @@ test.describe("API: GET catalog products", () => {
   });
 
   test(`should return product uploaded via backend`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     // upload file via backend
     const uploadApi = new UploadSessionsApiClient();
     let xlsxPathbackend = await createRandomXlsx(
@@ -140,47 +158,55 @@ test.describe("API: GET catalog products", () => {
       xlsxPath,
       uploadData
     );
+    expect(backendUploadRes.status).toBe(201);
 
     // get status by id
-    const res = await uploadApi.getUploadsSessions(
-      backendUploadRes.body.id,
-      supplierOrganizationId
-    );
-    const body = res.body;
+    // await waitForCleanStatus(api, sessionId, supplierOrganizationId, {
+    //   intervalMs: 5000,
+    //   timeoutMs: 60000,
+    // });
 
     // finalise session if status is clean
-    if (body.state === "CLEAN") {
-      await uploadApi.init({}, supplierCookie);
+    await uploadApi.init({}, supplierCookie);
 
-      const finalizeBody = {
-        sessionIds: [backendUploadRes.body.id],
-        organizationId: supplierOrganizationId,
-      };
-      const resSessionComplete = await uploadApi.postUploadSessionsFinalize(
-        finalizeBody
-      );
-      expect(resSessionComplete.status).toBe(201);
-      importApi = new CatalogImportApiClient();
-      await importApi.init({}, supplierCookie);
-      const importBody = createCatalogImportData(fileid);
-      const importCatalog = await importApi.postImports(importBody);
-      await waitForImportCompleted(importApi, importCatalog.body.jobId);
-      const res = await importApi.getProducts();
-      expect(res.status).toBe(200);
-      const body = await res.body;
+    const finalizeBody = {
+      sessionIds: [backendUploadRes.body.id],
+      organizationId: supplierOrganizationId,
+    };
+    const resSessionComplete = await uploadApi.postUploadSessionsFinalize(
+      finalizeBody
+    );
+    expect(resSessionComplete.status).toBe(201);
+    importApi = new CatalogImportApiClient();
+    await importApi.init({}, supplierCookie);
+    const importBody = createCatalogImportData(fileid);
+    const importCatalog = await importApi.postImports(importBody);
+    await waitForImportCompleted(importApi, importCatalog.body.jobId);
+    const res = await importApi.getProducts();
+    expect(res.status).toBe(200);
+    const body = await res.body;
 
-      const validated = await validateResponse(
-        { status: res.status, body },
-        CatalogResponseSchema
-      );
-      const excelData = await readChemicalXlsx(xlsxPathbackend);
-      expect(validated.items.some((item) => item.name === excelData.name)).toBe(
-        true
-      );
-    }
+    const validated = await validateResponse(
+      { status: res.status, body },
+      CatalogResponseSchema
+    );
+    const excelData = await readChemicalXlsx(xlsxPathbackend);
+    expect(validated.items.some((item) => item.name === excelData.name)).toBe(
+      true
+    );
   });
 
   test(`should return products send request with buyer cookie`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     const xlsxPathBuyer = await createRandomXlsx(
       "chemical_random_buyer.xlsx",
       1
@@ -226,13 +252,10 @@ test.describe("API: GET catalog products", () => {
     expect(resSessionComplete.status).toBe(201);
 
     // get session status
-    await api.init({ "Content-Type": false }, buyerCookie);
-    const resSessionStatus = await api.getUploadsSessions(
-      sessionId,
-      supplierOrganizationId
-    );
-    const sessionStatus = resSessionStatus.body.state;
-    console.log("Supplier session status: ", sessionStatus);
+    await waitForCleanStatus(api, sessionId, supplierOrganizationId, {
+      intervalMs: 5000,
+      timeoutMs: 60000,
+    });
 
     //finalize session and get fileId
     const finalizeBody = {
@@ -263,6 +286,16 @@ test.describe("API: GET catalog products", () => {
   });
 
   test(`should return 404 when fake coockie`, async () => {
+    userApi = new UserApiClient();
+    await userApi.init({}, supplierCookie);
+    const postBody = {
+      setRole: "VENDOR",
+    };
+    const resPost = await userApi.postUserRoles(postBody);
+    expect(
+      resPost.status,
+      `Expected status code is 201, but got ${resPost.status}`
+    ).toBe(201);
     const fakeCookie = `__Secure-admin-sid=${randomUUID()}`;
     importApi = new CatalogImportApiClient();
     await importApi.init({}, fakeCookie);
@@ -290,4 +323,34 @@ test.describe("API: GET catalog products", () => {
       await new Promise((r) => setTimeout(r, intervalMs));
     }
   }
+
+  const waitForCleanStatus = async (
+    api: UploadSessionsApiClient,
+    uploadId: string,
+    supplierOrganizationId: string,
+    { intervalMs = 5000, timeoutMs = 60_000 } = {}
+  ) => {
+    const start = Date.now();
+
+    while (true) {
+      const res = await api.getUploadsSessions(
+        uploadId,
+        supplierOrganizationId
+      );
+
+      const state = res.body.state;
+
+      if (state === "CLEAN") {
+        return res.body;
+      }
+
+      if (Date.now() - start > timeoutMs) {
+        throw new Error(
+          `Timeout waiting for status CLEAN. Last state: ${state}`
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  };
 });
