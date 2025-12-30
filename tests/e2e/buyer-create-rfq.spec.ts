@@ -8,7 +8,7 @@ test.describe("E2E: Create RFQ", () => {
     storageState: DriverProvider.getCookiesStateFileName(CookiesTag.Buyer),
   });
   const filePath = "src/data/files/RFQ.pdf";
-  const chemFilePath = "src/data/files/meldonium_and_analog.sdf";
+  const chemFilePath = "src/data/files/meldonium.mol";
   const confFilePath = "src/data/files/confidential_test_file.docx";
 
   test("buyer can create RFQ all steps", async ({ page }) => {
@@ -62,7 +62,7 @@ test.describe("E2E: Create RFQ", () => {
       rfqTestData.company,
       rfqTestData.email,
       rfqTestData.phone,
-      rfqTestData.notes,
+      rfqTestData.notes
     );
 
     // step 5

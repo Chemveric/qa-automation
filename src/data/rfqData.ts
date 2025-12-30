@@ -64,5 +64,5 @@ export const rfqTestData = {
   lastName: faker.person.lastName(),
   company: "AQA First Chem Tech",
   email: `AQA-test@globaldev.tech`,
-  phone: faker.phone.number(),
+  phone: faker.phone.number({ style: "international" }),
 };
