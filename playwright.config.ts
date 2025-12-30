@@ -25,8 +25,8 @@ export default defineConfig({
     video: "retain-on-failure",
     viewport: { width: 1400, height: 900 },
   },
-  fullyParallel: false, // Run test files sequentially by default
-  workers: 1, // Use only 1 worker to ensure sequential execution
+  //fullyParallel: false, // Run test files sequentially by default
+  //workers: 1, // Use only 1 worker to ensure sequential execution
   projects: [{ name: "Chromium", use: { ...devices["Desktop Chrome"] } }],
   outputDir: "test-results",
 });
