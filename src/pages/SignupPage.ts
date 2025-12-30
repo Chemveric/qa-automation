@@ -241,7 +241,9 @@ export class SignupPage extends BasePage {
   }
 
   async verifyToastMessage() {
-    await expect(this.toastMessage).toContainText(/Application Submitted/i);
+    await expect(this.page.getByRole("dialog")).toContainText(
+      /Application Submitted/i
+    );
   }
 
   async verifyReviewMessage(email: string | null | undefined) {

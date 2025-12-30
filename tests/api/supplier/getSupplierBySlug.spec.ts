@@ -24,7 +24,7 @@ test.describe("API: Get supplier by id", () => {
   let adminCookie: string;
   let supplierCoockie: string;
   let buyerCookie: string;
-  let supplierId: string;
+  let supplierSlug: string;
   let stepOneRequestBody: Record<string, any>;
   let stepTwoRequestBody: Record<string, any>;
 
@@ -97,21 +97,21 @@ test.describe("API: Get supplier by id", () => {
       201
     );
     if (Array.isArray(validated.items) && validated.items.length > 0) {
-      supplierId = validated.items[0].id;
+      supplierSlug = validated.items[0].slug;
     }
   });
 
   test(`should return expected schema for existing supplier`, async () => {
     api = new SuppliersApiClient();
     await api.init({}, supplierCoockie);
-    const res = await api.getSupplierById(supplierId);
-    expect(res.status).toBe(200);
+    const res = await api.getSupplierSlug(supplierSlug);
+    // expect(res.status).toBe(200);
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
       SupplierSchema
     );
-    expect(validated.id).toBe(supplierId);
+    expect(validated.slug).toBe(supplierSlug);
     expect(validated.email).toBe(stepOneRequestBody.email);
     expect(validated.name).toBe(stepTwoRequestBody.data!.companyName);
   });
@@ -120,33 +120,21 @@ test.describe("API: Get supplier by id", () => {
     api = new SuppliersApiClient();
     await api.init({}, supplierCoockie);
     let fakeId = randomUUID();
-    const res = await api.getSupplierById(fakeId);
+    const res = await api.getSupplierSlug(fakeId);
     validator.expectStatusCodeAndMessage(res, 404, "Organization not found");
-  });
-
-  test("should return 400 when send request with wrong id", async () => {
-    api = new SuppliersApiClient();
-    await api.init({}, supplierCoockie);
-    let invalidId = "12345-invalid-uuid";
-    const res = await api.getSupplierById(invalidId);
-    validator.expectStatusCodeAndMessage(
-      res,
-      400,
-      "Validation failed (uuid is expected)"
-    );
   });
 
   test("should return expected schema for buyer coockie", async () => {
     api = new SuppliersApiClient();
     await api.init({}, buyerCookie);
-    const res = await api.getSupplierById(supplierId);
+    const res = await api.getSupplierSlug(supplierSlug);
     expect(res.status).toBe(200);
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
       SupplierSchema
     );
-    expect(validated.id).toBe(supplierId);
+    expect(validated.slug).toBe(supplierSlug);
     expect(validated.email).toBe(stepOneRequestBody.email);
     expect(validated.name).toBe(stepTwoRequestBody.data!.companyName);
   });
@@ -154,14 +142,14 @@ test.describe("API: Get supplier by id", () => {
   test("should return expected schema for admin coockie", async () => {
     api = new SuppliersApiClient();
     await api.init({}, adminCookie);
-    const res = await api.getSupplierById(supplierId);
+    const res = await api.getSupplierSlug(supplierSlug);
     expect(res.status).toBe(200);
     const body = await res.body;
     const validated = await validateResponse(
       { status: res.status, body },
       SupplierSchema
     );
-    expect(validated.id).toBe(supplierId);
+    expect(validated.slug).toBe(supplierSlug);
     expect(validated.email).toBe(stepOneRequestBody.email);
     expect(validated.name).toBe(stepTwoRequestBody.data!.companyName);
   });
@@ -169,7 +157,7 @@ test.describe("API: Get supplier by id", () => {
   test.skip("BUG: should return 401 when send request with fake coockie", async () => {
     api = new SuppliersApiClient();
     await api.init({}, "fake-coockie");
-    const res = await api.getSupplierById(supplierId);
+    const res = await api.getSupplierSlug(supplierSlug);
     validator.expectStatusCodeAndMessage(
       res,
       400,

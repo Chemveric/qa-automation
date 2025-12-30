@@ -28,7 +28,6 @@ test.describe("E2E: Company Management", () => {
     await companyPage.clickEditButton();
     await companyPage.editCompanyName();
     await companyPage.editRegionSelectUSA();
-    await companyPage.editCountrySelectUSA();
     await companyPage.selectState();
     await companyPage.editCity();
     await companyPage.editStreet();

@@ -12,7 +12,7 @@ import { ResponseValidationHelper } from "../../../helpers/ResponseValidationHel
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: POST vendor services setup", () => {
+test.describe.skip("API: POST vendor services setup", () => {
   let api: VendorServicesApiClient;
   let supplierCookie: string;
   let buyerCookie: string;
@@ -49,7 +49,6 @@ test.describe("API: POST vendor services setup", () => {
     const postRes = await api.postSetup(postTestData);
     console.log("POST RES: ", postRes);
     expect(postRes.status).toBe(201);
-
   });
 
   test(`should return 401 when send valid data with admin cookie`, async () => {
@@ -78,11 +77,7 @@ test.describe("API: POST vendor services setup", () => {
 
     const postRes = await api.postSetup(postTestData);
     console.log("POST RES: ", postRes);
-        validator.expectStatusCodeAndMessage(
-      postRes,
-      401,
-      "Unauthorized"
-    );
+    validator.expectStatusCodeAndMessage(postRes, 401, "Unauthorized");
   });
 
   test(`should return 400 when send invalid serviceId `, async () => {

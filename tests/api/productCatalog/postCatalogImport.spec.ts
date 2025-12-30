@@ -87,6 +87,7 @@ test.describe("API: POST catalog imports", () => {
     const sessionStatus = resSessionStatus.body.state;
     console.log("Supplier session status: ", sessionStatus);
 
+    await waitForCleanStatus(api, sessionId, supplierOrganizationId);
     //finalize session
     const finalizeBody = {
       sessionIds: [sessionId],
@@ -201,7 +202,7 @@ test.describe("API: POST catalog imports", () => {
     );
     const sessionStatus = resSessionStatus.body.state;
     console.log("Supplier session status: ", sessionStatus);
-
+    await waitForCleanStatus(api, sessionId, supplierOrganizationId);
     //finalize session and get fileId
     const finalizeBody = {
       sessionIds: [sessionId],
@@ -240,4 +241,34 @@ test.describe("API: POST catalog imports", () => {
       "fileId must be a UUID"
     );
   });
+
+  const waitForCleanStatus = async (
+    api: UploadSessionsApiClient,
+    uploadId: string,
+    supplierOrganizationId: string,
+    { intervalMs = 5000, timeoutMs = 60_000 } = {}
+  ) => {
+    const start = Date.now();
+
+    while (true) {
+      const res = await api.getUploadsSessions(
+        uploadId,
+        supplierOrganizationId
+      );
+
+      const state = res.body.state;
+
+      if (state === "CLEAN") {
+        return res.body;
+      }
+
+      if (Date.now() - start > timeoutMs) {
+        throw new Error(
+          `Timeout waiting for status CLEAN. Last state: ${state}`
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  };
 });

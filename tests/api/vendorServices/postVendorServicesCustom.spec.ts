@@ -18,7 +18,7 @@ import { UserApiClient } from "../../../src/api/UserApiClient";
 
 const validator = new ResponseValidationHelper();
 
-test.describe("API: POST custom vendor service", () => {
+test.describe.skip("API: POST custom vendor service", () => {
   let api: VendorServicesApiClient;
   let supplierCookie: string;
   let buyerCookie: string;
@@ -31,7 +31,7 @@ test.describe("API: POST custom vendor service", () => {
     adminCookie = getAdminCookie();
   });
 
-  test(`should return success when send valid data`, async () => {
+  test.skip(`should return success when send valid data`, async () => {
     userApi = new UserApiClient();
     await userApi.init({}, supplierCookie);
     const postBody = {

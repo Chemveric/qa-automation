@@ -85,6 +85,7 @@ test.describe("API: POST Finalize Upload Session.", () => {
   });
 
   test(`should finalize upload session via presigned link`, async () => {
+    await waitForCleanStatus(api, sessionId, supplierOrganizationId);
     const finalizeBody = {
       sessionIds: [sessionId],
       organizationId: supplierOrganizationId,
@@ -182,6 +183,7 @@ test.describe("API: POST Finalize Upload Session.", () => {
 
     // finalize session
     await sessionsApi.init({}, buyerCookie);
+    await waitForCleanStatus(sessionsApi, sessionId, supplierOrganizationId);
     const finalizeBody = {
       sessionIds: [sessionId],
       organizationId: supplierOrganizationId,
@@ -219,4 +221,34 @@ test.describe("API: POST Finalize Upload Session.", () => {
       "organizationId"
     );
   });
+
+  const waitForCleanStatus = async (
+    api: UploadSessionsApiClient,
+    uploadId: string,
+    supplierOrganizationId: string,
+    { intervalMs = 5000, timeoutMs = 60_000 } = {}
+  ) => {
+    const start = Date.now();
+
+    while (true) {
+      const res = await api.getUploadsSessions(
+        uploadId,
+        supplierOrganizationId
+      );
+
+      const state = res.body.state;
+
+      if (state === "CLEAN") {
+        return res.body;
+      }
+
+      if (Date.now() - start > timeoutMs) {
+        throw new Error(
+          `Timeout waiting for status CLEAN. Last state: ${state}`
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  };
 });

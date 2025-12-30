@@ -83,7 +83,7 @@ export class BuyerOrdersPage extends BasePage {
       await expect(chipLabels.nth(i)).toHaveText("pending");
       await expect(this.chipRoots.nth(i)).toHaveCSS(
         "background-color",
-        "rgb(255, 244, 229)"
+        "rgb(255, 243, 224)"
       );
 
       await expect(chipLabels.nth(i)).toHaveCSS("color", "rgb(239, 108, 0)");

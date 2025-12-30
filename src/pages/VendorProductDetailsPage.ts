@@ -37,7 +37,7 @@ export class VendorProductDetailsPage extends BasePage {
     this.documentsTab = page.getByRole("tab", { name: "Documents" });
     this.supplierTab = page.getByRole("tab", { name: "Supplier" });
     this.structure3D = page.getByRole("button", { name: "3D view" });
-    this.structure2DImage = page.getByRole('img', { name: '2D Structure' })
+    this.structure2DImage = page.getByRole("img", { name: "structure" });
     this.orderSummaryHeading = page
       .getByRole("heading", { name: "Order Summary" })
       .click();
@@ -54,11 +54,11 @@ export class VendorProductDetailsPage extends BasePage {
 
   async assertStructuresAreVisible() {
     await expect(this.structure2D).toBeVisible();
-    await expect(this.structure3D).toBeVisible()
+    await expect(this.structure3D).toBeVisible();
     await expect(this.structure2DImage).toBeVisible();
   }
 
-  async assertTabNamesAreVisible(){
+  async assertTabNamesAreVisible() {
     await expect(this.chemicalInfoTab).toBeVisible();
     await expect(this.documentsTab).toBeVisible();
     await expect(this.supplierTab).toBeVisible();

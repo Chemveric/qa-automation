@@ -118,7 +118,7 @@ test.describe("API: POST Complete Upload Session.", () => {
     );
   });
 
-  test(`should get 400 when send fake checksum`, async () => {
+  test(`BUG: should get 400 when send fake checksum`, async () => {
     await api.init({}, supplierCookie);
     const sessionCompleteBody = {
       organizationId: supplierOrganizationId,
